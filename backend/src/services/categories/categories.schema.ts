@@ -5,14 +5,20 @@ import type { Static } from '@feathersjs/typebox'
 
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
+import { resourceSchema } from '../common/resources'
 
 // Main data model schema
-export const categorySchema = Type.Object(
-  {
-    id: Type.Number(),
-    text: Type.String()
-  },
-  { $id: 'Category', additionalProperties: false }
+export const categorySchema = Type.Intersect(
+  [
+    Type.Object(
+      {
+        id: Type.Number(),
+        name: Type.String()
+      },
+      { $id: 'Category', additionalProperties: false }
+    ),
+    resourceSchema
+  ]
 )
 export type Category = Static<typeof categorySchema>
 export const categoryValidator = getValidator(categorySchema, dataValidator)
@@ -21,7 +27,7 @@ export const categoryResolver = resolve<Category, HookContext>({})
 export const categoryExternalResolver = resolve<Category, HookContext>({})
 
 // Schema for creating new entries
-export const categoryDataSchema = Type.Pick(categorySchema, ['text'], {
+export const categoryDataSchema = Type.Pick(categorySchema, ['name'], {
   $id: 'CategoryData'
 })
 export type CategoryData = Static<typeof categoryDataSchema>
@@ -37,7 +43,7 @@ export const categoryPatchValidator = getValidator(categoryPatchSchema, dataVali
 export const categoryPatchResolver = resolve<Category, HookContext>({})
 
 // Schema for allowed query properties
-export const categoryQueryProperties = Type.Pick(categorySchema, ['id', 'text'])
+export const categoryQueryProperties = Type.Pick(categorySchema, ['id', 'name'])
 export const categoryQuerySchema = Type.Intersect(
   [
     querySyntax(categoryQueryProperties),
