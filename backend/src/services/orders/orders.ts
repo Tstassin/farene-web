@@ -16,6 +16,7 @@ import {
 import type { Application } from '../../declarations'
 import { OrderService, getOptions } from './orders.class'
 import { orderPath, orderMethods } from './orders.shared'
+import { authenticate } from '@feathersjs/authentication/'
 
 export * from './orders.class'
 export * from './orders.schema'
@@ -32,7 +33,11 @@ export const order = (app: Application) => {
   // Initialize hooks
   app.service(orderPath).hooks({
     around: {
-      all: [schemaHooks.resolveExternal(orderExternalResolver), schemaHooks.resolveResult(orderResolver)]
+      all: [
+        authenticate('jwt'),
+        schemaHooks.resolveExternal(orderExternalResolver),
+        schemaHooks.resolveResult(orderResolver)
+      ]
     },
     before: {
       all: [schemaHooks.validateQuery(orderQueryValidator), schemaHooks.resolveQuery(orderQueryResolver)],
