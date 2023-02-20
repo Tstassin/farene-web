@@ -5,14 +5,22 @@ import type { Static } from '@feathersjs/typebox'
 
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
+import { resourceSchema } from '../common/resources'
 
 // Main data model schema
-export const orderItemSchema = Type.Object(
-  {
-    id: Type.Number(),
-    text: Type.String()
-  },
-  { $id: 'OrderItem', additionalProperties: false }
+export const orderItemSchema = Type.Intersect(
+  [
+    Type.Object(
+      {
+        id: Type.Number(),
+        amount: Type.Number(),
+        productId: Type.Number(),
+        orderId: Type.Number(),
+      },
+      { $id: 'OrderItem', additionalProperties: false }
+    ),
+    resourceSchema
+  ]
 )
 export type OrderItem = Static<typeof orderItemSchema>
 export const orderItemValidator = getValidator(orderItemSchema, dataValidator)
@@ -21,9 +29,13 @@ export const orderItemResolver = resolve<OrderItem, HookContext>({})
 export const orderItemExternalResolver = resolve<OrderItem, HookContext>({})
 
 // Schema for creating new entries
-export const orderItemDataSchema = Type.Pick(orderItemSchema, ['text'], {
-  $id: 'OrderItemData'
-})
+export const orderItemDataSchema = Type.Pick(
+  orderItemSchema,
+  ['amount', 'productId', 'orderId'],
+  {
+    $id: 'OrderItemData'
+  }
+)
 export type OrderItemData = Static<typeof orderItemDataSchema>
 export const orderItemDataValidator = getValidator(orderItemDataSchema, dataValidator)
 export const orderItemDataResolver = resolve<OrderItem, HookContext>({})
@@ -37,7 +49,10 @@ export const orderItemPatchValidator = getValidator(orderItemPatchSchema, dataVa
 export const orderItemPatchResolver = resolve<OrderItem, HookContext>({})
 
 // Schema for allowed query properties
-export const orderItemQueryProperties = Type.Pick(orderItemSchema, ['id', 'text'])
+export const orderItemQueryProperties = Type.Pick(
+  orderItemSchema,
+  ['id', 'productId', 'orderId']
+)
 export const orderItemQuerySchema = Type.Intersect(
   [
     querySyntax(orderItemQueryProperties),

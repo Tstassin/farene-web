@@ -4,9 +4,9 @@ import type { Knex } from 'knex'
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('order-items', (table) => {
     table.increments('id')
+    table.integer('amount')
     table.integer('productId').references('id').inTable('products')
     table.integer('orderId').references('id').inTable('orders')
-    table.integer('amount')
     table.dateTime('createdAt')
     table.dateTime('updatedAt')
   })
