@@ -6,16 +6,20 @@ import { passwordHash } from '@feathersjs/authentication-local'
 
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
+import { resourceSchema } from '../common/resources'
 
 // Main data model schema
-export const userSchema = Type.Object(
-  {
-    id: Type.Number(),
-    email: Type.String(),
-    password: Type.Optional(Type.String())
-  },
-  { $id: 'User', additionalProperties: false }
-)
+export const userSchema = Type.Intersect([
+  Type.Object(
+    {
+      id: Type.Number(),
+      email: Type.String(),
+      password: Type.Optional(Type.String())
+    },
+    { $id: 'User', additionalProperties: false }
+  ),
+  resourceSchema
+])
 export type User = Static<typeof userSchema>
 export const userValidator = getValidator(userSchema, dataValidator)
 export const userResolver = resolve<User, HookContext>({})
