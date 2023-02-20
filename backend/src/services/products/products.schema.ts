@@ -5,14 +5,24 @@ import type { Static } from '@feathersjs/typebox'
 
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
+import { resourceSchema } from '../common/resources'
 
 // Main data model schema
-export const productSchema = Type.Object(
-  {
-    id: Type.Number(),
-    text: Type.String()
-  },
-  { $id: 'Product', additionalProperties: false }
+export const productSchema = Type.Intersect(
+  [
+    Type.Object(
+      {
+        id: Type.Number(),
+        name: Type.String(),
+        description: Type.String(),
+        price: Type.Number(),
+        weight: Type.Number(),
+        categoryId: Type.Number()
+      },
+      { $id: 'Product', additionalProperties: false }
+    ),
+    resourceSchema
+  ]
 )
 export type Product = Static<typeof productSchema>
 export const productValidator = getValidator(productSchema, dataValidator)
@@ -21,9 +31,12 @@ export const productResolver = resolve<Product, HookContext>({})
 export const productExternalResolver = resolve<Product, HookContext>({})
 
 // Schema for creating new entries
-export const productDataSchema = Type.Pick(productSchema, ['text'], {
-  $id: 'ProductData'
-})
+export const productDataSchema = Type.Pick(
+  productSchema,
+  ['name', 'description', 'price', 'weight', 'categoryId'],
+  {
+    $id: 'ProductData'
+  })
 export type ProductData = Static<typeof productDataSchema>
 export const productDataValidator = getValidator(productDataSchema, dataValidator)
 export const productDataResolver = resolve<Product, HookContext>({})
@@ -37,7 +50,10 @@ export const productPatchValidator = getValidator(productPatchSchema, dataValida
 export const productPatchResolver = resolve<Product, HookContext>({})
 
 // Schema for allowed query properties
-export const productQueryProperties = Type.Pick(productSchema, ['id', 'text'])
+export const productQueryProperties = Type.Pick(
+  productSchema,
+  ['id', 'name', 'categoryId']
+)
 export const productQuerySchema = Type.Intersect(
   [
     querySyntax(productQueryProperties),
