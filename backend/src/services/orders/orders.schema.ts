@@ -5,14 +5,21 @@ import type { Static } from '@feathersjs/typebox'
 
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
+import { resourceSchema } from '../common/resources'
 
 // Main data model schema
-export const orderSchema = Type.Object(
-  {
-    id: Type.Number(),
-    text: Type.String()
-  },
-  { $id: 'Order', additionalProperties: false }
+export const orderSchema = Type.Intersect(
+  [
+    Type.Object(
+      {
+        id: Type.Number(),
+        delivery: Type.String(),
+        userId: Type.Number()
+      },
+      { $id: 'Order', additionalProperties: false }
+    ),
+    resourceSchema
+  ]
 )
 export type Order = Static<typeof orderSchema>
 export const orderValidator = getValidator(orderSchema, dataValidator)
@@ -21,9 +28,13 @@ export const orderResolver = resolve<Order, HookContext>({})
 export const orderExternalResolver = resolve<Order, HookContext>({})
 
 // Schema for creating new entries
-export const orderDataSchema = Type.Pick(orderSchema, ['text'], {
-  $id: 'OrderData'
-})
+export const orderDataSchema = Type.Pick(
+  orderSchema,
+  ['delivery', 'userId']
+  , {
+    $id: 'OrderData'
+  }
+)
 export type OrderData = Static<typeof orderDataSchema>
 export const orderDataValidator = getValidator(orderDataSchema, dataValidator)
 export const orderDataResolver = resolve<Order, HookContext>({})
@@ -37,7 +48,10 @@ export const orderPatchValidator = getValidator(orderPatchSchema, dataValidator)
 export const orderPatchResolver = resolve<Order, HookContext>({})
 
 // Schema for allowed query properties
-export const orderQueryProperties = Type.Pick(orderSchema, ['id', 'text'])
+export const orderQueryProperties = Type.Pick(
+  orderSchema,
+  ['delivery', 'userId']
+)
 export const orderQuerySchema = Type.Intersect(
   [
     querySyntax(orderQueryProperties),
