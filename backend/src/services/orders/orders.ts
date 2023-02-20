@@ -17,6 +17,7 @@ import type { Application } from '../../declarations'
 import { OrderService, getOptions } from './orders.class'
 import { orderPath, orderMethods } from './orders.shared'
 import { authenticate } from '@feathersjs/authentication/'
+import { resourceSchemaCreateResolver, resourceSchemaUpdateResolver } from '../common/resources'
 
 export * from './orders.class'
 export * from './orders.schema'
@@ -40,12 +41,25 @@ export const order = (app: Application) => {
       ]
     },
     before: {
-      all: [schemaHooks.validateQuery(orderQueryValidator), schemaHooks.resolveQuery(orderQueryResolver)],
+      all: [
+        schemaHooks.validateQuery(orderQueryValidator),
+        schemaHooks.resolveQuery(orderQueryResolver)
+      ],
       find: [],
       get: [],
-      create: [schemaHooks.validateData(orderDataValidator), schemaHooks.resolveData(orderDataResolver)],
-      patch: [schemaHooks.validateData(orderPatchValidator), schemaHooks.resolveData(orderPatchResolver)],
-      remove: []
+      create: [
+        schemaHooks.validateData(orderDataValidator),
+        schemaHooks.resolveData(orderDataResolver, resourceSchemaCreateResolver),
+      ],
+      patch: [
+        schemaHooks.validateData(orderPatchValidator),
+        schemaHooks.resolveData(orderPatchResolver, resourceSchemaUpdateResolver),
+      ],
+      remove: [],
+      update: [
+        schemaHooks.validateData(orderDataValidator),
+        schemaHooks.resolveData(orderDataResolver, resourceSchemaUpdateResolver),
+      ],
     },
     after: {
       all: []

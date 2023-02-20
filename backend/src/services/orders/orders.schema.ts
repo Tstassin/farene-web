@@ -6,6 +6,8 @@ import type { Static } from '@feathersjs/typebox'
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import { resourceSchema } from '../common/resources'
+import { userSchema } from '../users/users.schema'
+import { orderItemDataSchema } from '../order-items/order-items.schema'
 
 // Main data model schema
 export const orderSchema = Type.Intersect(
@@ -28,12 +30,25 @@ export const orderResolver = resolve<Order, HookContext>({})
 export const orderExternalResolver = resolve<Order, HookContext>({})
 
 // Schema for creating new entries
-export const orderDataSchema = Type.Pick(
-  orderSchema,
-  ['delivery', 'userId']
-  , {
-    $id: 'OrderData'
-  }
+export const orderDataSchema = Type.Intersect(
+  [
+    Type.Pick(
+      orderSchema,
+      ['delivery']
+      , {
+        $id: 'OrderData'
+      }
+    ),
+    Type.Pick(
+      userSchema,
+      ['email']
+    ),
+    Type.Object(
+      {
+        products: Type.Array(orderItemDataSchema)
+      }
+    )
+  ]
 )
 export type OrderData = Static<typeof orderDataSchema>
 export const orderDataValidator = getValidator(orderDataSchema, dataValidator)
