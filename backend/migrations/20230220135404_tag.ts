@@ -4,7 +4,7 @@ import type { Knex } from 'knex'
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('tags', (table) => {
     table.increments('id')
-    table.string('text')
+    table.string('name')
     table.dateTime('createdAt')
     table.dateTime('updatedAt')
   })

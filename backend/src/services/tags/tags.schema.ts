@@ -5,14 +5,20 @@ import type { Static } from '@feathersjs/typebox'
 
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
+import { resourceSchema } from '../common/resources'
 
 // Main data model schema
-export const tagSchema = Type.Object(
-  {
-    id: Type.Number(),
-    text: Type.String()
-  },
-  { $id: 'Tag', additionalProperties: false }
+export const tagSchema = Type.Intersect(
+  [
+    Type.Object(
+      {
+        id: Type.Number(),
+        name: Type.String()
+      },
+      { $id: 'Tag', additionalProperties: false }
+    ),
+    resourceSchema
+  ]
 )
 export type Tag = Static<typeof tagSchema>
 export const tagValidator = getValidator(tagSchema, dataValidator)
@@ -21,7 +27,7 @@ export const tagResolver = resolve<Tag, HookContext>({})
 export const tagExternalResolver = resolve<Tag, HookContext>({})
 
 // Schema for creating new entries
-export const tagDataSchema = Type.Pick(tagSchema, ['text'], {
+export const tagDataSchema = Type.Pick(tagSchema, ['name'], {
   $id: 'TagData'
 })
 export type TagData = Static<typeof tagDataSchema>
@@ -37,7 +43,7 @@ export const tagPatchValidator = getValidator(tagPatchSchema, dataValidator)
 export const tagPatchResolver = resolve<Tag, HookContext>({})
 
 // Schema for allowed query properties
-export const tagQueryProperties = Type.Pick(tagSchema, ['id', 'text'])
+export const tagQueryProperties = Type.Pick(tagSchema, ['id', 'name'])
 export const tagQuerySchema = Type.Intersect(
   [
     querySyntax(tagQueryProperties),
