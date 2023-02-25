@@ -1,3 +1,6 @@
 {
-  "port": 8998
+  "port": 8998,
+  "sqlite": {
+    "connection": "mocha-tests.sqlite"
+  }
 }
