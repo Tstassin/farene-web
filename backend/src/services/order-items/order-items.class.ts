@@ -22,6 +22,7 @@ export const getOptions = (app: Application): KnexAdapterOptions => {
   return {
     paginate: app.get('paginate'),
     Model: app.get('sqliteClient'),
-    name: 'order-items'
+    name: 'order-items',
+    multi: ['create', 'remove']
   }
 }
