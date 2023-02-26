@@ -4,13 +4,13 @@ import type { Knex } from 'knex'
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('products', (table) => {
     table.increments('id')
-    table.text('name')
+    table.text('name').notNullable()
     table.text('description')
-    table.float('price')
+    table.float('price').notNullable()
     table.integer('weight')
     table.text('categoryId').references('id').inTable('categories')
-    table.dateTime('createdAt')
-    table.dateTime('updatedAt')
+    table.dateTime('createdAt').notNullable()
+    table.dateTime('updatedAt').notNullable()
   })
 }
 
