@@ -6,7 +6,6 @@ import type { Static } from '@feathersjs/typebox'
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import { resourceSchema } from '../common/resources'
-import { userSchema } from '../users/users.schema'
 import { orderItemDataSchema } from '../order-items/order-items.schema'
 
 // Main data model schema
@@ -25,7 +24,16 @@ export const orderSchema = Type.Intersect(
 )
 export type Order = Static<typeof orderSchema>
 export const orderValidator = getValidator(orderSchema, dataValidator)
-export const orderResolver = resolve<Order, HookContext>({})
+export const orderResolver = resolve<Order, HookContext>({
+  // If there is a user (e.g. with authentication), they are only allowed to see their own data
+  userId: async (value, user, context) => {
+    if (context.params.user) {
+      return context.params.user.id
+    }
+
+    return value
+  }
+})
 
 export const orderExternalResolver = resolve<Order, HookContext>({})
 
@@ -39,20 +47,35 @@ export const orderDataSchema = Type.Intersect(
         $id: 'OrderData'
       }
     ),
-    Type.Pick(
-      userSchema,
-      ['email']
-    ),
+    /* Type.Object({
+      userId: Type.Number()
+    }),  */
     Type.Object(
       {
-        products: Type.Array(orderItemDataSchema)
+        products: Type.Array(
+          Type.Pick(
+            orderItemDataSchema
+            ,
+            ['amount', 'productId'],
+            { $id: 'test' }
+          )
+        )
       }
     )
   ]
 )
 export type OrderData = Static<typeof orderDataSchema>
 export const orderDataValidator = getValidator(orderDataSchema, dataValidator)
-export const orderDataResolver = resolve<Order, HookContext>({})
+export const orderDataResolver = resolve<Order & {products: undefined}, HookContext>({
+  'products': async () => undefined,
+  userId: async (value, user, context) => {
+    if (context.params.user) {
+      return context.params.user.id
+    }
+
+    return value
+  }
+})
 
 // Schema for updating existing entries
 export const orderPatchSchema = Type.Partial(orderSchema, {
@@ -77,4 +100,13 @@ export const orderQuerySchema = Type.Intersect(
 )
 export type OrderQuery = Static<typeof orderQuerySchema>
 export const orderQueryValidator = getValidator(orderQuerySchema, queryValidator)
-export const orderQueryResolver = resolve<OrderQuery, HookContext>({})
+export const orderQueryResolver = resolve<OrderQuery, HookContext>({
+  // If there is a user (e.g. with authentication), they are only allowed to see their own data
+  userId: async (value, user, context) => {
+    if (context.params.user) {
+      return context.params.user.id
+    }
+
+    return value
+  }
+})

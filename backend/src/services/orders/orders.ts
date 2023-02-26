@@ -18,6 +18,7 @@ import { OrderService, getOptions } from './orders.class'
 import { orderPath, orderMethods } from './orders.shared'
 import { authenticate } from '@feathersjs/authentication/'
 import { resourceSchemaCreateResolver, resourceSchemaUpdateResolver } from '../common/resources'
+import { BadRequest } from '@feathersjs/errors/lib'
 
 export * from './orders.class'
 export * from './orders.schema'
@@ -37,7 +38,22 @@ export const order = (app: Application) => {
       all: [
         authenticate('jwt'),
         schemaHooks.resolveExternal(orderExternalResolver),
-        schemaHooks.resolveResult(orderResolver)
+        schemaHooks.resolveResult(orderResolver),
+      ],
+      create: [
+        async (context, next) => {
+          if (!context.data || !('products' in context.data)) {
+            throw new BadRequest('No products in order')
+          }
+          const { products } = context.data
+          await next()
+          if (context.result === undefined || Array.isArray(context.result) || 'total' in context.result) {
+            throw new Error("Hmmm shouldn't happen")
+          }
+          const { id: orderId } = context.result
+          const orderItems = await context.app.service('order-items').create(products.map(product => ({ ...product, orderId })))
+          console.log(orderItems)
+        }
       ]
     },
     before: {

@@ -6,7 +6,7 @@ import rest from '@feathersjs/rest-client'
 import authenticationClient from '@feathersjs/authentication-client'
 import { app } from '../src/app'
 import { createClient } from '../src/client'
-import type { UserData } from '../src/client'
+import { UserData } from '../src/services/users/users.schema'
 
 const port = app.get('port')
 const appUrl = `http://${app.get('host')}:${port}`

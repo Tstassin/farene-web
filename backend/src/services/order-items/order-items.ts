@@ -17,6 +17,7 @@ import {
 import type { Application } from '../../declarations'
 import { OrderItemService, getOptions } from './order-items.class'
 import { orderItemPath, orderItemMethods } from './order-items.shared'
+import { resourceSchemaCreateResolver, resourceSchemaUpdateResolver } from '../common/resources'
 
 export * from './order-items.class'
 export * from './order-items.schema'
@@ -48,11 +49,11 @@ export const orderItem = (app: Application) => {
       get: [],
       create: [
         schemaHooks.validateData(orderItemDataValidator),
-        schemaHooks.resolveData(orderItemDataResolver)
+        schemaHooks.resolveData(orderItemDataResolver, resourceSchemaCreateResolver)
       ],
       patch: [
         schemaHooks.validateData(orderItemPatchValidator),
-        schemaHooks.resolveData(orderItemPatchResolver)
+        schemaHooks.resolveData(orderItemPatchResolver, resourceSchemaUpdateResolver)
       ],
       remove: []
     },
