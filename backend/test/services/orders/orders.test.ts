@@ -14,7 +14,7 @@ const newOrderTemplate = {
 
 const userTemplate: UserData = { email: 'user1@test.com', password: 'a' }
 
-describe.only('orders service', () => {
+describe('orders service', () => {
   beforeEach(async () => {
     await app.service('orders')._remove(null)
     await app.service('order-items')._remove(null)
