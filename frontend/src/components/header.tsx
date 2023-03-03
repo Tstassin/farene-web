@@ -1,4 +1,5 @@
 import { Box, Flex, Stack } from "@chakra-ui/react";
+import { Authenticated, NotAuthenticated } from "./auth/authenticated";
 import { NavItem } from "./navbar/nav-item";
 
 export const Header = () => {
@@ -15,7 +16,7 @@ export const Header = () => {
     >
       <Box>
         <NavItem to='/' fontSize="lg" fontWeight="bold">
-          Frontend
+          Farène
         </NavItem>
       </Box>
       <Stack
@@ -25,8 +26,12 @@ export const Header = () => {
         direction={"row"}
         pt={0}
       >
-        <NavItem to={'/register'}>Register</NavItem>
-        <NavItem to={'/login'}>Login</NavItem>
+        <Authenticated>
+          <NavItem to={'/logout'}>Déconnexion</NavItem>
+        </Authenticated>
+        <NotAuthenticated>
+          <NavItem to={'/login'}>Se connecter</NavItem>
+        </NotAuthenticated>
       </Stack>
     </Flex>
   )

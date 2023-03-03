@@ -1,17 +1,26 @@
 import { FeathersError } from '@feathersjs/errors/lib'
 import React from 'react'
 import { client } from '../../../api/api'
+import { isAuthenticated } from '../../utils/authentication'
 
-export const Authenticated: React.FC<{children: React.ReactNode}> = ({children}) => {
+export const Authenticated: React.FC<{children: React.ReactElement}> = ({children}) => {
   try {
-    const isAuthenticated = client.authentication.authenticated
-    if (isAuthenticated) return children
-    console.log('not')
+    if (isAuthenticated()) return children
   }
   catch (error_) {
     const error = (error_ as FeathersError).toJSON()
     console.log(error.code)
   }
-  return <>Not Allowed</>
+  return <></>
+}
 
+export const NotAuthenticated: React.FC<{children: React.ReactElement}> = ({children}) => {
+  try {
+    if (!isAuthenticated()) return children
+  }
+  catch (error_) {
+    const error = (error_ as FeathersError).toJSON()
+    console.log(error.code)
+  }
+  return <></>
 }

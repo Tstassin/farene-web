@@ -33,7 +33,7 @@ export const Login = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <>
           <FormControl mb={5} isInvalid={!!errors.email}>
-            <FormLabel>Email address</FormLabel>
+            <FormLabel>Adresse email</FormLabel>
             <Input
               type='email'
               {...register("email", {
@@ -47,7 +47,7 @@ export const Login = () => {
             <FormErrorMessage>{errors.email && errors.email.message?.toString()}</FormErrorMessage>
           </FormControl>
           <FormControl mb={5} isInvalid={!!errors.password}>
-            <FormLabel>Password</FormLabel>
+            <FormLabel>Mot de passe</FormLabel>
             <Input
               type='password'
               {...register("password", {
