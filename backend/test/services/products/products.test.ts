@@ -3,22 +3,16 @@ import assert from 'assert'
 import { app } from '../../../src/app'
 import { User, UserData } from '../../../src/services/users/users.schema'
 import { describe } from 'mocha'
+import { useMockUser } from '../users/users.tests-utils'
 
 const userMock: UserData = { email: `user@test.com`, password: 'a' }
 let user: User | undefined
 
 describe.only('products service', () => {
-  beforeEach(async () => {
-    console.log('before')
-    user = await app.service('users').create(userMock)
-  })
-  afterEach(async () => {
-    console.log('after')
-    user && await app.service('users').remove(user.id)
-  })
+  const user = useMockUser()
   it('registered the service', () => {
     const service = app.service('products')
-
+    
     assert.ok(service, 'Registered the service')
   })
   it('creates a product', async () => {
