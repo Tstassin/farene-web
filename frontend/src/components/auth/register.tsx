@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormErrorMessage, FormLabel, Heading, Input } from "@chakra-ui/react";
+import { Box, Button, Container, FormControl, FormErrorMessage, FormLabel, Heading, Input } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { client } from "../../../api/api";
@@ -18,11 +18,11 @@ export const Register = () => {
 
   return (
     <>
-      <Heading mb={10}>Register</Heading>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <>
+      <Container>
+        <Heading mb={10}>Créer un compte</Heading>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl mb={5} isInvalid={!!errors.email}>
-            <FormLabel>Email address</FormLabel>
+            <FormLabel>Adresse email</FormLabel>
             <Input
               type='email'
               {...register("email", {
@@ -36,7 +36,7 @@ export const Register = () => {
             <FormErrorMessage>{errors.email && errors.email.message?.toString()}</FormErrorMessage>
           </FormControl>
           <FormControl mb={5} isInvalid={!!errors.password}>
-            <FormLabel>Password</FormLabel>
+            <FormLabel>Mot de passe</FormLabel>
             <Input
               type='password'
               {...register("password", {
@@ -46,10 +46,10 @@ export const Register = () => {
             <FormErrorMessage>{errors.password && errors.password.message?.toString()}</FormErrorMessage>
           </FormControl>
           <Box>
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Créer un compte</Button>
           </Box>
-        </>
-      </form>
+        </form>
+      </Container>
     </>
   );
 }

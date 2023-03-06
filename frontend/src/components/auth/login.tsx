@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { client } from "../../../api/api";
-import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input } from "@chakra-ui/react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Box, Button, Container, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Link, Text } from "@chakra-ui/react";
 import { FeathersError } from "@feathersjs/errors/lib";
 
 export const Login = () => {
@@ -19,8 +19,8 @@ export const Login = () => {
     catch (error_) {
       const error = (error_ as FeathersError).toJSON()
       if (error.code === 401) {
-        setError('email', {message: 'Invalid login or password'})
-        setError('password', {message: 'Invalid login or password'})
+        setError('email', { message: 'Invalid login or password' })
+        setError('password', { message: 'Invalid login or password' })
         return
       }
     }
@@ -28,8 +28,11 @@ export const Login = () => {
   };
 
   return (
-    <>
-      <Heading mb={10}>Login</Heading>
+    <Container>
+      <Box mb={10}>
+        <Heading>Connectez-vous pour commander</Heading>
+        <Text fontSize={'xl'}>Ou commencez par vous <Link as={NavLink} to='/register' textDecoration={'underline'}>créer un compte</Link></Text>
+      </Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         <>
           <FormControl mb={5} isInvalid={!!errors.email}>
@@ -61,6 +64,6 @@ export const Login = () => {
           </Box>
         </>
       </form>
-    </>
+    </Container>
   );
 }

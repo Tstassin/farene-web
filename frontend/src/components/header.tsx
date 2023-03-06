@@ -30,7 +30,10 @@ export const Header = () => {
           <NavItem to={'/logout'}>Déconnexion</NavItem>
         </Authenticated>
         <NotAuthenticated>
-          <NavItem to={'/login'}>Se connecter</NavItem>
+          <>
+            <NavItem to={'/login'}>Se connecter</NavItem>
+            <NavItem to={'/register'}>Créer un compte</NavItem>
+          </>
         </NotAuthenticated>
       </Stack>
     </Flex>
