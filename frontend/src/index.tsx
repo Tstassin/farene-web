@@ -7,31 +7,16 @@ import {
 import { Me } from "./pages/me";
 import { Register } from "./components/auth/register";
 import { Login } from "./components/auth/login";
-import { client } from "../api/api";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ChakraProvider } from '@chakra-ui/react'
-import { FeathersError } from "@feathersjs/errors/lib";
+import { Logout } from './components/auth/logout';
 
-const queryClient = new QueryClient()
+export const queryClient = new QueryClient()
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    loader: async () => {
-      try {
-        await client.authentication.reAuthenticate()
-        return null
-      }
-      catch (error_) {
-        const error = (error_ as FeathersError).toJSON()
-        if (error.code === 401) {
-          // Not authenticated, user is simply logged out
-          return null
-        }
-        throw error_
-      }
-    },
     children: [
       {
         path: "register",
@@ -40,6 +25,10 @@ export const router = createBrowserRouter([
       {
         path: "login",
         element: <Login />,
+      },
+      {
+        path: "logout",
+        element: <Logout />,
       },
       {
         path: "me",

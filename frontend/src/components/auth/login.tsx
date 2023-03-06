@@ -3,29 +3,35 @@ import { client } from "../../../api/api";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Box, Button, Container, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Input, Link, Text } from "@chakra-ui/react";
 import { FeathersError } from "@feathersjs/errors/lib";
+import { useAuthenticateMutation } from "../queries/authentication";
 
 export const Login = () => {
   const navigate = useNavigate()
+  const authenticationMutation = useAuthenticateMutation()
 
-  const { handleSubmit, register, setError, formState: { errors } } = useForm();
+  const { handleSubmit, register, clearErrors, setError, formState: { errors, isDirty } } = useForm<{ email: string, password: string }>();
+
   const onSubmit = async (values: { email: string, password: string }) => {
-    try {
-      await client.authenticate({
-        strategy: 'local',
-        ...values
-      })
-      navigate('/me/')
-    }
-    catch (error_) {
-      const error = (error_ as FeathersError).toJSON()
-      if (error.code === 401) {
-        setError('email', { message: 'Invalid login or password' })
-        setError('password', { message: 'Invalid login or password' })
-        return
-      }
-    }
-
+    authenticationMutation.mutate(values)
   };
+
+  if (authenticationMutation.isSuccess) {
+    navigate('/me')
+  }
+  
+  const formInvalid = Boolean(errors.root?.invalid)
+  const emailInvalid = Boolean(errors.email) || formInvalid
+  const passwordInvalid = Boolean(errors.password) || formInvalid
+
+  if (authenticationMutation.isError) {
+    if (authenticationMutation.error.code === 401) {
+      !formInvalid && setError('root.invalid', { message: 'Adresse email ou mot de passe non valide' })
+    }
+    else {
+      !formInvalid && setError('root.invalid', { message: authenticationMutation.error.message })
+    }
+  }
+
 
   return (
     <Container>
@@ -35,7 +41,7 @@ export const Login = () => {
       </Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         <>
-          <FormControl mb={5} isInvalid={!!errors.email}>
+          <FormControl mb={5} isInvalid={emailInvalid}>
             <FormLabel>Adresse email</FormLabel>
             <Input
               type='email'
@@ -43,13 +49,24 @@ export const Login = () => {
                 required: "Required",
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "invalid email address"
-                }
+                  message: "Adresse email non valide"
+                },
               })}
             />
-            <FormErrorMessage>{errors.email && errors.email.message?.toString()}</FormErrorMessage>
+            <FormErrorMessage>
+              {
+                errors.root?.invalid &&
+                errors.root.invalid?.message?.toString()
+              }
+            </FormErrorMessage>
+            <FormErrorMessage>{
+              errors.email &&
+              errors.email.message?.toString()
+            }
+            </FormErrorMessage>
+
           </FormControl>
-          <FormControl mb={5} isInvalid={!!errors.password}>
+          <FormControl mb={5} isInvalid={passwordInvalid}>
             <FormLabel>Mot de passe</FormLabel>
             <Input
               type='password'
@@ -57,10 +74,21 @@ export const Login = () => {
                 required: "Required",
               })}
             />
-            <FormErrorMessage>{errors.password && errors.password.message?.toString()}</FormErrorMessage>
+            <FormErrorMessage>
+              {
+                errors.root?.invalid &&
+                errors.root.invalid?.message?.toString()
+              }
+            </FormErrorMessage>
+            <FormErrorMessage>
+              {
+                errors.password &&
+                errors.password.message?.toString()
+              }
+            </FormErrorMessage>
           </FormControl>
           <Box>
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Se connecter</Button>
           </Box>
         </>
       </form>
