@@ -20,7 +20,7 @@ export class ProductService<ServiceParams extends Params = ProductParams> extend
 
 export const getOptions = (app: Application): KnexAdapterOptions => {
   return {
-    paginate: app.get('paginate'),
+    paginate: false, //app.get('paginate'),
     Model: app.get('sqliteClient'),
     name: 'products'
   }
