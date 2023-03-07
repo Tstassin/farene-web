@@ -43,6 +43,7 @@ export const useLogoutMutation = () => {
   return logoutResult
 }
 
+// TODO.. from cache ?
 export const useAuthentication = () => {
-  return useQuery(['authentication'])
+  return useQuery(['authentication'], () => client.authentication)
 }

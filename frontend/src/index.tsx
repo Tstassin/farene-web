@@ -11,6 +11,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ChakraProvider } from '@chakra-ui/react'
 import { Logout } from './components/auth/logout';
 import { Order } from './pages/order';
+import { Products } from './pages/products';
 
 export const queryClient = new QueryClient()
 
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       {
         path: "order",
         element: <Order />,
+      },
+      {
+        path: "products",
+        element: <Products />,
       },
     ],
   },

@@ -28,8 +28,9 @@ export const Header = () => {
       >
         <Authenticated>
           <>
-            <NavItem to={'/logout'}>Déconnexion</NavItem>
             <NavItem to={'/order'}>Commander</NavItem>
+            <NavItem to={'/products'}>Produits</NavItem>
+            <NavItem to={'/logout'}>Déconnexion</NavItem>
           </>
         </Authenticated>
         <NotAuthenticated>
