@@ -3,6 +3,9 @@ import { feathers } from '@feathersjs/feathers'
 import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
+import { productClient } from './services/products/products.shared'
+import { orderClient } from './services/orders/orders.shared'
+import { categoryClient } from './services/categories/categories.shared'
 
 export interface Configuration {
   connection: TransportConnection<ServiceTypes>
@@ -28,7 +31,9 @@ export const createClient = <Configuration = any>(
 
   client.configure(connection)
   client.configure(authenticationClient(authenticationOptions))
+  client.configure(productClient)
+  client.configure(orderClient)
+  client.configure(categoryClient)
   client.set('connection', connection)
-
   return client
 }
