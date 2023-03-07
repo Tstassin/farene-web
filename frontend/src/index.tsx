@@ -10,6 +10,7 @@ import { Login } from "./components/auth/login";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ChakraProvider } from '@chakra-ui/react'
 import { Logout } from './components/auth/logout';
+import { Order } from './pages/order';
 
 export const queryClient = new QueryClient()
 
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
       {
         path: "me",
         element: <Me />,
+      },
+      {
+        path: "order",
+        element: <Order />,
       },
     ],
   },
