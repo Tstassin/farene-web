@@ -30,10 +30,10 @@ export const createClient = <Configuration = any>(
   const client: ClientApplication = feathers()
 
   client.configure(connection)
+  client.set('connection', connection)
   client.configure(authenticationClient(authenticationOptions))
-  client.configure(productClient)
   client.configure(orderClient)
   client.configure(categoryClient)
-  client.set('connection', connection)
+  client.configure(productClient)
   return client
 }
