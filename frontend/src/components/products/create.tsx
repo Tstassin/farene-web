@@ -2,8 +2,10 @@ import { Box, Button, Container, FormControl, FormLabel, Input, Radio, RadioGrou
 import React from "react";
 import { useForm } from "react-hook-form";
 import { ProductData } from "../../../../backend/src/services/products/products.schema";
+import { useAllCategories } from "../../queries/categories";
 
 export const CreateProduct = () => {
+  const allCategoriesQuery = useAllCategories()
   const { handleSubmit, register, clearErrors, setError, formState: { errors, isDirty } } = useForm<ProductData>();
 
   const onSubmit = async (values: ProductData) => {
@@ -66,7 +68,9 @@ export const CreateProduct = () => {
               {...register('categoryId', {
                 required: 'Ce champ est obligatoire'
               })}
-            />
+            >
+
+              </Select>
           </FormControl>
           <Box>
             <Button type="submit">Ajouter</Button>

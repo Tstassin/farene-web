@@ -12,6 +12,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { Logout } from './components/auth/logout';
 import { Order } from './pages/order';
 import { Products } from './pages/products';
+import { CategoriesPage } from './pages/categories';
 
 export const queryClient = new QueryClient()
 
@@ -43,6 +44,10 @@ export const router = createBrowserRouter([
       {
         path: "products",
         element: <Products />,
+      },
+      {
+        path: "categories",
+        element: <CategoriesPage />,
       },
     ],
   },

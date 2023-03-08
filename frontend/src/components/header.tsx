@@ -30,6 +30,7 @@ export const Header = () => {
           <>
             <NavItem to={'/order'}>Commander</NavItem>
             <NavItem to={'/products'}>Produits</NavItem>
+            <NavItem to={'/categories'}>Catégories</NavItem>
             <NavItem to={'/logout'}>Déconnexion</NavItem>
           </>
         </Authenticated>
