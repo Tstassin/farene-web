@@ -4,17 +4,18 @@ import { useForm } from "react-hook-form";
 import { OrderData } from '../../../backend/src/services/orders/orders.schema'
 import { client } from "../../api/api";
 import { useQuery } from "@tanstack/react-query";
+import { useOrderCreateMutation } from "../queries/orders";
+import { useAllProducts } from "../queries/products";
 
 export const Order = () => {
+  const orderCreateMutation = useOrderCreateMutation()
+  const allProductsQuery = useAllProducts()
   const { handleSubmit, register, clearErrors, setError, formState: { errors, isDirty } } = useForm<OrderData>();
 
   const onSubmit = async (values: OrderData) => {
-    //
+    console.log(values)
+    orderCreateMutation.mutate(values)
   };
-
-  const breadsQuery = useQuery(['breads'],
-    () => client.service('products').find()
-  )
 
   return (
     <Container>
@@ -37,15 +38,15 @@ export const Order = () => {
           </FormControl>
           <FormControl mb={5} isInvalid={false}>
             <FormLabel>Les pains que je commande</FormLabel>
-            {JSON.stringify(breadsQuery.data)}
             <Stack>
-              <Checkbox value='naruto'>Petit épeautre 450g</Checkbox>
-              <Checkbox value='sasuke'>Grand épeautre 900g</Checkbox>
+              {allProductsQuery.data?.map(product => 
+              <Checkbox name={product.id.toString()} key={product.id}>{product.name}</Checkbox>
+               )}
             </Stack>
           </FormControl>
 
           <Box>
-            <Button type="submit">Se connecter</Button>
+            <Button type="submit">Commander</Button>
           </Box>
         </>
       </form>
