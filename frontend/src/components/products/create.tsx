@@ -1,15 +1,18 @@
-import { Box, Button, Container, FormControl, FormLabel, Input, Radio, RadioGroup, Select, Stack } from "@chakra-ui/react";
+import { Box, Button, Container, FormControl, FormLabel, Input, Radio, RadioGroup, Select, SelectField, Stack } from "@chakra-ui/react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { ProductData } from "../../../../backend/src/services/products/products.schema";
 import { useAllCategories } from "../../queries/categories";
+import { useProductCreateMutation } from "../../queries/products";
 
 export const CreateProduct = () => {
   const allCategoriesQuery = useAllCategories()
+  const productCreateMutation = useProductCreateMutation()
   const { handleSubmit, register, clearErrors, setError, formState: { errors, isDirty } } = useForm<ProductData>();
 
   const onSubmit = async (values: ProductData) => {
-    //
+    console.log(values)
+    productCreateMutation.mutate(values)
   };
 
   return (
@@ -46,7 +49,8 @@ export const CreateProduct = () => {
               min={0}
               max={1000}
               {...register('price', {
-                required: 'Ce champ est obligatoire'
+                required: 'Ce champ est obligatoire',
+                valueAsNumber: true
               })}
             />
           </FormControl>
@@ -57,20 +61,25 @@ export const CreateProduct = () => {
               step={1}
               min={0}
               max={10000}
-              {...register('weight', {
-                required: 'Ce champ est obligatoire'
-              })}
+              {...register(
+                'weight',
+                {
+                  required: 'Ce champ est obligatoire',
+                  valueAsNumber: true
+                },
+              )}
             />
           </FormControl>
           <FormControl mb={5} isInvalid={Boolean(errors.categoryId)}>
             <FormLabel>Catégorie</FormLabel>
             <Select
               {...register('categoryId', {
-                required: 'Ce champ est obligatoire'
+                required: 'Ce champ est obligatoire',
+                valueAsNumber: true
               })}
             >
-
-              </Select>
+              {allCategoriesQuery.data?.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}
+            </Select>
           </FormControl>
           <Box>
             <Button type="submit">Ajouter</Button>
