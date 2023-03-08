@@ -2,10 +2,10 @@ import { Box, Button, Container, FormControl, FormLabel, Input, Radio, RadioGrou
 import React from "react";
 import { useForm } from "react-hook-form";
 import { CategoryData } from "../../../../backend/src/services/categories/categories.schema";
-import { useAllCategories, useCategoryMutation } from "../../queries/categories";
+import { useAllCategories, useCategoryCreateMutation } from "../../queries/categories";
 
 export const CreateCategory = () => {
-  const categoryMutation = useCategoryMutation()
+  const categoryMutation = useCategoryCreateMutation()
   const { handleSubmit, register, clearErrors, setError, formState: { errors, isDirty } } = useForm<CategoryData>();
 
   const onSubmit = async (values: CategoryData) => {
