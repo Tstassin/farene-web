@@ -41,6 +41,7 @@
     "prettier": "npx prettier \"**/*.ts\" --write",
     "mocha": "cross-env NODE_ENV=test mocha test/ --require ts-node/register --recursive --extension .ts --exit",
     "test": "cross-env NODE_ENV=test npm run migrate && npm run mocha",
+    "test:watch": "npm run test -- -- --require ts-node/register --watch --watch-files src, **/*.test.ts",
     "bundle:client": "npm run compile && npm pack --pack-destination ./public",
     "migrate": "knex migrate:latest",
     "migrate:make": "knex migrate:make"
@@ -60,6 +61,8 @@
     "@feathersjs/socketio": "^5.0.0",
     "@feathersjs/transport-commons": "^5.0.0",
     "@feathersjs/typebox": "^5.0.0",
+    "chai": "^4.3.7",
+    "dayjs": "^1.11.7",
     "knex": "^2.4.2",
     "sqlite3": "^5.1.4",
     "winston": "^3.8.2"

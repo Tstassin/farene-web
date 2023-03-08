@@ -8,7 +8,7 @@ import { useMockUser } from '../users/users.tests-utils'
 const userMock: UserData = { email: `user@test.com`, password: 'a' }
 let user: User | undefined
 
-describe.only('products service', () => {
+describe('products service', () => {
   const user = useMockUser()
   it('registered the service', () => {
     const service = app.service('products')
