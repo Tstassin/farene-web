@@ -9,7 +9,7 @@ export type OrderClientService = Pick<OrderService<Params<OrderQuery>>, (typeof 
 
 export const orderPath = 'orders'
 
-export const orderMethods = ['find', 'get', 'create', 'patch', 'remove'] as const
+export const orderMethods = ['find', 'get', 'create', 'patch', 'remove', 'getNextDeliveryDates'] as const
 
 export const orderClient = (client: ClientApplication) => {
   const connection = client.get('connection')

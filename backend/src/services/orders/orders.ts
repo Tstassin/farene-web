@@ -18,8 +18,7 @@ import { OrderService, getOptions } from './orders.class'
 import { orderPath, orderMethods } from './orders.shared'
 import { authenticate } from '@feathersjs/authentication/'
 import { resourceSchemaCreateResolver, resourceSchemaUpdateResolver } from '../common/resources'
-import { BadRequest } from '@feathersjs/errors/lib'
-import { checkDeliveryDate, checkOrderDate, createOrderItems } from './orders.hooks'
+import { checkDeliveryDate, createOrderItems } from './orders.hooks'
 
 export * from './orders.class'
 export * from './orders.schema'
@@ -55,7 +54,6 @@ export const order = (app: Application) => {
       create: [
         schemaHooks.validateData(orderDataValidator),
         schemaHooks.resolveData(orderDataResolver, resourceSchemaCreateResolver),
-        checkOrderDate,
         checkDeliveryDate
       ],
       patch: [

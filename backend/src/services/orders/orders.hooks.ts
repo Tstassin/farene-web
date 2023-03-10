@@ -1,7 +1,7 @@
 import { BadRequest } from "@feathersjs/errors/lib"
 import { HookContext } from "@feathersjs/feathers"
 import dayjs from "dayjs"
-import { allowedWeekDays, maxAllowedOrderWeekDay, minAllowedOrderWeekDay } from "../../config/orders"
+import { allowedWeekDays } from "../../config/orders"
 import { Application, NextFunction } from "../../declarations"
 import { OrderParams, OrderService } from "./orders.class"
 import weekday from 'dayjs/plugin/weekday'
@@ -21,26 +21,18 @@ export const createOrderItems = async (context: HookContext<Application, OrderSe
 }
 
 export const checkDeliveryDate = async (context: HookContext<Application, OrderService<OrderParams>>) => {
-  if (Array.isArray(context.data)) throw new Error('Please create one order at a time')
-  const deliveryDate = dayjs(context.data?.delivery)
-  // Impossible to choose a delivery date in the past
-  if (deliveryDate.isBefore(dayjs())) throw new Error('No delivery in the past')
-  // Delivery date only on allowed weekdays
-  if (!allowedWeekDays.some(allowedWeekDay => allowedWeekDay === deliveryDate.isoWeekday())) {
-    throw new Error('No delivery on ' + dayjs().weekday(deliveryDate.isoWeekday()))
+  if (Array.isArray(context.data)) {
+    throw new Error('Please create one order at a time')
   }
-  return context
-}
 
-export const checkOrderDate = async (context: HookContext<Application, OrderService<OrderParams>>) => {
-  if (Array.isArray(context.data)) throw new Error('Please create one order at a time')
-  const orderDateTime = dayjs()
-  const orderDateTimeIsoWeekDay = orderDateTime.isoWeekday()
-  if (orderDateTimeIsoWeekDay < minAllowedOrderWeekDay) {
-    throw new Error('Not allowed to order before ' + dayjs().weekday(minAllowedOrderWeekDay))
+  const deliveryDate = context.data?.delivery
+  if (!dayjs(deliveryDate, 'YYYY-MM-DD', true).isValid()) {
+    throw new Error('Invalid delivery date or format :' + deliveryDate)
   }
-  if (orderDateTimeIsoWeekDay > maxAllowedOrderWeekDay) {
-    throw new Error('Not allowed to order after ' + dayjs().weekday(maxAllowedOrderWeekDay))
+
+  const { nextDeliveryDates } = await context.app.service('orders').getNextDeliveryDates()
+  if (!nextDeliveryDates.some(date => date === deliveryDate)) {
+    throw new Error('No delivery on ' + deliveryDate)
   }
   return context
 }

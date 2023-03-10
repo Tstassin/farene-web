@@ -5,6 +5,13 @@ import type { KnexAdapterParams, KnexAdapterOptions } from '@feathersjs/knex'
 
 import type { Application } from '../../declarations'
 import type { Order, OrderData, OrderPatch, OrderQuery } from './orders.schema'
+import { allowedWeekDays } from '../../config/orders'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import isoWeek from 'dayjs/plugin/isoWeek'
+
+dayjs.extend(utc)
+dayjs.extend(isoWeek)
 
 export type { Order, OrderData, OrderPatch, OrderQuery }
 
@@ -16,7 +23,18 @@ export class OrderService<ServiceParams extends Params = OrderParams> extends Kn
   OrderData,
   OrderParams,
   OrderPatch
-> {}
+> {
+  async getNextDeliveryDates() {
+    const now = dayjs().utc()
+    const nextOrderWeek = now.endOf('isoWeek').add(1, 'day')
+    const nextAllowedDeliveryDates = allowedWeekDays.map(
+      allowedWeekDay => nextOrderWeek.isoWeekday(allowedWeekDay)
+    ) 
+    return ({
+      nextWeek: nextOrderWeek.format('YYYY-MM-DD'), 
+      nextDeliveryDates: nextAllowedDeliveryDates.map(d => d.format('YYYY-MM-DD'))})
+  } 
+}
 
 export const getOptions = (app: Application): KnexAdapterOptions => {
   return {
