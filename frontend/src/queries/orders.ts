@@ -10,6 +10,13 @@ export const useAllOrders = () => {
   })
 }
 
+export const useOrderDates = () => {
+  return useQuery({
+    queryKey: ['nextDeliveryDates'],
+    queryFn: () => client.service('orders').getNextDeliveryDates()
+  })
+}
+
 export const useOrderCreateMutation = () => {
   return useMutation({
     mutationFn: (data: OrderData) => {
