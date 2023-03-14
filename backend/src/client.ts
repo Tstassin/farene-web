@@ -3,6 +3,13 @@ import { feathers } from '@feathersjs/feathers'
 import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
+
+import { createPaymentIntentClient } from './services/create-payment-intent/create-payment-intent.shared'
+export type {
+  CreatePaymentIntentData,
+  CreatePaymentIntentReturnData
+} from './services/create-payment-intent/create-payment-intent.shared'
+
 import { productClient } from './services/products/products.shared'
 import { orderClient } from './services/orders/orders.shared'
 import { categoryClient } from './services/categories/categories.shared'
@@ -35,5 +42,6 @@ export const createClient = <Configuration = any>(
   client.configure(orderClient)
   client.configure(categoryClient)
   client.configure(productClient)
+  client.configure(createPaymentIntentClient)
   return client
 }

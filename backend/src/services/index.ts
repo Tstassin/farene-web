@@ -1,3 +1,4 @@
+import { createPaymentIntent } from './create-payment-intent/create-payment-intent'
 import { orderItem } from './order-items/order-items'
 import { tag } from './tags/tags'
 import { category } from './categories/categories'
@@ -8,6 +9,7 @@ import { order } from './orders/orders'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(createPaymentIntent)
   app.configure(orderItem)
   app.configure(tag)
   app.configure(category)
