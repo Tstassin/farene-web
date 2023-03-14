@@ -13,6 +13,7 @@ import { Logout } from './components/auth/logout';
 import { Order } from './pages/order';
 import { Products } from './pages/products';
 import { CategoriesPage } from './pages/categories';
+import { OrderDetailsPage } from './pages/order-details';
 
 export const queryClient = new QueryClient()
 
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
       {
         path: "order",
         element: <Order />,
+      },
+      {
+        path: "order/:orderId",
+        element: <OrderDetailsPage />
       },
       {
         path: "products",

@@ -31,19 +31,18 @@ export class CreatePaymentIntentService<
 
   // This method has to be added to the 'methods' option to make it available to clients
   async update(
-    id: NullableId,
+    orderId: NullableId,
     data: CreatePaymentIntentData,
     _params?: ServiceParams
   ): Promise<{ clientSecret: Stripe.PaymentIntent['client_secret'] }> {
-
-    const { orderId } = data
+    console.log(orderId, data)
 
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: 40,
+      amount: 400,
       currency: "eur",
       automatic_payment_methods: {
-        enabled: true,
+        enabled: false,
       },
     });
 

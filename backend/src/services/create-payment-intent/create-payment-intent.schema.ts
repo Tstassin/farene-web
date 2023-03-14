@@ -11,8 +11,8 @@ import { dataValidator } from '../../validators'
 // Schema for creating new payment intents
 export const createPaymentIntentDataSchema = Type.Object(
   {
-    orderId: Type.Number(),
-    userId: Type.Number()
+    //orderId: Type.Number(),
+    //userId: Type.Number()
   },
   { $id: 'CreatePaymentIntentData', additionalProperties: false }
 )
@@ -23,8 +23,7 @@ export const createPaymentIntentDataResolver = resolve<CreatePaymentIntentData, 
 // Schema for returning payment intent data
 export const createPaymentIntentReturnDataSchema = Type.Object(
   {
-    orderId: Type.Number(),
-    userId: Type.Number()
+    clientSecret: Type.String()
   },
   { $id: 'CreatePaymentIntentReturnData', additionalProperties: false }
 )

@@ -9,9 +9,11 @@ import { useAllProducts } from "../queries/products";
 import localeData from 'dayjs/plugin/localeData'
 import fr from 'dayjs/locale/fr'
 import { QueryStatus } from "../components/queries/query-status";
+import { useNavigate } from "react-router-dom";
 dayjs.extend(localeData)
 
 export const Order = () => {
+  const navigate = useNavigate()
   const orderCreateMutation = useOrderCreateMutation()
   const allProductsQuery = useAllProducts()
   const { nextWeek, nextDeliveryDates } = useOrderDates().data || {}
@@ -25,6 +27,8 @@ export const Order = () => {
   const nextWeekLabel = useMemo(() => {
     return dayjs(nextWeek, 'YYYY-MM-DD').locale(fr).format('DD MMMM')
   }, [nextWeek])
+
+  if (orderCreateMutation.isSuccess) navigate(`/order/${orderCreateMutation.data.id}/`)
 
   return (
     <Container>
