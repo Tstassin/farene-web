@@ -12,7 +12,7 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
   const elements = useElements();
 
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
     });
   }, [stripe]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!stripe || !elements) {
@@ -68,7 +68,7 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
     // be redirected to an intermediate site first to authorize the payment, then
     // redirected to the `return_url`.
     if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message);
+      error.message && setMessage(error.message);
     } else {
       setMessage("An unexpected error occurred.");
     }
@@ -77,14 +77,14 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
   };
 
   const paymentElementOptions = {
-    layout: "tabs"
+    layout: "tabs" as const
   }
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
       <LinkAuthenticationElement
         id="link-authentication-element"
-        onChange={(e) => {console.log(e); setEmail(e.value.email)}}
+        onChange={(e) => {setEmail(e.value.email)}}
       />
       <PaymentElement id="payment-element" options={paymentElementOptions} />
       <button disabled={isLoading || !stripe || !elements} id="submit">

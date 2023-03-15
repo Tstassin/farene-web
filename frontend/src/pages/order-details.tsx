@@ -18,16 +18,14 @@ export const OrderDetailsPage = () => {
   const appearance = {
     theme: 'stripe' as const,
   };
-  const options = {
-    clientSecret,
-    appearance,
-  };
-  console.log(clientSecret)
 
   return (
     <Container>
       {clientSecret && (
-        <Elements options={options} stripe={stripePromise}>
+        <Elements options={{
+          clientSecret,
+          appearance,
+        }} stripe={stripePromise}>
           <CheckoutForm clientSecret={clientSecret} />
         </Elements>
       )}
@@ -36,7 +34,6 @@ export const OrderDetailsPage = () => {
           Numéro de commande : {orderQuery.data?.id} <br />
           Pour livraison le : {orderQuery.data?.delivery}
         </p>
-        {JSON.stringify(paymentIntentCreateMutation)}
         <Button onClick={() => { paymentIntentCreateMutation.mutate(orderQuery.data?.id!) }}>Payer</Button>
       </QueryStatus>
     </Container>
