@@ -1,6 +1,6 @@
-import { Box, Button, Checkbox, Container, FormControl, FormErrorMessage, FormLabel, Heading, Input, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import { Accordion, AccordionButton, AccordionItem, AccordionPanel, Box, Button, Container, FormControl, FormLabel, Heading, Input, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
 import React, { useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { OrderData } from '../../../backend/src/services/orders/orders.schema'
 import { client } from "../../api/api";
 import dayjs from 'dayjs'
@@ -17,7 +17,11 @@ export const Order = () => {
   const orderCreateMutation = useOrderCreateMutation()
   const allProductsQuery = useAllProducts()
   const { nextWeek, nextDeliveryDates } = useOrderDates().data || {}
-  const { handleSubmit, register, watch, clearErrors, setError, formState: { errors, isDirty } } = useForm<OrderData>();
+  const { handleSubmit, register, control, watch, clearErrors, setError, formState: { errors, isDirty } } = useForm<OrderData>();
+  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+    control,
+    name: "products",
+  });
 
   const onSubmit = async (values: OrderData) => {
     values.products.forEach(p => p.productId = parseInt(p.productId))
@@ -27,6 +31,14 @@ export const Order = () => {
   const nextWeekLabel = useMemo(() => {
     return dayjs(nextWeek, 'YYYY-MM-DD').locale(fr).format('DD MMMM')
   }, [nextWeek])
+
+  const selectedProductsIndexes = allProductsQuery.data
+    ?.reduce((acc, curr, index) => {
+      if (fields.some(f => f.productId === curr.id)) {
+        return [...acc, index]
+      }
+      return acc
+    }, [] as number[])
 
   if (orderCreateMutation.isSuccess) navigate(`/order/${orderCreateMutation.data.id}/`)
 
@@ -62,36 +74,50 @@ export const Order = () => {
                 </Stack>
               </RadioGroup>
             </FormControl>
-            <FormControl mb={5} isInvalid={false}>
-              <FormLabel>Les pains que je commande</FormLabel>
-              <Stack>
-                {allProductsQuery.data?.map((product, index) =>
-                (
-                  <>
-                    <Checkbox
-                      key={product.id}
-                      value={product.id}
-                      {...register(
-                        `products.${index}.productId`
-                      )}
-                    >{product.name}, {product.price}€ pièce</Checkbox>
-                    <Input
-                      type='number'
-                      min={0}
-                      max={10}
-                      {...register(
-                        `products.${index}.amount`,
-                        {
-                          valueAsNumber: true
-                        }
-                      )}
-                    />
-                  </>
+            <Accordion allowMultiple index={selectedProductsIndexes}>
+              {allProductsQuery.data?.map((product, index) => {
+                return (
+                  <AccordionItem key={product.id}>
+                    {({ isExpanded }) => {
+                      const fieldIndex = fields.findIndex(field => field.productId === product.id)
+                      return (
+                        <>
+                          <h3>
+                            <AccordionButton>
+                              <Box as="span" flex='1' textAlign='left'>
+                                {index}
+                                {product.name}, {product.price}€ pièce
+                              </Box>
+                              <Button onClick={() => {
+                                if (!isExpanded) {
+                                  append({ amount: 1, productId: product.id })
+                                }
+                                else {
+                                  remove(fieldIndex)
+                                }
+                              }}>
+                                {isExpanded ? 'Supprimer' : 'Ajouter'}
+                              </Button>
+                            </AccordionButton>
+                          </h3>
+                          <AccordionPanel pb={4}>
+                            <Input
+                              type='number'
+                              min={1}
+                              {...register(
+                                `products.${fieldIndex}.amount`,
+                                {
+                                  valueAsNumber: true
+                                }
+                              )}
+                            />
+                          </AccordionPanel>
+                        </>)
+                    }}
+                  </AccordionItem>
                 )
-                )}
-              </Stack>
-            </FormControl>
-
+              })}
+            </Accordion>
             <Box>
               <Button type="submit">Commander</Button>
             </Box>
