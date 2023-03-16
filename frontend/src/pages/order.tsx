@@ -1,4 +1,4 @@
-import { Accordion, AccordionButton, AccordionItem, AccordionPanel, Box, Button, Container, FormControl, FormLabel, Heading, Input, InputGroup, InputRightAddon, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import { Accordion, AccordionButton, AccordionItem, AccordionPanel, Box, Button, Container, FormControl, FormLabel, Heading, Input, InputGroup, InputLeftAddon, InputRightAddon, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
 import React, { useMemo } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { OrderData } from '../../../backend/src/services/orders/orders.schema'
@@ -89,21 +89,33 @@ export const Order = () => {
                                 <Text as='b'>
                                   {product.name}
                                 </Text>
-                                <Text>
-                                  {product.price}€ pièce {isExpanded && 'x ' + fieldAmount + ' = ' + product.price * fieldAmount + '€'}
-                                </Text>
+                                <span>
+                                  <Text as='span'>
+                                    {product.price}€ pièce
+                                  </Text>
+                                  {isExpanded && (
+                                    <>
+                                      <Text as='span'>{' x ' + fieldAmount + ' = '}</Text>
+                                      <Text as='b'>
+                                        {product.price * fieldAmount + '€'}
+                                      </Text>
+                                    </>
+                                  )}
+                                </span>
                               </Box>
-                              {!isExpanded && <Button onClick={() => {
-                                append({ amount: 1, productId: product.id })
-                              }}>
+                              {!isExpanded && <Button
+                              size='sm'
+                                onClick={() => {
+                                  append({ amount: 1, productId: product.id })
+                                }}>
                                 Ajouter
                               </Button>}
                             </AccordionButton>
                           </h3>
                           <AccordionPanel pb={6}>
                             <FormControl>
-                              <FormLabel>Quantité</FormLabel>
-                              <InputGroup>
+                              <InputGroup size={'sm'}>
+                                <InputLeftAddon>Quantité</InputLeftAddon>
                                 <Input
                                   type='number'
                                   min={1}
@@ -115,10 +127,12 @@ export const Order = () => {
                                   )}
                                 />
                                 <InputRightAddon px={0}>
-                                  <Button onClick={() => {
-                                    remove(fieldIndex)
-                                  }}>
-                                    Supprimer
+                                  <Button
+                                    size={'sm'}
+                                    onClick={() => {
+                                      remove(fieldIndex)
+                                    }}>
+                                    x
                                   </Button>
                                 </InputRightAddon>
                               </InputGroup>
