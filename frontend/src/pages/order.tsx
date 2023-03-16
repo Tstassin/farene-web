@@ -1,4 +1,4 @@
-import { Accordion, AccordionButton, AccordionItem, AccordionPanel, Box, Button, Container, FormControl, FormLabel, Heading, Input, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import { Accordion, AccordionButton, AccordionItem, AccordionPanel, Box, Button, Container, FormControl, FormLabel, Heading, Input, InputGroup, InputRightAddon, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
 import React, { useMemo } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { OrderData } from '../../../backend/src/services/orders/orders.schema'
@@ -80,37 +80,49 @@ export const Order = () => {
                   <AccordionItem key={product.id}>
                     {({ isExpanded }) => {
                       const fieldIndex = fields.findIndex(field => field.productId === product.id)
+                      const fieldAmount = watch(`products.${fieldIndex}.amount`)
                       return (
                         <>
                           <h3>
                             <AccordionButton>
-                              <Box as="span" flex='1' textAlign='left'>
-                                {index}
-                                {product.name}, {product.price}€ pièce
+                              <Box as="span" flex='1' display='flex' justifyContent='space-between' mr={3}>
+                                <Text as='b'>
+                                  {product.name}
+                                </Text>
+                                <Text>
+                                  {product.price}€ pièce {isExpanded && 'x ' + fieldAmount + ' = ' + product.price * fieldAmount + '€'}
+                                </Text>
                               </Box>
-                              <Button onClick={() => {
-                                if (!isExpanded) {
-                                  append({ amount: 1, productId: product.id })
-                                }
-                                else {
-                                  remove(fieldIndex)
-                                }
+                              {!isExpanded && <Button onClick={() => {
+                                append({ amount: 1, productId: product.id })
                               }}>
-                                {isExpanded ? 'Supprimer' : 'Ajouter'}
-                              </Button>
+                                Ajouter
+                              </Button>}
                             </AccordionButton>
                           </h3>
-                          <AccordionPanel pb={4}>
-                            <Input
-                              type='number'
-                              min={1}
-                              {...register(
-                                `products.${fieldIndex}.amount`,
-                                {
-                                  valueAsNumber: true
-                                }
-                              )}
-                            />
+                          <AccordionPanel pb={6}>
+                            <FormControl>
+                              <FormLabel>Quantité</FormLabel>
+                              <InputGroup>
+                                <Input
+                                  type='number'
+                                  min={1}
+                                  {...register(
+                                    `products.${fieldIndex}.amount`,
+                                    {
+                                      valueAsNumber: true
+                                    }
+                                  )}
+                                />
+                                <InputRightAddon px={0}>
+                                  <Button onClick={() => {
+                                    remove(fieldIndex)
+                                  }}>
+                                    Supprimer
+                                  </Button>
+                                </InputRightAddon>
+                              </InputGroup>
+                            </FormControl>
                           </AccordionPanel>
                         </>)
                     }}
