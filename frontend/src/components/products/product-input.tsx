@@ -1,5 +1,6 @@
-import { Box, Button, Divider, Input, Text } from "@chakra-ui/react"
-import {  useFieldArray, UseFieldArrayAppend, UseFieldArrayRemove, useFormContext, UseFormRegister } from "react-hook-form"
+import { Box, Button, Collapse, Divider, Input, Slide, Text, useDisclosure } from "@chakra-ui/react"
+import { useState } from "react"
+import { useFieldArray, UseFieldArrayAppend, UseFieldArrayRemove, useFormContext, UseFormRegister } from "react-hook-form"
 import { OrderData } from "../../../../backend/src/services/orders/orders.schema"
 import { Product } from "../../../../backend/src/services/products/products.schema"
 
@@ -8,6 +9,7 @@ interface OrderInputProps {
 }
 
 export const ProductInput = ({ product }: OrderInputProps) => {
+  const { isOpen, onToggle } = useDisclosure()
   const { control, register, watch } = useFormContext<OrderData>()
   const { fields, append, remove } = useFieldArray({
     control,
@@ -21,49 +23,60 @@ export const ProductInput = ({ product }: OrderInputProps) => {
 
   return (
     <Box mb={3}>
-      <Box display='flex' justifyContent='space-between' mb={3}>
-        <ProductInputDetails product={product} />
-
-        {
-          isProductSelected && <ProductQuantityInput register={register} fieldArrayIndex={fieldArrayIndex} />
-        }
-        <Box display='flex' flexDirection='column' alignItems='flex-end'>
-          <Box>
+      <Box borderLeft={`4px solid ${isProductSelected ? 'rgb(226, 232, 240)' : 'white'}`} p={3}>
+        <Box display='flex' justifyContent='space-between' mb={1} >
+          <ProductInputDetails product={product} onToggle={onToggle} />
+          <Box display='flex' flexDirection='column' alignItems='flex-end'>
+            <Box>
+              {
+                !isProductSelected
+                  ?
+                  <ProductInputAddButton product={product} append={append} />
+                  :
+                  <ProductInputRemoveButton product={product} remove={remove} fieldArrayIndex={fieldArrayIndex} />
+              }
+            </Box>
             {
-              !isProductSelected
-                ?
-                <ProductInputAddButton product={product} append={append} />
-                :
-                <ProductInputRemoveButton product={product} remove={remove} fieldArrayIndex={fieldArrayIndex} />
+              isProductSelected && (
+                <Box display='flex' alignItems='center' marginTop='auto'>
+                  <ProductQuantityInput register={register} fieldArrayIndex={fieldArrayIndex} />
+                  <Box as='span'>&nbsp;
+                    {` x ${price}€ = `}
+                    <b>{total}€</b>
+                  </Box>
+                </Box>
+              )
             }
           </Box>
-          {
-            isProductSelected && (
-              <Box as='span' marginTop='auto'>
-                {`${amount} x ${price}€ = `}
-                <b>{total}€</b>
-              </Box>
-            )
-          }
         </Box>
+        <Collapse in={isOpen} animateOpacity>
+          <Box>
+            {product.description}
+          </Box>
+        </Collapse>
       </Box>
       <Divider />
     </Box>
   )
 }
 
-const ProductInputDetails = ({ product }: OrderInputProps) => {
+interface ProductInputDetailsProps {
+  product: Product
+  onToggle: () => void
+}
+
+const ProductInputDetails = ({ product, onToggle }: ProductInputDetailsProps) => {
   return (
     <Box display='flex' flexDirection='column' mr={3}>
       <Text as='b'>
         {product.name}
       </Text>
-      <Text as='span'>
-        {product.price}€
-      </Text>
-      <Text as='u' fontSize='sm'>
-        détails
-      </Text>
+      <Box marginTop='auto'>
+        <Button variant='outline' onClick={onToggle} size='xs' mr={1}>Détails</Button>
+        <Text as='span'>
+          {product.price}€
+        </Text>
+      </Box>
     </Box>
   )
 }
@@ -96,7 +109,7 @@ const ProductInputRemoveButton = ({ product, remove, fieldArrayIndex }: ProductI
 
   return (
     <Button
-      size='sm'
+      size='xs'
       onClick={() => {
         remove(fieldArrayIndex)
       }}>
@@ -115,10 +128,12 @@ const ProductQuantityInput = ({ fieldArrayIndex, register }: ProductQuantityInpu
 
   return (
     <Input
+      textAlign='right'
       type='number'
-      maxW={'80px'}
+      maxW={'50px'}
       min={1}
       max={99}
+      size='sm'
       defaultValue={1}
       {...register(
         `products.${fieldArrayIndex}.amount`,
