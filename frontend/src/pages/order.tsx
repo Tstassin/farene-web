@@ -1,6 +1,6 @@
-import {  Box, Button, Container, FormControl, FormLabel, Heading, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
-import  { useMemo } from "react";
-import { FormProvider,  useForm } from "react-hook-form";
+import { Box, Button, Container, FormControl, FormLabel, Heading, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import { useMemo } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import { OrderData } from '../../../backend/src/services/orders/orders.schema'
 import dayjs from 'dayjs'
 import { useOrderCreateMutation, useOrderDates } from "../queries/orders";
@@ -19,8 +19,14 @@ export const Order = () => {
   const { nextWeek, nextDeliveryDates } = useOrderDates().data || {}
   const methods = useForm<OrderData>();
   const { handleSubmit, register, control, watch, clearErrors, setError, formState: { errors, isDirty } } = methods;
-  const allValues = watch()
-  console.dir(allValues)
+  const allProductsSelected = watch('products')
+  const total = allProductsQuery.data
+    ?
+    allProductsSelected
+      .map(productSelected => ({ ...productSelected, price: allProductsQuery.data.find(product => productSelected.productId === product.id)!.price }))
+      .reduce((acc, curr) => acc + curr.amount * curr.price, 0)
+    : 0
+
 
   const onSubmit = async (values: OrderData) => {
     values.products.forEach(p => p.productId = parseInt(p.productId))
@@ -73,6 +79,14 @@ export const Order = () => {
                   )
                 })
               }
+              <Box display='flex' justifyContent='space-between'>
+                <Box fontWeight='bold' fontSize='lg'>
+                  Total
+                </Box>
+                <Box fontWeight='bold' fontSize='lg'>
+                  {total}€
+                </Box>
+              </Box>
               <br /><br />
               <Box>
                 <Button type="submit">Commander</Button>
