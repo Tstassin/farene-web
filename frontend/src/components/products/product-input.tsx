@@ -1,4 +1,4 @@
-import { Box, Button, Collapse, Divider, Input, Slide, Text, useDisclosure } from "@chakra-ui/react"
+import { Box, Button, Collapse, Divider, Input, InputGroup, InputRightAddon, Slide, Text, useDisclosure } from "@chakra-ui/react"
 import { useState } from "react"
 import { useFieldArray, UseFieldArrayAppend, UseFieldArrayRemove, useFormContext, UseFormRegister } from "react-hook-form"
 import { OrderData } from "../../../../backend/src/services/orders/orders.schema"
@@ -24,24 +24,34 @@ export const ProductInput = ({ product }: OrderInputProps) => {
   return (
     <Box mb={3}>
       <Box borderLeft={`4px solid ${isProductSelected ? 'rgb(226, 232, 240)' : 'white'}`} p={3}>
-        <Box display='flex' justifyContent='space-between' mb={1} >
-          <ProductInputDetails product={product} onToggle={onToggle} />
-          <Box display='flex' flexDirection='column' alignItems='flex-end'>
+        <Box display='flex' mb={1} >
+          <Box flex={1}>
+            <ProductInputDetails product={product} onToggle={onToggle} />
+          </Box>
+          <Box flex={1} display='flex' justifyContent='center' alignItems='flex-end'>
+            {
+              isProductSelected &&
+              <Box>
+                <InputGroup size='sm'>
+                  <ProductQuantityInput register={register} fieldArrayIndex={fieldArrayIndex} />
+                  <InputRightAddon mx={0} px={0}>
+                    <ProductInputRemoveButton product={product} remove={remove} fieldArrayIndex={fieldArrayIndex} />
+                  </InputRightAddon>
+                </InputGroup>
+              </Box>
+            }
+          </Box>
+          <Box display='flex' flexDirection='column' alignItems='flex-end' flex={1}>
             <Box>
               {
-                !isProductSelected
-                  ?
-                  <ProductInputAddButton product={product} append={append} />
-                  :
-                  <ProductInputRemoveButton product={product} remove={remove} fieldArrayIndex={fieldArrayIndex} />
+                !isProductSelected &&
+                <ProductInputAddButton product={product} append={append} />
               }
             </Box>
             {
               isProductSelected && (
                 <Box display='flex' alignItems='center' marginTop='auto'>
-                  <ProductQuantityInput register={register} fieldArrayIndex={fieldArrayIndex} />
                   <Box as='span'>&nbsp;
-                    {` x ${price}€ = `}
                     <b>{total}€</b>
                   </Box>
                 </Box>
@@ -109,7 +119,7 @@ const ProductInputRemoveButton = ({ product, remove, fieldArrayIndex }: ProductI
 
   return (
     <Button
-      size='xs'
+      size='sm'
       onClick={() => {
         remove(fieldArrayIndex)
       }}>
@@ -128,12 +138,13 @@ const ProductQuantityInput = ({ fieldArrayIndex, register }: ProductQuantityInpu
 
   return (
     <Input
-      textAlign='right'
+      size='sm'
+      textAlign='center'
       type='number'
       maxW={'50px'}
+      minW={'50px'}
       min={1}
       max={99}
-      size='sm'
       defaultValue={1}
       {...register(
         `products.${fieldArrayIndex}.amount`,

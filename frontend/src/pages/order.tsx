@@ -20,10 +20,11 @@ export const Order = () => {
   const methods = useForm<OrderData>();
   const { handleSubmit, register, control, watch, clearErrors, setError, formState: { errors, isDirty } } = methods;
   const allProductsSelected = watch('products')
-  const total = allProductsQuery.data
+  console.log(allProductsQuery.data)
+  const total = allProductsQuery.data && allProductsSelected
     ?
     allProductsSelected
-      .map(productSelected => ({ ...productSelected, price: allProductsQuery.data.find(product => productSelected.productId === product.id)!.price }))
+      .map(productSelected => ({ ...productSelected, price: allProductsQuery.data.find(product => productSelected.productId === product.id)?.price ?? 0 }))
       .reduce((acc, curr) => acc + curr.amount * curr.price, 0)
     : 0
 
@@ -88,8 +89,8 @@ export const Order = () => {
                 </Box>
               </Box>
               <br /><br />
-              <Box>
-                <Button type="submit">Commander</Button>
+              <Box textAlign='right'>
+                <Button type="submit">Valider et Payer</Button>
               </Box>
             </>
           </form>
