@@ -1,4 +1,4 @@
-import { BadRequest } from "@feathersjs/errors/lib"
+import { BadRequest, FeathersError } from "@feathersjs/errors/lib"
 import { HookContext } from "@feathersjs/feathers"
 import dayjs from "dayjs"
 import { allowedWeekDays } from "../../config/orders"
@@ -14,7 +14,7 @@ export const createOrderItems = async (context: HookContext<Application, OrderSe
   const { products } = context.data
   await next()
   if (context.result === undefined || Array.isArray(context.result) || 'total' in context.result) {
-    throw new Error("Hmmm shouldn't happen")
+    throw new BadRequest("Hmmm shouldn't happen")
   }
   const { id: orderId } = context.result
   const orderItems = await context.app.service('order-items').create(products.map(product => ({ ...product, orderId })))
@@ -22,17 +22,17 @@ export const createOrderItems = async (context: HookContext<Application, OrderSe
 
 export const checkDeliveryDate = async (context: HookContext<Application, OrderService<OrderParams>>) => {
   if (Array.isArray(context.data)) {
-    throw new Error('Please create one order at a time')
+    throw new BadRequest('Please create one order at a time')
   }
 
   const deliveryDate = context.data?.delivery
   if (!dayjs(deliveryDate, 'YYYY-MM-DD', true).isValid()) {
-    throw new Error('Invalid delivery date or format :' + deliveryDate)
+    throw new BadRequest('Invalid delivery date or format :' + deliveryDate)
   }
 
   const { nextDeliveryDates } = await context.app.service('orders').getNextDeliveryDates()
   if (!nextDeliveryDates.some(date => date === deliveryDate)) {
-    throw new Error('No delivery on ' + deliveryDate)
+    throw new BadRequest('No delivery on ' + deliveryDate)
   }
   return context
 }

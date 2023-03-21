@@ -41,7 +41,7 @@ app.configure(services)
 // Register hooks that run on all service methods
 app.hooks({
   around: {
-    all: [logError]
+    all: [/* logError */]
   },
   before: {},
   after: {},

@@ -6,6 +6,7 @@ import type { Static } from '@feathersjs/typebox'
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import { resourceSchema } from '../common/resources'
+import { productSchema } from '../products/products.schema'
 
 // Main data model schema
 export const orderItemSchema = Type.Intersect(
@@ -14,7 +15,7 @@ export const orderItemSchema = Type.Intersect(
       {
         id: Type.Number(),
         amount: Type.Number(),
-        productId: Type.Number(),
+        product: productSchema,
         orderId: Type.Number(),
       },
       { $id: 'OrderItem', additionalProperties: false }
@@ -29,16 +30,33 @@ export const orderItemResolver = resolve<OrderItem, HookContext>({})
 export const orderItemExternalResolver = resolve<OrderItem, HookContext>({})
 
 // Schema for creating new entries
-export const orderItemDataSchema = Type.Pick(
-  orderItemSchema,
-  ['amount', 'productId', 'orderId'],
-  {
-    $id: 'OrderItemData'
-  }
-)
+export const orderItemDataSchema =
+  Type.Intersect([
+    Type.Pick(
+      orderItemSchema,
+      ['amount', 'orderId']
+    ),
+    Type.Object({
+      product: productSchema.properties.id
+    })
+  ],
+    {
+      $id: 'OrderItemData'
+    })
+
 export type OrderItemData = Static<typeof orderItemDataSchema>
 export const orderItemDataValidator = getValidator(orderItemDataSchema, dataValidator)
-export const orderItemDataResolver = resolve<OrderItem, HookContext>({})
+export const orderItemDataResolver = resolve<OrderItem, HookContext>({
+  properties: {
+    
+  },
+  converter: async (data, context) => {
+    return ({
+      ...data,
+      product: await context.app.service('products').get(data.product),
+    })
+  }
+})
 
 // Schema for updating existing entries
 export const orderItemPatchSchema = Type.Partial(orderItemSchema, {
@@ -51,7 +69,7 @@ export const orderItemPatchResolver = resolve<OrderItem, HookContext>({})
 // Schema for allowed query properties
 export const orderItemQueryProperties = Type.Pick(
   orderItemSchema,
-  ['id', 'productId', 'orderId']
+  ['id', 'product', 'orderId']
 )
 export const orderItemQuerySchema = Type.Intersect(
   [

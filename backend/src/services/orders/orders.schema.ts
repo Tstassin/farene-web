@@ -54,9 +54,8 @@ export const orderDataSchema = Type.Intersect(
       {
         products: Type.Array(
           Type.Pick(
-            orderItemDataSchema
-            ,
-            ['amount', 'productId'],
+            orderItemDataSchema,
+            ['amount', 'product'],
             { $id: 'test' }
           )
         )
