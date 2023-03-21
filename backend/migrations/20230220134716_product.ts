@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
     table.text('description')
     table.float('price').notNullable()
     table.integer('weight')
-    table.text('categoryId').references('id').inTable('categories')
+    table.integer('categoryId').references('id').inTable('categories')
     table.dateTime('createdAt').notNullable()
     table.dateTime('updatedAt').notNullable()
   })
