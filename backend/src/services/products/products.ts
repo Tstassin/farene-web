@@ -17,6 +17,7 @@ import {
 import type { Application } from '../../declarations'
 import { ProductService, getOptions } from './products.class'
 import { productPath, productMethods } from './products.shared'
+import { resourceSchemaCreateResolver, resourceSchemaUpdateResolver } from '../common/resources'
 
 export * from './products.class'
 export * from './products.schema'
@@ -43,8 +44,14 @@ export const product = (app: Application) => {
       all: [schemaHooks.validateQuery(productQueryValidator), schemaHooks.resolveQuery(productQueryResolver)],
       find: [],
       get: [],
-      create: [schemaHooks.validateData(productDataValidator), schemaHooks.resolveData(productDataResolver)],
-      patch: [schemaHooks.validateData(productPatchValidator), schemaHooks.resolveData(productPatchResolver)],
+      create: [
+        schemaHooks.validateData(productDataValidator), 
+        schemaHooks.resolveData(productDataResolver, resourceSchemaCreateResolver)
+      ],
+      patch: [
+        schemaHooks.validateData(productPatchValidator), 
+        schemaHooks.resolveData(productPatchResolver, resourceSchemaUpdateResolver)
+      ],
       remove: []
     },
     after: {

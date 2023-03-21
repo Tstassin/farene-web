@@ -17,6 +17,7 @@ import {
 import type { Application } from '../../declarations'
 import { CategoryService, getOptions } from './categories.class'
 import { categoryPath, categoryMethods } from './categories.shared'
+import { resourceSchemaCreateResolver, resourceSchemaUpdateResolver } from '../common/resources'
 
 export * from './categories.class'
 export * from './categories.schema'
@@ -48,11 +49,11 @@ export const category = (app: Application) => {
       get: [],
       create: [
         schemaHooks.validateData(categoryDataValidator),
-        schemaHooks.resolveData(categoryDataResolver)
+        schemaHooks.resolveData(categoryDataResolver, resourceSchemaCreateResolver)
       ],
       patch: [
         schemaHooks.validateData(categoryPatchValidator),
-        schemaHooks.resolveData(categoryPatchResolver)
+        schemaHooks.resolveData(categoryPatchResolver, resourceSchemaUpdateResolver)
       ],
       remove: []
     },
