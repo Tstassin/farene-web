@@ -35,7 +35,7 @@ export const useOrderCreateMutation = () => {
     }
   })
 }
-
+/* 
 export const useOrderUpdateMutation = () => {
   return useMutation({
     mutationFn: (values: { id: Order['id'] } & OrderPatch) => {
@@ -57,4 +57,4 @@ export const useOrderRemoveMutation = () => {
       queryClient.invalidateQueries(['orders'])
     }
   })
-}
+} */

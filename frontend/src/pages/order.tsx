@@ -19,7 +19,7 @@ export const Order = () => {
   const { nextWeek, nextDeliveryDates } = useOrderDates().data || {}
   const methods = useForm<OrderData>();
   const { handleSubmit, register, control, watch, clearErrors, setError, formState: { errors, isDirty } } = methods;
-  const allProductsSelected = watch('products')
+  const allProductsSelected = watch('orderItems')
   console.log(allProductsQuery.data)
   const total = allProductsQuery.data && allProductsSelected
     ?
@@ -30,7 +30,7 @@ export const Order = () => {
 
 
   const onSubmit = async (values: OrderData) => {
-    values.products.forEach(p => p.productId = parseInt(p.productId))
+    values.orderItems.forEach(orderItem => orderItem.productId = parseInt(orderItem.productId))
     orderCreateMutation.mutate(values)
   };
 
@@ -51,6 +51,7 @@ export const Order = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <>
               <FormControl mb={5} isInvalid={false}>
+                <Heading size={'md'} mb={5}>Enlèvement</Heading>
                 <FormLabel>Je viendrai chercher mon pain</FormLabel>
                 <RadioGroup >
                   <Stack >
@@ -73,6 +74,8 @@ export const Order = () => {
                   </Stack>
                 </RadioGroup>
               </FormControl>
+              <Heading size={'md'} mb={5} mt={10}>Commande</Heading>
+
               {
                 allProductsQuery.data?.map((product, index) => {
                   return (

@@ -13,11 +13,11 @@ export const ProductInput = ({ product }: OrderInputProps) => {
   const { control, register, watch } = useFormContext<OrderData>()
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "products",
+    name: "orderItems",
   });
   const isProductSelected = fields.some(field => field.productId === product.id)
   const fieldArrayIndex = fields.findIndex(field => field.productId === product.id)
-  const amount = watch(`products.${fieldArrayIndex}.amount`)
+  const amount = watch(`orderItems.${fieldArrayIndex}.amount`)
   const price = product.price
   const total = product.price * amount
 
@@ -147,7 +147,7 @@ const ProductQuantityInput = ({ fieldArrayIndex, register }: ProductQuantityInpu
       max={99}
       defaultValue={1}
       {...register(
-        `products.${fieldArrayIndex}.amount`,
+        `orderItems.${fieldArrayIndex}.amount`,
         {
           valueAsNumber: true
         }

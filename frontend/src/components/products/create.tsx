@@ -75,7 +75,6 @@ export const CreateProduct = () => {
             <Select
               {...register('categoryId', {
                 required: 'Ce champ est obligatoire',
-                valueAsNumber: true
               })}
             >
               {allCategoriesQuery.data?.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}
