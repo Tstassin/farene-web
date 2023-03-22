@@ -73,7 +73,7 @@ describe('orders service', () => {
     const orderData: OrderData = {
       ...await getOrderMock(product.id),
       products: [{
-        product: product.id + 1,
+        productId: product.id + 1,
         amount: 1
       }]
     }
@@ -94,7 +94,7 @@ describe('orders service', () => {
     const orderData: OrderData = {
       ...await getOrderMock(product.id),
       products: [{
-        product: product.id + 1,
+        productId: product.id + 1,
         amount: 1
       }]
     }
@@ -120,11 +120,11 @@ describe('orders service', () => {
       ...await getOrderMock(product1.id),
       products: [
         {
-          product: product1.id,
+          productId: product1.id,
           amount: 1
         },
         {
-          product: product2.id,
+          productId: product2.id,
           amount: 0
         },
       ]
@@ -145,7 +145,7 @@ describe('orders service', () => {
     const orderData: OrderData = {
       ...await getOrderMock(product.id),
       products: [{
-        product: product.id + 1,
+        productId: product.id + 1,
         amount: 1
       }]
     }

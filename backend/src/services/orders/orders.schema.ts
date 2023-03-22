@@ -53,30 +53,26 @@ export const orderDataSchema = Type.Intersect(
   [
     Type.Pick(
       orderSchema,
-      ['delivery']
-      , {
-        $id: 'OrderData'
-      }
+      ['delivery'],
+      { $id: undefined }
     ),
-    /* Type.Object({
-      userId: Type.Number()
-    }),  */
     Type.Object(
       {
         products: Type.Array(
           Type.Pick(
             orderItemDataSchema,
-            ['amount', 'product'],
-            { $id: 'test' }
+            ['amount', 'productId'],
+            { $id: undefined }
           )
         )
       }
     )
-  ]
+  ],
+  {$id: 'OrderData'}
 )
 export type OrderData = Static<typeof orderDataSchema>
 export const orderDataValidator = getValidator(orderDataSchema, dataValidator)
-export const orderDataResolver = resolve<Order & {products: undefined}, HookContext>({
+export const orderDataResolver = resolve<Order & { products: undefined }, HookContext>({
   'products': async () => undefined,
   userId: async (value, user, context) => {
     if (context.params.user) {
