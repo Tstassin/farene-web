@@ -52,7 +52,13 @@ export const order = (app: Application) => {
         authenticate("jwt"),
         schemaHooks.resolveExternal(orderExternalResolver),
         schemaHooks.resolveResult(orderResolver),
+        checkDeliveryDate,
+        schemaHooks.validateData(orderDataValidator),
         createOrderItems,
+        schemaHooks.resolveData(
+          orderDataResolver,
+          resourceSchemaCreateResolver
+        ),
       ],
       getNextDeliveryDates: [authenticate("jwt")],
     },
@@ -70,16 +76,10 @@ export const order = (app: Application) => {
         schemaHooks.resolveQuery(orderQueryResolver),
       ],
       create: [
-        schemaHooks.validateData(orderDataValidator),
-        schemaHooks.resolveData(
-          orderDataResolver,
-          resourceSchemaCreateResolver
-        ),
-        checkDeliveryDate,
       ],
     },
     after: {
-      all: [],
+      create: []
     },
     error: {
       all: [],

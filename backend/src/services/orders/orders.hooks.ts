@@ -31,7 +31,8 @@ export const createOrderItems = async (
 };
 
 export const checkDeliveryDate = async (
-  context: HookContext<Application, OrderService<OrderParams>>
+  context: HookContext<Application, OrderService<OrderParams>>,
+  next: NextFunction
 ) => {
   if (Array.isArray(context.data)) {
     throw new BadRequest("Please create one order at a time");
@@ -48,5 +49,5 @@ export const checkDeliveryDate = async (
   if (!nextDeliveryDates.some((date) => date === deliveryDate)) {
     throw new BadRequest("No delivery on " + deliveryDate);
   }
-  return context;
+  await next()
 };
