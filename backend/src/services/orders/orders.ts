@@ -4,12 +4,10 @@ import { hooks as schemaHooks } from "@feathersjs/schema";
 
 import {
   orderDataValidator,
-  orderPatchValidator,
   orderQueryValidator,
   orderResolver,
   orderExternalResolver,
   orderDataResolver,
-  orderPatchResolver,
   orderQueryResolver,
 } from "./orders.schema";
 
@@ -19,12 +17,13 @@ import { orderPath, orderMethods } from "./orders.shared";
 import { authenticate } from "@feathersjs/authentication/";
 import {
   resourceSchemaCreateResolver,
-  resourceSchemaUpdateResolver,
 } from "../common/resources";
 import { checkDeliveryDate, createOrderItems } from "./orders.hooks";
 
 export * from "./orders.class";
 export * from "./orders.schema";
+
+const { resolveExternal, resolveQuery, resolveData, resolveResult, validateData, validateQuery } = schemaHooks
 
 // A configure function that registers the service and its hooks via `app.configure`
 export const order = (app: Application) => {
@@ -40,22 +39,22 @@ export const order = (app: Application) => {
     around: {
       find: [
         authenticate("jwt"),
-        schemaHooks.resolveExternal(orderExternalResolver),
-        schemaHooks.resolveResult(orderResolver),
+        resolveExternal(orderExternalResolver),
+        resolveResult(orderResolver),
       ],
       get: [
         authenticate("jwt"),
-        schemaHooks.resolveExternal(orderExternalResolver),
-        schemaHooks.resolveResult(orderResolver),
+        resolveExternal(orderExternalResolver),
+        resolveResult(orderResolver),
       ],
       create: [
         authenticate("jwt"),
-        schemaHooks.resolveExternal(orderExternalResolver),
-        schemaHooks.resolveResult(orderResolver),
+        resolveExternal(orderExternalResolver),
+        resolveResult(orderResolver),
         checkDeliveryDate,
-        schemaHooks.validateData(orderDataValidator),
+        validateData(orderDataValidator),
         createOrderItems,
-        schemaHooks.resolveData(
+        resolveData(
           orderDataResolver,
           resourceSchemaCreateResolver
         ),
@@ -63,27 +62,17 @@ export const order = (app: Application) => {
       getNextDeliveryDates: [authenticate("jwt")],
     },
     before: {
-      all: [
-        schemaHooks.validateQuery(orderQueryValidator),
-        schemaHooks.resolveQuery(orderQueryResolver),
-      ],
       find: [
-        schemaHooks.validateQuery(orderQueryValidator),
-        schemaHooks.resolveQuery(orderQueryResolver),
+        validateQuery(orderQueryValidator),
+        resolveQuery(orderQueryResolver),
       ],
       get: [
-        schemaHooks.validateQuery(orderQueryValidator),
-        schemaHooks.resolveQuery(orderQueryResolver),
-      ],
-      create: [
+        validateQuery(orderQueryValidator),
+        resolveQuery(orderQueryResolver),
       ],
     },
-    after: {
-      create: []
-    },
-    error: {
-      all: [],
-    },
+    after: {},
+    error: {},
   });
 };
 
