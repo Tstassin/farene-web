@@ -68,18 +68,24 @@ export const orderDataSchema = Type.Intersect(
       }
     )
   ],
-  {$id: 'OrderData'}
+  { $id: 'OrderData' }
 )
 export type OrderData = Static<typeof orderDataSchema>
 export const orderDataValidator = getValidator(orderDataSchema, dataValidator)
-export const orderDataResolver = resolve<Order & { orderItems: undefined }, HookContext>({
-  'orderItems': async () => undefined,
+export const orderDataResolver = resolve<Order, HookContext>({
   userId: async (value, user, context) => {
     if (context.params.user) {
       return context.params.user.id
     }
 
     return value
+  }
+}, {
+  converter: async (data) => {
+    return {
+      ...data,
+      orderItems: undefined
+    }
   }
 })
 
