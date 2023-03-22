@@ -23,26 +23,29 @@ export const ProductInput = ({ product }: OrderInputProps) => {
 
   return (
     <Box mb={3}>
-      <Box borderLeft={`4px solid ${isProductSelected ? 'rgb(226, 232, 240)' : 'white'}`} p={3}>
+      <Box>
         <Box display='flex' mb={1} >
           <Box flex={1}>
             <ProductInputDetails product={product} onToggle={onToggle} />
           </Box>
-          <Box flex={1} display='flex' justifyContent='center' alignItems='flex-end'>
-            {
-              isProductSelected &&
-              <Box>
-                <InputGroup size='sm'>
-                  <ProductQuantityInput register={register} fieldArrayIndex={fieldArrayIndex} />
-                  <InputRightAddon mx={0} px={0}>
-                    <ProductInputRemoveButton product={product} remove={remove} fieldArrayIndex={fieldArrayIndex} />
-                  </InputRightAddon>
-                </InputGroup>
-              </Box>
-            }
-          </Box>
-          <Box display='flex' flexDirection='column' alignItems='flex-end' flex={1}>
+          <Box display={'flex'} height='fit-content'>
             <Box>
+              {
+                isProductSelected &&
+                <ProductInputRemoveButton product={product} remove={remove} fieldArrayIndex={fieldArrayIndex} />
+              }
+            </Box>
+            <Box ml={3}>
+              {
+                isProductSelected &&
+                <Box>
+                  <InputGroup size='sm'>
+                    <ProductQuantityInput register={register} fieldArrayIndex={fieldArrayIndex} />
+                  </InputGroup>
+                </Box>
+              }
+            </Box>
+            <Box ml={3}>
               {
                 !isProductSelected &&
                 <ProductInputAddButton product={product} append={append} />
@@ -50,10 +53,8 @@ export const ProductInput = ({ product }: OrderInputProps) => {
             </Box>
             {
               isProductSelected && (
-                <Box display='flex' alignItems='center' marginTop='auto'>
-                  <Box as='span'>&nbsp;
-                    <b>{total}€</b>
-                  </Box>
+                <Box ml={3} display='flex'>
+                  <Text as='b' fontSize={'xl'}>{total}€</Text>
                 </Box>
               )
             }
@@ -81,11 +82,10 @@ const ProductInputDetails = ({ product, onToggle }: ProductInputDetailsProps) =>
       <Text as='b'>
         {product.name}
       </Text>
-      <Box marginTop='auto'>
-        <Button variant='outline' onClick={onToggle} size='xs' mr={1}>Détails</Button>
-        <Text as='span'>
-          {product.price}€
-        </Text>
+      <Text>Poid: {product.weight}g</Text>
+      <Text>Prix: {product.price}€</Text>
+      <Box my={3}>
+        <Button variant='outline' onClick={onToggle} size='xs' mr={1} flexGrow={0}>Détails</Button>
       </Box>
     </Box>
   )
@@ -123,7 +123,7 @@ const ProductInputRemoveButton = ({ product, remove, fieldArrayIndex }: ProductI
       onClick={() => {
         remove(fieldArrayIndex)
       }}>
-      X
+      Supprimer
     </Button>
   )
 }
