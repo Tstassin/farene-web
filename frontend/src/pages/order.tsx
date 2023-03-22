@@ -51,7 +51,7 @@ export const Order = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <>
               <FormControl mb={5} isInvalid={false}>
-                <Heading size={'md'} mb={5}>Enlèvement</Heading>
+                <Heading size={'md'} mb={3}>Enlèvement</Heading>
                 <FormLabel>Je viendrai chercher mon pain</FormLabel>
                 <RadioGroup >
                   <Stack >
@@ -74,7 +74,7 @@ export const Order = () => {
                   </Stack>
                 </RadioGroup>
               </FormControl>
-              <Heading size={'md'} mb={5} mt={10}>Commande</Heading>
+              <Heading size={'md'} mb={3} mt={6}>Commande</Heading>
 
               {
                 allProductsQuery.data?.map((product, index) => {
@@ -83,13 +83,13 @@ export const Order = () => {
                   )
                 })
               }
-              <Box display='flex' justifyContent='space-between'>
+              <Box display='flex' justifyContent='space-between' mt={6}>
+              <Heading size={'lg'} mb={3}>Total</Heading>
+              <Heading size={'lg'} mb={3}>{total}€</Heading>
+{/* 
                 <Box fontWeight='bold' fontSize='lg'>
-                  Total
-                </Box>
-                <Box fontWeight='bold' fontSize='lg'>
-                  {total}€
-                </Box>
+                  
+                </Box> */}
               </Box>
               <br /><br />
               <Box textAlign='right'>

@@ -79,7 +79,7 @@ interface ProductInputDetailsProps {
 const ProductInputDetails = ({ product, onToggle }: ProductInputDetailsProps) => {
   return (
     <Box display='flex' flexDirection='column' mr={3}>
-      <Text as='b'>
+      <Text as='b' fontSize={'md'}>
         {product.name}
       </Text>
       <Text>Poid: {product.weight}g</Text>
