@@ -1,7 +1,7 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.html
-import { authenticate } from '@feathersjs/authentication'
+import { authenticate } from "@feathersjs/authentication";
 
-import { hooks as schemaHooks } from '@feathersjs/schema'
+import { hooks as schemaHooks } from "@feathersjs/schema";
 
 import {
   productDataValidator,
@@ -11,16 +11,19 @@ import {
   productExternalResolver,
   productDataResolver,
   productPatchResolver,
-  productQueryResolver
-} from './products.schema'
+  productQueryResolver,
+} from "./products.schema";
 
-import type { Application } from '../../declarations'
-import { ProductService, getOptions } from './products.class'
-import { productPath, productMethods } from './products.shared'
-import { resourceSchemaCreateResolver, resourceSchemaUpdateResolver } from '../common/resources'
+import type { Application } from "../../declarations";
+import { ProductService, getOptions } from "./products.class";
+import { productPath, productMethods } from "./products.shared";
+import {
+  resourceSchemaCreateResolver,
+  resourceSchemaUpdateResolver,
+} from "../common/resources";
 
-export * from './products.class'
-export * from './products.schema'
+export * from "./products.class";
+export * from "./products.schema";
 
 // A configure function that registers the service and its hooks via `app.configure`
 export const product = (app: Application) => {
@@ -29,43 +32,52 @@ export const product = (app: Application) => {
     // A list of all methods this service exposes externally
     methods: productMethods,
     // You can add additional custom events to be sent to clients here
-    events: []
-  })
+    events: [],
+  });
   // Initialize hooks
   app.service(productPath).hooks({
     around: {
       all: [
-        authenticate('jwt'),
+        authenticate("jwt"),
         schemaHooks.resolveExternal(productExternalResolver),
-        schemaHooks.resolveResult(productResolver)
-      ]
+        schemaHooks.resolveResult(productResolver),
+      ],
     },
     before: {
-      all: [schemaHooks.validateQuery(productQueryValidator), schemaHooks.resolveQuery(productQueryResolver)],
+      all: [
+        schemaHooks.validateQuery(productQueryValidator),
+        schemaHooks.resolveQuery(productQueryResolver),
+      ],
       find: [],
       get: [],
       create: [
-        schemaHooks.validateData(productDataValidator), 
-        schemaHooks.resolveData(productDataResolver, resourceSchemaCreateResolver)
+        schemaHooks.validateData(productDataValidator),
+        schemaHooks.resolveData(
+          productDataResolver,
+          resourceSchemaCreateResolver
+        ),
       ],
       patch: [
-        schemaHooks.validateData(productPatchValidator), 
-        schemaHooks.resolveData(productPatchResolver, resourceSchemaUpdateResolver)
+        schemaHooks.validateData(productPatchValidator),
+        schemaHooks.resolveData(
+          productPatchResolver,
+          resourceSchemaUpdateResolver
+        ),
       ],
-      remove: []
+      remove: [],
     },
     after: {
-      all: []
+      all: [],
     },
     error: {
-      all: []
-    }
-  })
-}
+      all: [],
+    },
+  });
+};
 
 // Add this service to the service type index
-declare module '../../declarations' {
+declare module "../../declarations" {
   interface ServiceTypes {
-    [productPath]: ProductService
+    [productPath]: ProductService;
   }
 }

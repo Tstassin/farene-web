@@ -1,38 +1,51 @@
-import { BadRequest, FeathersError } from "@feathersjs/errors/lib"
-import { HookContext } from "@feathersjs/feathers"
-import dayjs from "dayjs"
-import { allowedWeekDays } from "../../config/orders"
-import { Application, NextFunction } from "../../declarations"
-import { OrderData, OrderParams, OrderService } from "./orders.class"
-import weekday from 'dayjs/plugin/weekday'
-import isoWeek from 'dayjs/plugin/isoWeek'
+import { BadRequest, FeathersError } from "@feathersjs/errors/lib";
+import { HookContext } from "@feathersjs/feathers";
+import dayjs from "dayjs";
+import { allowedWeekDays } from "../../config/orders";
+import { Application, NextFunction } from "../../declarations";
+import { OrderData, OrderParams, OrderService } from "./orders.class";
+import weekday from "dayjs/plugin/weekday";
+import isoWeek from "dayjs/plugin/isoWeek";
 
-export const createOrderItems = async (context: HookContext<Application, OrderService<OrderParams>>, next: NextFunction) => {
-  if (!context.data || !('orderItems' in context.data)) {
-    throw new BadRequest('No products in order')
+export const createOrderItems = async (
+  context: HookContext<Application, OrderService<OrderParams>>,
+  next: NextFunction
+) => {
+  if (!context.data || !("orderItems" in context.data)) {
+    throw new BadRequest("No products in order");
   }
-  const { orderItems } = context.data
-  await next()
-  if (context.result === undefined || Array.isArray(context.result) || 'total' in context.result) {
-    throw new BadRequest("Hmmm shouldn't happen")
+  const { orderItems } = context.data;
+  await next();
+  if (
+    context.result === undefined ||
+    Array.isArray(context.result) ||
+    "total" in context.result
+  ) {
+    throw new BadRequest("Hmmm shouldn't happen");
   }
-  const { id: orderId } = context.result
-  await context.app.service('order-items').create(orderItems.map(orderItem => ({ ...orderItem, orderId })))
-}
+  const { id: orderId } = context.result;
+  await context.app
+    .service("order-items")
+    .create(orderItems.map((orderItem) => ({ ...orderItem, orderId })));
+};
 
-export const checkDeliveryDate = async (context: HookContext<Application, OrderService<OrderParams>>) => {
+export const checkDeliveryDate = async (
+  context: HookContext<Application, OrderService<OrderParams>>
+) => {
   if (Array.isArray(context.data)) {
-    throw new BadRequest('Please create one order at a time')
+    throw new BadRequest("Please create one order at a time");
   }
 
-  const deliveryDate = context.data?.delivery
-  if (!dayjs(deliveryDate, 'YYYY-MM-DD', true).isValid()) {
-    throw new BadRequest('Invalid delivery date or format :' + deliveryDate)
+  const deliveryDate = context.data?.delivery;
+  if (!dayjs(deliveryDate, "YYYY-MM-DD", true).isValid()) {
+    throw new BadRequest("Invalid delivery date or format :" + deliveryDate);
   }
 
-  const { nextDeliveryDates } = await context.app.service('orders').getNextDeliveryDates()
-  if (!nextDeliveryDates.some(date => date === deliveryDate)) {
-    throw new BadRequest('No delivery on ' + deliveryDate)
+  const { nextDeliveryDates } = await context.app
+    .service("orders")
+    .getNextDeliveryDates();
+  if (!nextDeliveryDates.some((date) => date === deliveryDate)) {
+    throw new BadRequest("No delivery on " + deliveryDate);
   }
-  return context
-}
+  return context;
+};

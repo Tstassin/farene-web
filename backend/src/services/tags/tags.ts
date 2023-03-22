@@ -1,7 +1,7 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.html
-import { authenticate } from '@feathersjs/authentication'
+import { authenticate } from "@feathersjs/authentication";
 
-import { hooks as schemaHooks } from '@feathersjs/schema'
+import { hooks as schemaHooks } from "@feathersjs/schema";
 
 import {
   tagDataValidator,
@@ -11,15 +11,15 @@ import {
   tagExternalResolver,
   tagDataResolver,
   tagPatchResolver,
-  tagQueryResolver
-} from './tags.schema'
+  tagQueryResolver,
+} from "./tags.schema";
 
-import type { Application } from '../../declarations'
-import { TagService, getOptions } from './tags.class'
-import { tagPath, tagMethods } from './tags.shared'
+import type { Application } from "../../declarations";
+import { TagService, getOptions } from "./tags.class";
+import { tagPath, tagMethods } from "./tags.shared";
 
-export * from './tags.class'
-export * from './tags.schema'
+export * from "./tags.class";
+export * from "./tags.schema";
 
 // A configure function that registers the service and its hooks via `app.configure`
 export const tag = (app: Application) => {
@@ -28,37 +28,46 @@ export const tag = (app: Application) => {
     // A list of all methods this service exposes externally
     methods: tagMethods,
     // You can add additional custom events to be sent to clients here
-    events: []
-  })
+    events: [],
+  });
   // Initialize hooks
   app.service(tagPath).hooks({
     around: {
       all: [
-        authenticate('jwt'),
+        authenticate("jwt"),
         schemaHooks.resolveExternal(tagExternalResolver),
-        schemaHooks.resolveResult(tagResolver)
-      ]
+        schemaHooks.resolveResult(tagResolver),
+      ],
     },
     before: {
-      all: [schemaHooks.validateQuery(tagQueryValidator), schemaHooks.resolveQuery(tagQueryResolver)],
+      all: [
+        schemaHooks.validateQuery(tagQueryValidator),
+        schemaHooks.resolveQuery(tagQueryResolver),
+      ],
       find: [],
       get: [],
-      create: [schemaHooks.validateData(tagDataValidator), schemaHooks.resolveData(tagDataResolver)],
-      patch: [schemaHooks.validateData(tagPatchValidator), schemaHooks.resolveData(tagPatchResolver)],
-      remove: []
+      create: [
+        schemaHooks.validateData(tagDataValidator),
+        schemaHooks.resolveData(tagDataResolver),
+      ],
+      patch: [
+        schemaHooks.validateData(tagPatchValidator),
+        schemaHooks.resolveData(tagPatchResolver),
+      ],
+      remove: [],
     },
     after: {
-      all: []
+      all: [],
     },
     error: {
-      all: []
-    }
-  })
-}
+      all: [],
+    },
+  });
+};
 
 // Add this service to the service type index
-declare module '../../declarations' {
+declare module "../../declarations" {
   interface ServiceTypes {
-    [tagPath]: TagService
+    [tagPath]: TagService;
   }
 }

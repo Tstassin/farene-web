@@ -1,11 +1,10 @@
-import {  UserData } from "../../../src/services/users/users.schema"
+import { UserData } from "../../../src/services/users/users.schema";
 
-export const baseUserMock: UserData = { email: `user@test.com`, password: 'a' }
+export const baseUserMock: UserData = { email: `user@test.com`, password: "a" };
 
 export const getUserMock = (data?: Partial<UserData>) => {
-  
-  return ({
+  return {
     ...baseUserMock,
-    ...data
-  })
-}
+    ...data,
+  };
+};

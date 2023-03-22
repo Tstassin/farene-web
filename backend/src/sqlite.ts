@@ -1,20 +1,20 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/databases.html
-import knex from 'knex'
-import type { Knex } from 'knex'
-import type { Application } from './declarations'
+import knex from "knex";
+import type { Knex } from "knex";
+import type { Application } from "./declarations";
 
-declare module './declarations' {
+declare module "./declarations" {
   interface Configuration {
-    sqliteClient: Knex
+    sqliteClient: Knex;
   }
 }
 
 export const sqlite = (app: Application) => {
-  const config = app.get('sqlite')
-  const db = knex(config!)
+  const config = app.get("sqlite");
+  const db = knex(config!);
   db.raw("PRAGMA foreign_keys = ON;").then(() => {
     console.log("Foreign Key Check activated.");
   });
 
-  app.set('sqliteClient', db)
-}
+  app.set("sqliteClient", db);
+};

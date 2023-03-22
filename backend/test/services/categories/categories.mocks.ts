@@ -1,12 +1,12 @@
 import { CategoryData } from "../../../src/services/categories/categories.schema";
 
 export const baseCategoryMock: CategoryData = {
-  name: 'Boulangerie'
-}
+  name: "Boulangerie",
+};
 
 export const getCategoryMock = (data?: Partial<CategoryData>) => {
-  return ({
+  return {
     ...baseCategoryMock,
-    ...data
-  })  
-}
+    ...data,
+  };
+};

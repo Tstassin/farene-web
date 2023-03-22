@@ -1,7 +1,7 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.html
-import { authenticate } from '@feathersjs/authentication'
+import { authenticate } from "@feathersjs/authentication";
 
-import { hooks as schemaHooks } from '@feathersjs/schema'
+import { hooks as schemaHooks } from "@feathersjs/schema";
 
 import {
   categoryDataValidator,
@@ -11,16 +11,19 @@ import {
   categoryExternalResolver,
   categoryDataResolver,
   categoryPatchResolver,
-  categoryQueryResolver
-} from './categories.schema'
+  categoryQueryResolver,
+} from "./categories.schema";
 
-import type { Application } from '../../declarations'
-import { CategoryService, getOptions } from './categories.class'
-import { categoryPath, categoryMethods } from './categories.shared'
-import { resourceSchemaCreateResolver, resourceSchemaUpdateResolver } from '../common/resources'
+import type { Application } from "../../declarations";
+import { CategoryService, getOptions } from "./categories.class";
+import { categoryPath, categoryMethods } from "./categories.shared";
+import {
+  resourceSchemaCreateResolver,
+  resourceSchemaUpdateResolver,
+} from "../common/resources";
 
-export * from './categories.class'
-export * from './categories.schema'
+export * from "./categories.class";
+export * from "./categories.schema";
 
 // A configure function that registers the service and its hooks via `app.configure`
 export const category = (app: Application) => {
@@ -29,46 +32,52 @@ export const category = (app: Application) => {
     // A list of all methods this service exposes externally
     methods: categoryMethods,
     // You can add additional custom events to be sent to clients here
-    events: []
-  })
+    events: [],
+  });
   // Initialize hooks
   app.service(categoryPath).hooks({
     around: {
       all: [
-        authenticate('jwt'),
+        authenticate("jwt"),
         schemaHooks.resolveExternal(categoryExternalResolver),
-        schemaHooks.resolveResult(categoryResolver)
-      ]
+        schemaHooks.resolveResult(categoryResolver),
+      ],
     },
     before: {
       all: [
         schemaHooks.validateQuery(categoryQueryValidator),
-        schemaHooks.resolveQuery(categoryQueryResolver)
+        schemaHooks.resolveQuery(categoryQueryResolver),
       ],
       find: [],
       get: [],
       create: [
         schemaHooks.validateData(categoryDataValidator),
-        schemaHooks.resolveData(categoryDataResolver, resourceSchemaCreateResolver)
+        schemaHooks.resolveData(
+          categoryDataResolver,
+          resourceSchemaCreateResolver
+        ),
       ],
       patch: [
         schemaHooks.validateData(categoryPatchValidator),
-        schemaHooks.resolveData(categoryPatchResolver, resourceSchemaUpdateResolver)
+        schemaHooks.resolveData(
+          categoryPatchResolver,
+          resourceSchemaUpdateResolver
+        ),
       ],
-      remove: []
+      remove: [],
     },
     after: {
-      all: []
+      all: [],
     },
     error: {
-      all: []
-    }
-  })
-}
+      all: [],
+    },
+  });
+};
 
 // Add this service to the service type index
-declare module '../../declarations' {
+declare module "../../declarations" {
   interface ServiceTypes {
-    [categoryPath]: CategoryService
+    [categoryPath]: CategoryService;
   }
 }

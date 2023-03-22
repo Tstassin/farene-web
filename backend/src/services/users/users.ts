@@ -1,7 +1,7 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.html
-import { authenticate } from '@feathersjs/authentication'
+import { authenticate } from "@feathersjs/authentication";
 
-import { hooks as schemaHooks } from '@feathersjs/schema'
+import { hooks as schemaHooks } from "@feathersjs/schema";
 
 import {
   userDataValidator,
@@ -11,16 +11,19 @@ import {
   userExternalResolver,
   userDataResolver,
   userPatchResolver,
-  userQueryResolver
-} from './users.schema'
+  userQueryResolver,
+} from "./users.schema";
 
-import type { Application } from '../../declarations'
-import { UserService, getOptions } from './users.class'
-import { userPath, userMethods } from './users.shared'
-import { resourceSchemaCreateResolver, resourceSchemaUpdateResolver } from '../common/resources'
+import type { Application } from "../../declarations";
+import { UserService, getOptions } from "./users.class";
+import { userPath, userMethods } from "./users.shared";
+import {
+  resourceSchemaCreateResolver,
+  resourceSchemaUpdateResolver,
+} from "../common/resources";
 
-export * from './users.class'
-export * from './users.schema'
+export * from "./users.class";
+export * from "./users.schema";
 
 // A configure function that registers the service and its hooks via `app.configure`
 export const user = (app: Application) => {
@@ -29,45 +32,54 @@ export const user = (app: Application) => {
     // A list of all methods this service exposes externally
     methods: userMethods,
     // You can add additional custom events to be sent to clients here
-    events: []
-  })
+    events: [],
+  });
   // Initialize hooks
   app.service(userPath).hooks({
     around: {
-      all: [schemaHooks.resolveExternal(userExternalResolver), schemaHooks.resolveResult(userResolver)],
-      find: [authenticate('jwt')],
-      get: [authenticate('jwt')],
+      all: [
+        schemaHooks.resolveExternal(userExternalResolver),
+        schemaHooks.resolveResult(userResolver),
+      ],
+      find: [authenticate("jwt")],
+      get: [authenticate("jwt")],
       create: [],
-      update: [authenticate('jwt')],
-      patch: [authenticate('jwt')],
-      remove: [authenticate('jwt')]
+      update: [authenticate("jwt")],
+      patch: [authenticate("jwt")],
+      remove: [authenticate("jwt")],
     },
     before: {
-      all: [schemaHooks.validateQuery(userQueryValidator), schemaHooks.resolveQuery(userQueryResolver)],
+      all: [
+        schemaHooks.validateQuery(userQueryValidator),
+        schemaHooks.resolveQuery(userQueryResolver),
+      ],
       find: [],
       get: [],
       create: [
-        schemaHooks.validateData(userDataValidator), 
-        schemaHooks.resolveData(userDataResolver, resourceSchemaCreateResolver)
+        schemaHooks.validateData(userDataValidator),
+        schemaHooks.resolveData(userDataResolver, resourceSchemaCreateResolver),
       ],
       patch: [
-        schemaHooks.validateData(userPatchValidator), 
-        schemaHooks.resolveData(userPatchResolver, resourceSchemaUpdateResolver)
+        schemaHooks.validateData(userPatchValidator),
+        schemaHooks.resolveData(
+          userPatchResolver,
+          resourceSchemaUpdateResolver
+        ),
       ],
-      remove: []
+      remove: [],
     },
     after: {
-      all: []
+      all: [],
     },
     error: {
-      all: []
-    }
-  })
-}
+      all: [],
+    },
+  });
+};
 
 // Add this service to the service type index
-declare module '../../declarations' {
+declare module "../../declarations" {
   interface ServiceTypes {
-    [userPath]: UserService
+    [userPath]: UserService;
   }
 }
