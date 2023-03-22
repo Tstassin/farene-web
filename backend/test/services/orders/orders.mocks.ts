@@ -5,7 +5,7 @@ import { Product } from "../../../src/services/products/products.schema";
 export const getOrderMock = async (productId: Product['id'], data?: Partial<OrderData>): Promise<OrderData> => {
   const baseOrderMock = {
     delivery: (await app.service('orders').getNextDeliveryDates()).nextDeliveryDates[0],
-    products: [{
+    orderItems: [{
       productId: productId,
       amount: 1
     }]

@@ -46,15 +46,13 @@ describe('orders service', () => {
     // Testing undefined
     const orderData: OrderData = {
       ...await getOrderMock(product.id),
-      // @ts-expect-error
-      products: undefined
+      orderItems: undefined as any
     }
     await assert.rejects(orderFn(orderData))
 
 
     // Testing null
-    // @ts-expect-error
-    orderData.products = null
+    orderData.orderItems = null as any
     await assert.rejects(orderFn(orderData))
 
     /**
@@ -72,7 +70,7 @@ describe('orders service', () => {
     const product = await app.service('products').create(getProductMock(category.id))
     const orderData: OrderData = {
       ...await getOrderMock(product.id),
-      products: [{
+      orderItems: [{
         productId: product.id + 1,
         amount: 1
       }]
@@ -93,7 +91,7 @@ describe('orders service', () => {
     const product = await app.service('products').create(getProductMock(category.id))
     const orderData: OrderData = {
       ...await getOrderMock(product.id),
-      products: [{
+      orderItems: [{
         productId: product.id + 1,
         amount: 1
       }]
@@ -118,7 +116,7 @@ describe('orders service', () => {
     const product2 = await app.service('products').create(getProductMock(category.id, { name: 'Un autre pain' }))
     const orderData: OrderData = {
       ...await getOrderMock(product1.id),
-      products: [
+      orderItems: [
         {
           productId: product1.id,
           amount: 1
@@ -144,7 +142,7 @@ describe('orders service', () => {
     const product = await app.service('products').create(getProductMock(category.id))
     const orderData: OrderData = {
       ...await getOrderMock(product.id),
-      products: [{
+      orderItems: [{
         productId: product.id + 1,
         amount: 1
       }]

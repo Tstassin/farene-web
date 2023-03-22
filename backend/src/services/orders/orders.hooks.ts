@@ -8,16 +8,16 @@ import weekday from 'dayjs/plugin/weekday'
 import isoWeek from 'dayjs/plugin/isoWeek'
 
 export const createOrderItems = async (context: HookContext<Application, OrderService<OrderParams>>, next: NextFunction) => {
-  if (!context.data || !('products' in context.data)) {
+  if (!context.data || !('orderItems' in context.data)) {
     throw new BadRequest('No products in order')
   }
-  const { products } = context.data
+  const { orderItems } = context.data
   await next()
   if (context.result === undefined || Array.isArray(context.result) || 'total' in context.result) {
     throw new BadRequest("Hmmm shouldn't happen")
   }
   const { id: orderId } = context.result
-  const orderItems = await context.app.service('order-items').create(products.map(product => ({ ...product, orderId })))
+  await context.app.service('order-items').create(orderItems.map(orderItem => ({ ...orderItem, orderId })))
 }
 
 export const checkDeliveryDate = async (context: HookContext<Application, OrderService<OrderParams>>) => {
