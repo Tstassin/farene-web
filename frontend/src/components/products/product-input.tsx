@@ -1,6 +1,6 @@
 import { Box, Button, Collapse, Divider, Input, InputGroup, InputRightAddon, Slide, Text, useDisclosure } from "@chakra-ui/react"
 import { useState } from "react"
-import { useFieldArray, UseFieldArrayAppend, UseFieldArrayRemove, useFormContext, UseFormRegister } from "react-hook-form"
+import { useFieldArray, UseFieldArrayAppend, UseFieldArrayRemove, useFormContext, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form"
 import { OrderData } from "../../../../backend/src/services/orders/orders.schema"
 import { Product } from "../../../../backend/src/services/products/products.schema"
 
@@ -10,7 +10,7 @@ interface OrderInputProps {
 
 export const ProductInput = ({ product }: OrderInputProps) => {
   const { isOpen, onToggle } = useDisclosure()
-  const { control, register, watch } = useFormContext<OrderData>()
+  const { control, register, watch, setValue, getValues } = useFormContext<OrderData>()
   const { fields, append, remove } = useFieldArray({
     control,
     name: "orderItems",
@@ -40,7 +40,7 @@ export const ProductInput = ({ product }: OrderInputProps) => {
                 isProductSelected &&
                 <Box>
                   <InputGroup size='sm'>
-                    <ProductQuantityInput register={register} fieldArrayIndex={fieldArrayIndex} />
+                    <ProductQuantityInput register={register} fieldArrayIndex={fieldArrayIndex} getValues={getValues} setValue={setValue} />
                   </InputGroup>
                 </Box>
               }
@@ -131,27 +131,51 @@ const ProductInputRemoveButton = ({ product, remove, fieldArrayIndex }: ProductI
 interface ProductQuantityInputProps {
   fieldArrayIndex: number
   register: UseFormRegister<OrderData>
+  setValue: UseFormSetValue<OrderData>
+  getValues: UseFormGetValues<OrderData>
 }
 
-const ProductQuantityInput = ({ fieldArrayIndex, register }: ProductQuantityInputProps) => {
-  console.log(fieldArrayIndex)
+const ProductQuantityInput = ({ fieldArrayIndex, register, setValue, getValues }: ProductQuantityInputProps) => {
+  const fieldName = `orderItems.${fieldArrayIndex}.amount` as const
+  const currentValue = getValues(`orderItems.${fieldArrayIndex}.amount`)
+  const min = 1
+  const max = 99
+  const isMin = currentValue <= min
+  const isMax = currentValue >= max
 
   return (
-    <Input
-      size='sm'
-      textAlign='center'
-      type='number'
-      maxW={'50px'}
-      minW={'50px'}
-      min={1}
-      max={99}
-      defaultValue={1}
-      {...register(
-        `orderItems.${fieldArrayIndex}.amount`,
-        {
-          valueAsNumber: true
-        }
-      )}
-    />
+    <>
+      <Button
+        size={'sm'}
+        isDisabled={isMin}
+        onClick={() => setValue(fieldName, currentValue - 1)}
+      >
+        -
+      </Button>
+      <Input
+        size='sm'
+        textAlign='center'
+        fontWeight='bold'
+        type='number'
+        maxW={'50px'}
+        minW={'50px'}
+        min={min}
+        max={max}
+        defaultValue={1}
+        {...register(
+          fieldName,
+          {
+            valueAsNumber: true
+          }
+        )}
+      />
+      <Button
+        size={'sm'}
+        disabled={isMax}
+        onClick={() => setValue(fieldName, currentValue + 1)}
+      >
+        +
+      </Button>
+    </>
   )
 }
