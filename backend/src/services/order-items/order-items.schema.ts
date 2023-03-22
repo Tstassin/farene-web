@@ -25,7 +25,12 @@ export const orderItemSchema = Type.Intersect(
 )
 export type OrderItem = Static<typeof orderItemSchema>
 export const orderItemValidator = getValidator(orderItemSchema, dataValidator)
-export const orderItemResolver = resolve<OrderItem, HookContext>({})
+export const orderItemResolver = resolve<OrderItem, HookContext>({},{
+  converter: async (data) => ({
+    ...data,
+    product: JSON.parse(data.product)
+  })
+})
 
 export const orderItemExternalResolver = resolve<OrderItem, HookContext>({})
 

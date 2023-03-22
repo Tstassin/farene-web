@@ -3,7 +3,7 @@ import { HookContext } from "@feathersjs/feathers"
 import dayjs from "dayjs"
 import { allowedWeekDays } from "../../config/orders"
 import { Application, NextFunction } from "../../declarations"
-import { OrderParams, OrderService } from "./orders.class"
+import { OrderData, OrderParams, OrderService } from "./orders.class"
 import weekday from 'dayjs/plugin/weekday'
 import isoWeek from 'dayjs/plugin/isoWeek'
 

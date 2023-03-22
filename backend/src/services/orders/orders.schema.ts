@@ -6,9 +6,13 @@ import type { Static } from '@feathersjs/typebox'
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import { resourceSchema } from '../common/resources'
-import { orderItemDataSchema } from '../order-items/order-items.schema'
+import { OrderItem, orderItemDataSchema, orderItemSchema } from '../order-items/order-items.schema'
+import { productSchema } from '../products/products.schema'
+import { User } from '../users/users.schema'
 
-// Main data model schema
+/** 
+ * Main data model 
+ */
 export const orderSchema = Type.Intersect(
   [
     Type.Object(
@@ -30,8 +34,15 @@ export const orderResolver = resolve<Order, HookContext>({
     if (context.params.user) {
       return context.params.user.id
     }
-
     return value
+  }
+}, {
+  converter: async (data, context) => {
+    // We populate all order-items from the order
+    return ({
+      ...data,
+      orderItems: await context.app.service('order-items').find({ query: { orderId: data.id }, paginate: false })
+    })
   }
 })
 

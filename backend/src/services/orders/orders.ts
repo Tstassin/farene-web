@@ -10,7 +10,7 @@ import {
   orderExternalResolver,
   orderDataResolver,
   orderPatchResolver,
-  orderQueryResolver
+  orderQueryResolver,
 } from './orders.schema'
 
 import type { Application } from '../../declarations'
@@ -35,13 +35,24 @@ export const order = (app: Application) => {
   // Initialize hooks
   app.service(orderPath).hooks({
     around: {
-      all: [
+      find: [
+        authenticate('jwt'),
+        schemaHooks.resolveExternal(orderExternalResolver),
+        schemaHooks.resolveResult(orderResolver),
+      ],
+      get: [
         authenticate('jwt'),
         schemaHooks.resolveExternal(orderExternalResolver),
         schemaHooks.resolveResult(orderResolver),
       ],
       create: [
-        createOrderItems
+        authenticate('jwt'),
+        schemaHooks.resolveExternal(orderExternalResolver),
+        schemaHooks.resolveResult(orderResolver),
+        createOrderItems,
+      ],
+      getNextDeliveryDates: [
+        authenticate('jwt')
       ]
     },
     before: {
@@ -49,21 +60,16 @@ export const order = (app: Application) => {
         schemaHooks.validateQuery(orderQueryValidator),
         schemaHooks.resolveQuery(orderQueryResolver)
       ],
-      find: [],
-      get: [],
+      find: [
+        schemaHooks.validateQuery(orderQueryValidator),
+        schemaHooks.resolveQuery(orderQueryResolver)],
+      get: [
+        schemaHooks.validateQuery(orderQueryValidator),
+        schemaHooks.resolveQuery(orderQueryResolver)],
       create: [
         schemaHooks.validateData(orderDataValidator),
         schemaHooks.resolveData(orderDataResolver, resourceSchemaCreateResolver),
         checkDeliveryDate
-      ],
-      patch: [
-        schemaHooks.validateData(orderPatchValidator),
-        schemaHooks.resolveData(orderPatchResolver, resourceSchemaUpdateResolver),
-      ],
-      remove: [],
-      update: [
-        schemaHooks.validateData(orderDataValidator),
-        schemaHooks.resolveData(orderDataResolver, resourceSchemaUpdateResolver),
       ],
     },
     after: {
