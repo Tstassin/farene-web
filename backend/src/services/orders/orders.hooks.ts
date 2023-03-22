@@ -11,10 +11,11 @@ export const createOrderItems = async (
   context: HookContext<Application, OrderService<OrderParams>>,
   next: NextFunction
 ) => {
-  if (!context.data || !("orderItems" in context.data)) {
-    throw new BadRequest("No products in order");
+  const data = context.data as OrderData
+  if (!data || !("orderItems" in data) || !Array.isArray(data.orderItems) || data.orderItems.length === 0) {
+    throw new BadRequest("No orderItems in order");
   }
-  const { orderItems } = context.data;
+  const { orderItems } = data;
   await next();
   if (
     context.result === undefined ||
