@@ -6,7 +6,7 @@ import type { Static } from "@feathersjs/typebox";
 import type { HookContext } from "../../declarations";
 import { dataValidator, queryValidator } from "../../validators";
 import { resourceSchema } from "../common/resources";
-import { orderItemDataSchema } from "../order-items/order-items.schema";
+import { orderItemSchema, orderItemDataSchema } from "../order-items/order-items.schema";
 
 /**
  * Main data model
@@ -17,6 +17,7 @@ export const orderSchema = Type.Intersect([
       id: Type.Number(),
       delivery: Type.String(),
       userId: Type.Number(),
+      orderItems: Type.Array(orderItemSchema)
     },
     { $id: "Order", additionalProperties: false }
   ),
