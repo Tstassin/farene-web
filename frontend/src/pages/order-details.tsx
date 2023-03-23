@@ -1,4 +1,4 @@
-import { Button, Container, Heading, Text } from "@chakra-ui/react";
+import { Button, Container, Divider, Heading, Text } from "@chakra-ui/react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import React, { useMemo, useState } from "react";
@@ -24,29 +24,24 @@ export const OrderDetailsPage = () => {
 
   return (
     <>
-      {clientSecret && (
-        <Elements options={{
-          clientSecret,
-          appearance,
-        }} stripe={stripePromise}>
-          <CheckoutForm clientSecret={clientSecret} />
-        </Elements>
-      )}
+
       <QueryStatus query={orderQuery}>
         <Heading>Commande numéro {orderQuery.data?.id}</Heading>
         <Text fontSize={'xl'} mb={10}>
           Pour livraison le {dayjs(orderQuery.data?.delivery, 'YYYY-MM-DD').locale(fr).format('dddd DD MMMM')} <br />
         </Text>
-        <Text fontSize={'xl'} mb={10}>
+        <Text fontSize={'xl'} mb={5}>
           <ul>
             {orderQuery.data?.orderItems.map(orderItem => {
 
               return (
                 <>
                   <li key={orderItem.id}>
-                    {orderItem.amount} x {orderItem.product.name} ({orderItem.product.price}€ pièce)
-                    <br />
-                    = {orderItem.amount * orderItem.product.price}€
+                    {orderItem.product.name}
+                    <Text textAlign='right'>
+                    {orderItem.amount} x {orderItem.product.price}€ = {orderItem.amount * orderItem.product.price}€
+                    </Text>
+                    <Divider mt={5} />
                   </li>
                 </>
               )
@@ -55,13 +50,29 @@ export const OrderDetailsPage = () => {
         </Text>
 
 
-        <Heading size='md' mb={10}>
+        <Heading size='md' mb={'20'}>
           Prix Total à payer
-          <br />
-          = {orderQuery.data?.orderItems?.reduce((acc, curr) => (acc + (curr.amount * curr.product.price)), 0)}€
+          <Text as='span' float={'right'}>
+          {orderQuery.data?.orderItems?.reduce((acc, curr) => (acc + (curr.amount * curr.product.price)), 0)}€
+          </Text>
         </Heading>
-
-        <Button onClick={() => { paymentIntentCreateMutation.mutate(orderQuery.data?.id!) }}>Payer</Button>
+        {
+          clientSecret
+            ?
+            (
+              <>
+                <Heading mb={5} size='lg'>Procéder au paiement</Heading>
+                <Elements options={{
+                  clientSecret,
+                  appearance,
+                }} stripe={stripePromise}>
+                  <CheckoutForm clientSecret={clientSecret} />
+                </Elements>
+              </>
+            )
+            :
+            <Button onClick={() => { paymentIntentCreateMutation.mutate(orderQuery.data?.id!) }}>Payer</Button>
+        }
       </QueryStatus>
     </>
   )
