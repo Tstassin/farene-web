@@ -61,7 +61,7 @@ export const ProductInput = ({ product }: OrderInputProps) => {
           </Box>
         </Box>
         <Collapse in={isOpen} animateOpacity>
-          <Box>
+          <Box pb={5}>
             {product.description}
           </Box>
         </Collapse>

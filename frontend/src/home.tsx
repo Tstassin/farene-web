@@ -15,17 +15,17 @@ export const Home: React.FC = () => {
     <>
       <Heading mb={5}>Bienvenue dans l'eshop de Farène</Heading>
       <Authenticated>
-        <>
-          Commander <br />
-          Mes commandes
-        </>
+        <Text fontSize={'xl'}>
+          <Link as={NavLink} to='/order'><u>Commander</u></Link> du pain pour la semaine prochaine.
+        </Text>
       </Authenticated>
       <NotAuthenticated>
         <>
           <Text fontSize={'xl'}>
             <Link as={NavLink} to='/register'><u>Créez un compte</u></Link> pour commander et payer en ligne.
             <br />
-            <Link as={NavLink} to='/login'><u>Connectez-vous</u></Link> directement si vous en avez déjà un</Text>
+            <Link as={NavLink} to='/login'><u>Connectez-vous</u></Link> directement si vous en avez déjà un.
+            </Text>
         </>
       </NotAuthenticated>
     </>

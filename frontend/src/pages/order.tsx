@@ -20,7 +20,6 @@ export const Order = () => {
   const methods = useForm<OrderData>();
   const { handleSubmit, register, control, watch, clearErrors, setError, formState: { errors, isDirty } } = methods;
   const allProductsSelected = watch('orderItems')
-  console.log(allProductsQuery.data)
   const total = allProductsQuery.data && allProductsSelected
     ?
     allProductsSelected
@@ -35,7 +34,7 @@ export const Order = () => {
   };
 
   const nextWeekLabel = useMemo(() => {
-    return dayjs(nextWeek, 'YYYY-MM-DD').locale(fr).format('DD MMMM')
+    return dayjs(nextWeek, 'YYYY-MM-DD').locale(fr).format('dddd DD MMMM')
   }, [nextWeek])
 
   if (orderCreateMutation.isSuccess) navigate(`/order/${orderCreateMutation.data.id}/`)
@@ -45,14 +44,14 @@ export const Order = () => {
       <QueryStatus query={allProductsQuery}>
         <Box mb={10}>
           <Heading>Formulaire de commande</Heading>
-          <Text fontSize={'xl'}><>Semaine du {nextWeekLabel}</></Text>
+          <Text fontSize={'xl'}><>Pour la semaine du {nextWeekLabel}</></Text>
         </Box>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <>
               <FormControl mb={5} isInvalid={false}>
                 <Heading size={'md'} mb={3}>Enlèvement</Heading>
-                <FormLabel>Je viendrai chercher mon pain</FormLabel>
+                <FormLabel>Je viendrai chercher mon pain le</FormLabel>
                 <RadioGroup >
                   <Stack >
                     {nextDeliveryDates?.map(
@@ -74,7 +73,7 @@ export const Order = () => {
                   </Stack>
                 </RadioGroup>
               </FormControl>
-              <Heading size={'md'} mb={3} mt={6}>Commande</Heading>
+              <Heading size={'md'} mb={3} mt={10}>Commande</Heading>
 
               {
                 allProductsQuery.data?.map((product, index) => {
@@ -84,12 +83,8 @@ export const Order = () => {
                 })
               }
               <Box display='flex' justifyContent='space-between' mt={6}>
-              <Heading size={'lg'} mb={3}>Total</Heading>
-              <Heading size={'lg'} mb={3}>{total}€</Heading>
-{/* 
-                <Box fontWeight='bold' fontSize='lg'>
-                  
-                </Box> */}
+                <Heading size={'lg'} mb={3}>Total</Heading>
+                <Heading size={'lg'} mb={3}>{total}€</Heading>
               </Box>
               <br /><br />
               <Box textAlign='right'>
