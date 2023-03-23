@@ -1,5 +1,6 @@
 import { FeathersError } from "@feathersjs/errors/lib"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
+import { useNavigate } from "react-router-dom"
 import { queryClient } from "../.."
 import { client } from "../../../api/api"
 
@@ -32,18 +33,14 @@ export const useReAuthenticateMutation = () => {
 }
 
 export const useLogoutMutation = () => {
+  const navigate = useNavigate()
   const logoutResult = useMutation({
     mutationFn: () => client.logout(),
     mutationKey: ['authentication'],
     onSuccess: (data) => {
       queryClient.setQueryData(['authentication'], null)
+      navigate('/')
     }
   })
-  console.log(logoutResult)
   return logoutResult
-}
-
-// TODO.. from cache ?
-export const useAuthentication = () => {
-  return useQuery(['authentication'], () => client.authentication)
 }
