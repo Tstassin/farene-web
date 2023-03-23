@@ -3,7 +3,7 @@ import React from "react"
 
 interface NavItemProps extends TextProps{
   children: React.ReactNode
-  to: string
+  to?: string
 }
 
 export const NavItem: React.FC<NavItemProps> = ({ children, to = "/", ...rest }) => {

@@ -5,13 +5,13 @@ import { isAuthenticated } from '../../utils/authentication'
 import { useAuthentication } from '../queries/authentication'
 
 export const Authenticated: React.FC<{children: React.ReactElement}> = ({children}) => {
-  const authenticated = Boolean(useAuthentication().data)
+  const authenticated = client.authentication.authenticated
   if (authenticated) return children
   return <></>
 }
 
 export const NotAuthenticated: React.FC<{children: React.ReactElement}> = ({children}) => {
-  const authenticated = Boolean(useAuthentication().data)
+  const authenticated = client.authentication.authenticated
   if (!authenticated) return children
   return <></>
 }

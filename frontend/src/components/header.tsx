@@ -1,9 +1,10 @@
-import { Box, Flex, Stack } from "@chakra-ui/react";
+import { Box, Flex, Link, Stack } from "@chakra-ui/react";
 import { Authenticated, NotAuthenticated } from "./auth/authenticated";
 import { NavItem } from "./navbar/nav-item";
+import { useLogoutMutation } from "./queries/authentication";
 
 export const Header = () => {
-
+  const logoutQuery = useLogoutMutation()
   return (
     <Flex
       as="nav"
@@ -31,7 +32,9 @@ export const Header = () => {
             <NavItem to={'/order'}>Commander</NavItem>
             <NavItem to={'/products'}>Produits</NavItem>
             <NavItem to={'/categories'}>Catégories</NavItem>
-            <NavItem to={'/logout'}>Déconnexion</NavItem>
+            <Link as='button' onClick={() => { logoutQuery.mutate() }}>
+              Déconnexion
+            </Link>
           </>
         </Authenticated>
         <NotAuthenticated>
