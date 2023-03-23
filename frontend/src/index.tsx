@@ -14,6 +14,7 @@ import { Order } from './pages/order';
 import { Products } from './pages/products';
 import { CategoriesPage } from './pages/categories';
 import { OrderDetailsPage } from './pages/order-details';
+import ErrorPage from './pages/error-page';
 
 export const queryClient = new QueryClient()
 
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "register",
