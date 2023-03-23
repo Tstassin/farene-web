@@ -15,6 +15,8 @@ import { Products } from './pages/products';
 import { CategoriesPage } from './pages/categories';
 import { OrderDetailsPage } from './pages/order-details';
 import ErrorPage from './pages/error-page';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools/build/lib/devtools';
+import { client } from '../api/api';
 
 export const queryClient = new QueryClient()
 
@@ -66,6 +68,7 @@ const root = createRoot(container!); // createRoot(container!) if you use TypeSc
 
 root.render(
   <QueryClientProvider client={queryClient}>
+    <ReactQueryDevtools initialIsOpen={true} />
     <ChakraProvider>
       <RouterProvider router={router} />
     </ChakraProvider>
