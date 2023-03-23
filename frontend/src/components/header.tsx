@@ -13,7 +13,7 @@ export const Header = () => {
       wrap="wrap"
       w="100%"
       mb={8}
-      p={8}
+      py={8}
     >
       <Box>
         <NavItem to='/' fontSize="lg" fontWeight="bold">
