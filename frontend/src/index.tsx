@@ -4,7 +4,6 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import { Me } from "./pages/me";
 import { Register } from "./components/auth/register";
 import { Login } from "./components/auth/login";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -41,10 +40,6 @@ export const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
-      },
-      {
-        path: "/me",
-        element: <Protected><Me /></Protected>,
       },
       {
         path: "/order",

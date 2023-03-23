@@ -16,7 +16,7 @@ export const Login = () => {
   };
 
   if (authenticationMutation.isSuccess) {
-    navigate('/me')
+    navigate('/')
   }
   
   const formInvalid = Boolean(errors.root?.invalid)

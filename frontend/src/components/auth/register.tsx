@@ -13,7 +13,7 @@ export const Register = () => {
       strategy: 'local',
       ...values
     })
-    navigate('/me/')
+    navigate('/')
   };
 
   return (
