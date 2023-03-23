@@ -1,4 +1,4 @@
-import { Box, Button, Container, FormControl, FormLabel, Heading, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Container, Divider, FormControl, FormLabel, Heading, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { OrderData } from '../../../backend/src/services/orders/orders.schema'
@@ -74,7 +74,7 @@ export const Order = () => {
                 </RadioGroup>
               </FormControl>
               <Heading size={'md'} mb={3} mt={10}>Commande</Heading>
-
+                            <Divider mb={3}/>
               {
                 allProductsQuery.data?.map((product, index) => {
                   return (
