@@ -2,6 +2,7 @@ import { Heading, Text, Link } from "@chakra-ui/react";
 import React from "react";
 import { NavLink, Outlet, useLoaderData } from "react-router-dom";
 import { User } from "../../backend/src/services/users/users.schema";
+import { Authenticated, NotAuthenticated } from "./components/auth/authenticated";
 import { Layout } from "./components/layout";
 
 export const Home: React.FC = () => {
@@ -12,8 +13,21 @@ export const Home: React.FC = () => {
 
   return (
     <>
-      <Heading>Bienvenue dans l'eshop de Farène</Heading>
-      <Text fontSize={'xl'}>Commandez du pain chaque semaine</Text>
+      <Heading mb={5}>Bienvenue dans l'eshop de Farène</Heading>
+      <Authenticated>
+        <>
+          Commander <br />
+          Mes commandes
+        </>
+      </Authenticated>
+      <NotAuthenticated>
+        <>
+          <Text fontSize={'xl'}>
+            <Link as={NavLink} to='/register'><u>Créez un compte</u></Link> pour commander et payer en ligne.
+            <br />
+            <Link as={NavLink} to='/login'><u>Connectez-vous</u></Link> directement si vous en avez déjà un</Text>
+        </>
+      </NotAuthenticated>
     </>
   )
 }
