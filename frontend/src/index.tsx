@@ -16,6 +16,7 @@ import { OrderDetailsPage } from './pages/order-details';
 import ErrorPage from './pages/error-page';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools/build/lib/devtools';
 import { client } from '../api/api';
+import { Authenticated } from './components/auth/authenticated';
 
 export const queryClient = new QueryClient()
 
@@ -39,23 +40,23 @@ export const router = createBrowserRouter([
       },
       {
         path: "me",
-        element: <Me />,
+        element: <Authenticated><Me /></Authenticated>,
       },
       {
         path: "order",
-        element: <Order />,
+        element: <Authenticated><Order /></Authenticated>,
       },
       {
         path: "order/:orderId",
-        element: <OrderDetailsPage />
+        element: <Authenticated><OrderDetailsPage /></Authenticated>
       },
       {
         path: "products",
-        element: <Products />,
+        element: <Authenticated><Products /></Authenticated>,
       },
       {
         path: "categories",
-        element: <CategoriesPage />,
+        element: <Authenticated><CategoriesPage /></Authenticated>,
       },
     ],
   },
