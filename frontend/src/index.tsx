@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { App } from "./app";
+import { Home } from "./home";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -17,19 +17,24 @@ import ErrorPage from './pages/error-page';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools/build/lib/devtools';
 import { client } from '../api/api';
 import { Authenticated } from './components/auth/authenticated';
+import { Layout } from './components/layout';
 
 export const queryClient = new QueryClient()
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <App />,
-    errorElement: <ErrorPage />,
+    element: <Layout />,
     loader: async () => {
       const auth = await client.authentication.reAuthenticate().catch(console.error)
-      return auth?.user || null
+      return null
     },
     children: [
+      {
+        path: "/",
+        element: <Home />,
+        errorElement: <ErrorPage />,
+        
+      },
       {
         path: "register",
         element: <Register />,
@@ -58,8 +63,8 @@ export const router = createBrowserRouter([
         path: "categories",
         element: <Authenticated><CategoriesPage /></Authenticated>,
       },
-    ],
-  },
+    ]
+  }
 ]);
 
 const container = document.getElementById("app");
