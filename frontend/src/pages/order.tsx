@@ -1,6 +1,6 @@
-import { Box, Button, Container, Divider, FormControl, FormLabel, Heading, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Container, Divider, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { OrderData } from '../../../backend/src/services/orders/orders.schema'
 import dayjs from 'dayjs'
 import { useOrderCreateMutation, useOrderDates } from "../queries/orders";
@@ -19,6 +19,13 @@ export const Order = () => {
   const { nextWeek, nextDeliveryDates } = useOrderDates().data || {}
   const methods = useForm<OrderData>();
   const { handleSubmit, register, control, watch, clearErrors, setError, formState: { errors, isDirty } } = methods;
+  const fieldArray = useFieldArray({
+    control,
+    name: "orderItems",
+    rules: { required: true }
+  });
+  console.log(errors)
+
   const allProductsSelected = watch('orderItems')
   const total = allProductsQuery.data && allProductsSelected
     ?
@@ -49,10 +56,11 @@ export const Order = () => {
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <>
-              <FormControl mb={5} isInvalid={false}>
-                <Heading size={'md'} mb={3}>Enlèvement</Heading>
-                <FormLabel>Je viendrai chercher mon pain le</FormLabel>
-                <RadioGroup >
+              <FormControl mb={5} isInvalid={Boolean(errors.delivery)} isRequired>
+                <FormLabel>
+                  <Heading size={'md'} mb={3} display='inline'>Enlèvement</Heading>
+                </FormLabel>
+                <RadioGroup>
                   <Stack >
                     {nextDeliveryDates?.map(
                       date => (
@@ -62,7 +70,7 @@ export const Order = () => {
                           {...register(
                             "delivery",
                             {
-                              required: "Required",
+                              required: "Veuillez choisir une date d'enlèvement",
                             }
                           )}
                         >
@@ -72,21 +80,31 @@ export const Order = () => {
                     )}
                   </Stack>
                 </RadioGroup>
+                <FormHelperText>Choisissez le jour où vous viendrez chercher votre commande</FormHelperText>
+
+                <FormErrorMessage>{errors.delivery?.message?.toString()}</FormErrorMessage>
               </FormControl>
-              <Heading size={'md'} mb={3} mt={10}>Commande</Heading>
-                            <Divider mb={3}/>
-              {
-                allProductsQuery.data?.map((product, index) => {
-                  return (
-                    <ProductInput product={product} key={product.id} />
-                  )
-                })
-              }
+              <FormControl isRequired mt={10} isInvalid={Boolean(errors.orderItems?.root?.type === 'required')}>
+                <FormLabel>
+                  <Heading size={'md'} mb={3} display='inline'>Commande</Heading>
+                </FormLabel>
+                <FormErrorMessage mb={3}>{'Veuillez ajouter au moins un pain à votre commande'}</FormErrorMessage>
+                <Divider mb={3} />
+                {
+                  allProductsQuery.data?.map((product, index) => {
+                    return (
+                      <ProductInput product={product} key={product.id} fieldArray={fieldArray} />
+                    )
+                  })
+                }
+                <FormErrorMessage>{'Veuillez ajouter au moins un pain à votre commande'}</FormErrorMessage>
+              </FormControl>
               <Box display='flex' justifyContent='space-between' mt={6}>
                 <Heading size={'lg'} mb={3}>Total</Heading>
                 <Heading size={'lg'} mb={3}>{total}€</Heading>
               </Box>
-              <br /><br />
+              <br />
+              <br />
               <Box textAlign='right'>
                 <Button type="submit">Valider et Payer</Button>
               </Box>

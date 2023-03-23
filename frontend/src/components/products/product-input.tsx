@@ -1,20 +1,18 @@
 import { Box, Button, Collapse, Divider, Input, InputGroup, InputRightAddon, Slide, Text, useDisclosure } from "@chakra-ui/react"
 import { useState } from "react"
-import { useFieldArray, UseFieldArrayAppend, UseFieldArrayRemove, useFormContext, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form"
+import { useFieldArray, UseFieldArrayAppend, UseFieldArrayRemove, UseFieldArrayReturn, useFormContext, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form"
 import { OrderData } from "../../../../backend/src/services/orders/orders.schema"
 import { Product } from "../../../../backend/src/services/products/products.schema"
 
 interface OrderInputProps {
   product: Product
+  fieldArray: UseFieldArrayReturn<OrderData>
 }
 
-export const ProductInput = ({ product }: OrderInputProps) => {
+export const ProductInput = ({ product, fieldArray }: OrderInputProps) => {
   const { isOpen, onToggle } = useDisclosure()
   const { control, register, watch, setValue, getValues } = useFormContext<OrderData>()
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "orderItems",
-  });
+  const { fields, append, remove } = fieldArray
   const isProductSelected = fields.some(field => field.productId === product.id)
   const fieldArrayIndex = fields.findIndex(field => field.productId === product.id)
   const amount = watch(`orderItems.${fieldArrayIndex}.amount`)
