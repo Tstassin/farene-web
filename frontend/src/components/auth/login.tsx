@@ -34,7 +34,7 @@ export const Login = () => {
 
 
   return (
-    <Container>
+    <>
       <Box mb={10}>
         <Heading>Connectez-vous pour commander</Heading>
         <Text fontSize={'xl'}>Ou commencez par vous <Link as={NavLink} to='/register' textDecoration={'underline'}>créer un compte</Link></Text>
@@ -92,6 +92,6 @@ export const Login = () => {
           </Box>
         </>
       </form>
-    </Container>
+    </>
   );
 }

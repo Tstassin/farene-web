@@ -20,7 +20,7 @@ export const OrderDetailsPage = () => {
   };
 
   return (
-    <Container>
+    <>
       {clientSecret && (
         <Elements options={{
           clientSecret,
@@ -36,6 +36,6 @@ export const OrderDetailsPage = () => {
         </p>
         <Button onClick={() => { paymentIntentCreateMutation.mutate(orderQuery.data?.id!) }}>Payer</Button>
       </QueryStatus>
-    </Container>
+    </>
   )
 }

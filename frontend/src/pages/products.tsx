@@ -7,7 +7,7 @@ export const Products = () => {
   const breadsQuery = useAllProducts()
 
   return (
-    <Container>
+    <>
       <Box mb={10}>
         <Heading>Tous nos produits disponibles</Heading>
         <Text fontSize={'xl'}>Faits maison et ...</Text>
@@ -18,6 +18,6 @@ export const Products = () => {
         {/* <Text fontSize={'xl'}>Fais maison et ...</Text> */}
       </Box>
       <CreateProduct />
-    </Container>
+    </>
   )
 }

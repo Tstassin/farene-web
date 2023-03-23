@@ -1,5 +1,6 @@
+import { Heading, Text, Link } from "@chakra-ui/react";
 import React from "react";
-import { Outlet, useLoaderData } from "react-router-dom";
+import { NavLink, Outlet, useLoaderData } from "react-router-dom";
 import { User } from "../../backend/src/services/users/users.schema";
 import { Layout } from "./components/layout";
 
@@ -11,8 +12,8 @@ export const Home: React.FC = () => {
 
   return (
     <>
-      test
-      test
+      <Heading>Bienvenue dans l'eshop de Farène</Heading>
+      <Text fontSize={'xl'}>Commandez du pain chaque semaine</Text>
     </>
   )
 }

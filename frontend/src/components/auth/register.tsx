@@ -18,7 +18,6 @@ export const Register = () => {
 
   return (
     <>
-      <Container>
         <Heading mb={10}>Créer un compte</Heading>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl mb={5} isInvalid={!!errors.email}>
@@ -49,7 +48,6 @@ export const Register = () => {
             <Button type="submit">Créer un compte</Button>
           </Box>
         </form>
-      </Container>
     </>
   );
 }

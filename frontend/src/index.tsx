@@ -16,7 +16,7 @@ import { OrderDetailsPage } from './pages/order-details';
 import ErrorPage from './pages/error-page';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools/build/lib/devtools';
 import { client } from '../api/api';
-import { Authenticated } from './components/auth/authenticated';
+import { Protected } from './components/auth/authenticated';
 import { Layout } from './components/layout';
 
 export const queryClient = new QueryClient()
@@ -26,42 +26,41 @@ export const router = createBrowserRouter([
     element: <Layout />,
     loader: async () => {
       const auth = await client.authentication.reAuthenticate().catch(console.error)
-      return null
+      return auth?.user || null
     },
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
         element: <Home />,
-        errorElement: <ErrorPage />,
-        
       },
       {
-        path: "register",
+        path: "/register",
         element: <Register />,
       },
       {
-        path: "login",
+        path: "/login",
         element: <Login />,
       },
       {
-        path: "me",
-        element: <Authenticated><Me /></Authenticated>,
+        path: "/me",
+        element: <Protected><Me /></Protected>,
       },
       {
-        path: "order",
-        element: <Authenticated><Order /></Authenticated>,
+        path: "/order",
+        element: <Protected><Order /></Protected>,
       },
       {
-        path: "order/:orderId",
-        element: <Authenticated><OrderDetailsPage /></Authenticated>
+        path: "/order/:orderId",
+        element: <Protected><OrderDetailsPage /></Protected>
       },
       {
-        path: "products",
-        element: <Authenticated><Products /></Authenticated>,
+        path: "/products",
+        element: <Protected><Products /></Protected>,
       },
       {
-        path: "categories",
-        element: <Authenticated><CategoriesPage /></Authenticated>,
+        path: "/categories",
+        element: <Protected><CategoriesPage /></Protected>,
       },
     ]
   }

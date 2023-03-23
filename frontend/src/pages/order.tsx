@@ -41,7 +41,7 @@ export const Order = () => {
   if (orderCreateMutation.isSuccess) navigate(`/order/${orderCreateMutation.data.id}/`)
 
   return (
-    <Container>
+    <>
       <QueryStatus query={allProductsQuery}>
         <Box mb={10}>
           <Heading>Formulaire de commande</Heading>
@@ -99,7 +99,7 @@ export const Order = () => {
           </form>
         </FormProvider>
       </QueryStatus >
-    </Container >
+    </ >
 
   )
 }

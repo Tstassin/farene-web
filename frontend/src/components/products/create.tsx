@@ -16,7 +16,7 @@ export const CreateProduct = () => {
   };
 
   return (
-    <Container>
+    <>
       <Box mb={10}>
         {/* <Heading>Formulaire de commande</Heading>
         <Text fontSize={'xl'}>Semaine du XXXX</Text> */}
@@ -85,6 +85,6 @@ export const CreateProduct = () => {
           </Box>
         </>
       </form>
-    </Container>
+    </>
   )
 }
