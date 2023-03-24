@@ -35,6 +35,7 @@ describe("orders service", () => {
     assert.ok(order.updatedAt !== null);
     assert.ok(order.userId === user.id);
     assert.ok(order.delivery === orderData.delivery);
+    assert.ok(order.price === (orderData.orderItems[0].amount * product.price));
   });
 
   it("rejects if no product in order", async () => {

@@ -1,5 +1,5 @@
 // // For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
-import { resolve } from "@feathersjs/schema";
+import { resolve, virtual } from "@feathersjs/schema";
 import { Type, getValidator, querySyntax } from "@feathersjs/typebox";
 import type { Static } from "@feathersjs/typebox";
 
@@ -7,6 +7,7 @@ import type { HookContext } from "../../declarations";
 import { dataValidator, queryValidator } from "../../validators";
 import { resourceSchema } from "../common/resources";
 import { orderItemSchema, orderItemDataSchema } from "../order-items/order-items.schema";
+import { calculateOrderPrice } from "./orders.utils";
 
 /**
  * Main data model
@@ -17,7 +18,8 @@ export const orderSchema = Type.Intersect([
       id: Type.Number(),
       delivery: Type.String(),
       userId: Type.Number(),
-      orderItems: Type.Array(orderItemSchema)
+      orderItems: Type.Array(orderItemSchema),
+      price: Type.Number()
     },
     { $id: "Order", additionalProperties: false }
   ),
@@ -34,6 +36,7 @@ export const orderResolver = resolve<Order, HookContext>(
       }
       return value;
     },
+    price: virtual(async (order) => calculateOrderPrice(order)) 
   },
   {
     converter: async (data, context) => {
