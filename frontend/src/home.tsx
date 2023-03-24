@@ -16,7 +16,7 @@ export const Home: React.FC = () => {
       <Heading mb={5}>Bienvenue dans l'eshop de Farène</Heading>
       <Authenticated>
         <Text fontSize={'xl'}>
-          <Link as={NavLink} to='/order'><u>Commander</u></Link> du pain pour la semaine prochaine.
+          <Link as={NavLink} to='/order'><u>Commandez</u></Link> du pain pour la semaine prochaine.
         </Text>
       </Authenticated>
       <NotAuthenticated>
@@ -24,7 +24,7 @@ export const Home: React.FC = () => {
           <Text fontSize={'xl'}>
             <Link as={NavLink} to='/register'><u>Créez un compte</u></Link> pour commander et payer en ligne.
             <br />
-            <Link as={NavLink} to='/login'><u>Connectez-vous</u></Link> directement si vous en avez déjà un.
+            <Link as={NavLink} to='/login'><u>Connectez-vous</u></Link> directement.
             </Text>
         </>
       </NotAuthenticated>

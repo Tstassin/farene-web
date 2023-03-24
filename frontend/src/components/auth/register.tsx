@@ -1,6 +1,6 @@
-import { Box, Button, Container, FormControl, FormErrorMessage, FormLabel, Heading, Input } from "@chakra-ui/react";
+import { Box, Button, Container, FormControl, FormErrorMessage, FormLabel, Heading, Input, Link, Text } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { client } from "../../../api/api";
 
 export const Register = () => {
@@ -18,7 +18,8 @@ export const Register = () => {
 
   return (
     <>
-        <Heading mb={10}>Créer un compte</Heading>
+        <Heading>Créez un compte</Heading>
+        <Text fontSize={'xl'} mb={10}>Ou <Link as={NavLink} to='/login' textDecoration={'underline'}>connectez-vous</Link> si vous en avez déjà un</Text>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl mb={5} isInvalid={!!errors.email}>
             <FormLabel>Adresse email</FormLabel>
