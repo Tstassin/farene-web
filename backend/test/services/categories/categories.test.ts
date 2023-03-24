@@ -1,17 +1,13 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.test.html
 import assert from "assert";
 import { app } from "../../../src/app";
+import { cleanAll } from "../../utils/clean-all";
 import { getProductMock } from "../products/products.mocks";
 import { getCategoryMock } from "./categories.mocks";
+import { describe } from "mocha";
 
 describe("categories service", () => {
-  beforeEach(async () => {
-    await app.service("orders")._remove(null);
-    await app.service("order-items")._remove(null);
-    await app.service("products")._remove(null);
-    await app.service("categories")._remove(null);
-    await app.service("users")._remove(null);
-  });
+  beforeEach(cleanAll);
   it("registered the service", () => {
     const service = app.service("categories");
 

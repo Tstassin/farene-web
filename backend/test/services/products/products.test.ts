@@ -4,8 +4,10 @@ import { app } from "../../../src/app";
 import { describe } from "mocha";
 import { getCategoryMock } from "../categories/categories.mocks";
 import { getProductMock } from "./products.mocks";
+import { cleanAll } from "../../utils/clean-all";
 
 describe("products service", () => {
+  beforeEach(cleanAll)
   it("registered the service", () => {
     const service = app.service("products");
 
