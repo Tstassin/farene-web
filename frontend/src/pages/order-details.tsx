@@ -53,7 +53,7 @@ export const OrderDetailsPage = () => {
         <Heading size='md' mb={'20'}>
           Prix Total à payer
           <Text as='span' float={'right'}>
-          {orderQuery.data?.orderItems?.reduce((acc, curr) => (acc + (curr.amount * curr.product.price)), 0)}€
+          {orderQuery.data?.price}€
           </Text>
         </Heading>
         {
