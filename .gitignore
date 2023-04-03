@@ -3,3 +3,5 @@ frontend/dist/
 frontend/.parcel-cache/
 backend/lib/
 *.sqlite
+.env*
+!.env.example

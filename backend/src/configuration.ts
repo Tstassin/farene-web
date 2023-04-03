@@ -14,6 +14,13 @@ export const configurationSchema = Type.Intersect([
     port: Type.Number(),
     public: Type.String(),
   }),
+  Type.Object({
+    notifications: Type.Object({
+      postmark: Type.Object({
+        key: Type.String(),
+      })
+    })
+  })
 ]);
 
 export type ApplicationConfiguration = Static<typeof configurationSchema>;

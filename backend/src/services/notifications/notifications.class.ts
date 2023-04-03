@@ -1,76 +1,66 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.class.html#custom-services
-import type { Id, NullableId, Params, ServiceInterface } from '@feathersjs/feathers'
+import type { Params, ServiceInterface } from '@feathersjs/feathers'
 
 import type { Application } from '../../declarations'
 import type {
   Notification,
   NotificationData,
-  NotificationPatch,
-  NotificationQuery
 } from './notifications.schema'
 
-export type { Notification, NotificationData, NotificationPatch, NotificationQuery }
+import * as postmark from "postmark"
+import { app } from '../../app'
+import { MessageSendingResponse } from 'postmark/dist/client/models'
+
+export type { Notification, NotificationData }
 
 export interface NotificationServiceOptions {
   app: Application
 }
 
-export interface NotificationParams extends Params<NotificationQuery> {}
+export interface NotificationParams extends Params { }
+let postmarkClient: postmark.ServerClient
 
 // This is a skeleton for a custom service class. Remove or add the methods you need here
 export class NotificationService<ServiceParams extends NotificationParams = NotificationParams>
-  implements ServiceInterface<Notification, NotificationData, ServiceParams, NotificationPatch>
+  implements ServiceInterface<MessageSendingResponse, NotificationData, ServiceParams>
 {
-  constructor(public options: NotificationServiceOptions) {}
-
-  async find(_params?: ServiceParams): Promise<Notification[]> {
-    return []
+  constructor(public options: NotificationServiceOptions) {
+      postmarkClient = new postmark.ServerClient(app.get('notifications').postmark.key)
+      // Will validate the API KEY
+      postmarkClient.getServer().catch(err => {
+        console.error('error: Please provide a valid PostMark API Key')
+        throw err
+      })
   }
 
-  async get(id: Id, _params?: ServiceParams): Promise<Notification> {
-    return {
-      id: 0,
-      text: `A new message with ID: ${id}!`
-    }
-  }
-
-  async create(data: NotificationData, params?: ServiceParams): Promise<Notification>
-  async create(data: NotificationData[], params?: ServiceParams): Promise<Notification[]>
+  async create(data: NotificationData, params?: ServiceParams): Promise<MessageSendingResponse>
+  async create(data: NotificationData[], params?: ServiceParams): Promise<MessageSendingResponse[]>
   async create(
     data: NotificationData | NotificationData[],
     params?: ServiceParams
-  ): Promise<Notification | Notification[]> {
+  ): Promise<MessageSendingResponse | MessageSendingResponse[]> {
     if (Array.isArray(data)) {
       return Promise.all(data.map((current) => this.create(current, params)))
     }
 
-    return {
-      id: 0,
-      ...data
-    }
-  }
+    const { from, to, subject, body, links } = data
 
-  // This method has to be added to the 'methods' option to make it available to clients
-  async update(id: NullableId, data: NotificationData, _params?: ServiceParams): Promise<Notification> {
-    return {
-      id: 0,
-      ...data
-    }
-  }
+    let htmlBody = body
 
-  async patch(id: NullableId, data: NotificationPatch, _params?: ServiceParams): Promise<Notification> {
-    return {
-      id: 0,
-      text: `Fallback for ${id}`,
-      ...data
+    if (links && links.length > 0) {
+      for (const link of links) {
+        htmlBody += `<br /><br /><p>${link.text}<br />${link.url}</p>`
+      }
     }
-  }
 
-  async remove(id: NullableId, _params?: ServiceParams): Promise<Notification> {
-    return {
-      id: 0,
-      text: 'removed'
-    }
+    const test: any = {}
+
+    return await postmarkClient.sendEmail({
+      'From': from,
+      'To': to,
+      'Subject': subject,
+      'HtmlBody': htmlBody
+    })
   }
 }
 

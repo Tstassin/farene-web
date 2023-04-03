@@ -5,13 +5,9 @@ import { hooks as schemaHooks } from '@feathersjs/schema'
 
 import {
   notificationDataValidator,
-  notificationPatchValidator,
-  notificationQueryValidator,
   notificationResolver,
   notificationExternalResolver,
   notificationDataResolver,
-  notificationPatchResolver,
-  notificationQueryResolver
 } from './notifications.schema'
 
 import type { Application } from '../../declarations'
@@ -40,21 +36,10 @@ export const notification = (app: Application) => {
       ]
     },
     before: {
-      all: [
-        schemaHooks.validateQuery(notificationQueryValidator),
-        schemaHooks.resolveQuery(notificationQueryResolver)
-      ],
-      find: [],
-      get: [],
       create: [
         schemaHooks.validateData(notificationDataValidator),
         schemaHooks.resolveData(notificationDataResolver)
       ],
-      patch: [
-        schemaHooks.validateData(notificationPatchValidator),
-        schemaHooks.resolveData(notificationPatchResolver)
-      ],
-      remove: []
     },
     after: {
       all: []

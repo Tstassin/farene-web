@@ -1,4 +1,6 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/application.html
+import * as dotenv from 'dotenv'
+dotenv.config()
 import { feathers } from "@feathersjs/feathers";
 import configuration from "@feathersjs/configuration";
 import {

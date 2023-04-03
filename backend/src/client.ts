@@ -8,8 +8,6 @@ import { notificationClient } from './services/notifications/notifications.share
 export type {
   Notification,
   NotificationData,
-  NotificationQuery,
-  NotificationPatch
 } from './services/notifications/notifications.shared'
 
 import { createPaymentIntentClient } from './services/create-payment-intent/create-payment-intent.shared'
