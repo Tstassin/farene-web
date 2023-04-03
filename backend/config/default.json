@@ -37,6 +37,9 @@
   },
   "notifications": {
     "postmark": {
+      "sender": {
+        "email": "mail@farene.be"
+      },
       "key": null
     }
   }

@@ -17,6 +17,9 @@ export const configurationSchema = Type.Intersect([
   Type.Object({
     notifications: Type.Object({
       postmark: Type.Object({
+        sender: Type.Object({
+          email: Type.String()
+        }),
         key: Type.String(),
       })
     })

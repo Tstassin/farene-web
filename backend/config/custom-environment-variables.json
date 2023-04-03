@@ -9,6 +9,9 @@
   },
   "notifications": {
     "postmark": {
+      "sender": {
+        "email": "SENDER_EMAIL"
+      },
       "key": "POSTMARK_KEY"
     }
   }

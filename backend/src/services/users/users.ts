@@ -12,6 +12,7 @@ import {
   userDataResolver,
   userPatchResolver,
   userQueryResolver,
+  User,
 } from "./users.schema";
 
 import type { Application } from "../../declarations";
@@ -21,6 +22,8 @@ import {
   resourceSchemaCreateResolver,
   resourceSchemaUpdateResolver,
 } from "../common/resources";
+import { logErrorToConsole } from "../../hooks/log-error";
+import { sendNewAccountEmail } from "../../hooks/send-new-account-email";
 
 export * from "./users.class";
 export * from "./users.schema";
@@ -70,6 +73,17 @@ export const user = (app: Application) => {
     },
     after: {
       all: [],
+      create: [
+        async (context) => {
+          if (context.result === undefined) {
+            logErrorToConsole('created user but contexts result is undefined ????')
+            return context
+          }
+          const user = context.result as User // No multi = true, no pagination allowed
+          sendNewAccountEmail(user)
+          return context
+        }
+      ]
     },
     error: {
       all: [],
