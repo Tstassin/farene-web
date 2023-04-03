@@ -1,4 +1,4 @@
-import { Box, Button, Container, Divider, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, ListItem, Radio, RadioGroup, Stack, Text, UnorderedList } from "@chakra-ui/react";
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, Container, Divider, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, ListItem, Radio, RadioGroup, Stack, Text, UnorderedList } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { OrderData } from '../../../backend/src/services/orders/orders.schema'
@@ -10,6 +10,7 @@ import fr from 'dayjs/locale/fr'
 import { QueryStatus } from "../components/queries/query-status";
 import { Link, useNavigate } from "react-router-dom";
 import { ProductInput } from "../components/products/product-input";
+import { OrderInstructions } from "../components/orders/order-instructions";
 dayjs.extend(localeData)
 
 export const Order = () => {
@@ -41,7 +42,7 @@ export const Order = () => {
   };
 
   const nextWeekLabel = useMemo(() => {
-    return dayjs(nextWeek, 'YYYY-MM-DD').locale(fr).format('dddd DD MMMM')
+    return dayjs(nextWeek).locale(fr).format('dddd DD MMMM YYYY')
   }, [nextWeek])
 
   if (orderCreateMutation.isSuccess) navigate(`/order/${orderCreateMutation.data.id}/`)
@@ -49,13 +50,26 @@ export const Order = () => {
   return (
     <>
       <QueryStatus query={allProductsQuery}>
-        <Box mb={10}>
+        <Box mb={5}>
           <Heading>Formulaire de commande</Heading>
           <Text fontSize={'xl'}><>Pour la semaine du {nextWeekLabel}</></Text>
           <Text fontSize='sm'>
             Commandes jusque dimanche minuit
           </Text>
         </Box>
+        <Accordion mt={5} allowToggle mb={10}>
+          <AccordionItem>
+            <h2>
+              <AccordionButton>
+                <Box as="span" flex='1' textAlign='left'>
+                  Informations de commande et enlèvement
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}><OrderInstructions /></AccordionPanel>
+          </AccordionItem>
+        </Accordion>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <>
@@ -77,33 +91,12 @@ export const Order = () => {
                             }
                           )}
                         >
-                          {dayjs(date, 'YYYY-MM-DD').locale(fr).format('dddd DD MMMM YYYY')}
+                          {dayjs(date).locale(fr).format('dddd DD MMMM YYYY')}
                         </Radio>
                       )
                     )}
                   </Stack>
                 </RadioGroup>
-                <FormHelperText>
-                  <Box mt={5}>
-                    <UnorderedList>
-                      <ListItem mb={3}>
-                        de <b>11h à 13h chez Farène</b> : <br />
-                        <Text>
-                          Gare de Chastre, quai n°2<br />
-                          Rue Gaston Delvaux, 1A<br />
-                          1450 Chastre
-                        </Text>
-                      </ListItem>
-                      <ListItem mb={3}>
-                        de <b>14h à 21h en point dépot libre accès</b> :<br />
-                        <Text>
-                          Rue des Trois Ruisseaux, 9<br />
-                          1450 Chastre
-                        </Text>
-                      </ListItem>
-                    </UnorderedList>
-                  </Box>
-                </FormHelperText>
                 <FormErrorMessage>{errors.delivery?.message?.toString()}</FormErrorMessage>
               </FormControl>
               <FormControl isRequired mt={10} isInvalid={Boolean(errors.orderItems?.root?.type === 'required')}>
