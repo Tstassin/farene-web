@@ -34,5 +34,10 @@
       "usernameField": "email",
       "passwordField": "password"
     }
+  },
+  "notifications": {
+    "postmark": {
+      "key": null
+    }
   }
 }

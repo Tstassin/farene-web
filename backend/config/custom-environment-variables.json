@@ -6,5 +6,10 @@
   "host": "HOSTNAME",
   "authentication": {
     "secret": "FEATHERS_SECRET"
+  },
+  "notifications": {
+    "postmark": {
+      "key": "POSTMARK_KEY"
+    }
   }
 }

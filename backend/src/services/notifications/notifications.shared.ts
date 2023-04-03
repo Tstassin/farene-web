@@ -4,21 +4,19 @@ import type { ClientApplication } from '../../client'
 import type {
   Notification,
   NotificationData,
-  NotificationPatch,
-  NotificationQuery,
   NotificationService
 } from './notifications.class'
 
-export type { Notification, NotificationData, NotificationPatch, NotificationQuery }
+export type { Notification, NotificationData }
 
 export type NotificationClientService = Pick<
-  NotificationService<Params<NotificationQuery>>,
+  NotificationService<Params>,
   (typeof notificationMethods)[number]
 >
 
 export const notificationPath = 'notifications'
 
-export const notificationMethods = ['find', 'get', 'create', 'patch', 'remove'] as const
+export const notificationMethods = [ 'create'] as const
 
 export const notificationClient = (client: ClientApplication) => {
   const connection = client.get('connection')
