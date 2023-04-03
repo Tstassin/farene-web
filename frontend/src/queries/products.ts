@@ -4,7 +4,20 @@ import { Product, ProductData, ProductPatch } from "../../../backend/src/service
 import { client } from "../../api/api"
 
 export const useAllProducts = () => {
-  return useQuery({ queryKey: ['products'], queryFn: () => client.service('products').find({paginate: false}) })
+  return useQuery({ queryKey: ['products'], queryFn: () => client.service('products').find({ paginate: false }) })
+}
+
+const fetchProduct = async (id: Product['id'] | undefined) => {
+  return typeof id === 'undefined'
+    ? Promise.reject(new Error('Invalid id'))
+    : client.service('products').get(id)
+}
+export const useProduct = (id: Product['id'] | undefined) => {
+  return useQuery({
+    queryKey: ['products', id],
+    queryFn: () => fetchProduct(id),
+    enabled: Boolean(id)
+  })
 }
 
 export const useProductCreateMutation = () => {
@@ -20,7 +33,7 @@ export const useProductCreateMutation = () => {
 
 export const useProductUpdateMutation = () => {
   return useMutation({
-    mutationFn: (values: {id: Product['id']} & ProductPatch) => {
+    mutationFn: (values: { id: Product['id'] } & ProductPatch) => {
       const { id, ...data } = values
       return client.service('products').patch(id, data)
     },

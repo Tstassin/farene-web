@@ -43,7 +43,7 @@ export const productDataValidator = getValidator(
 );
 export const productDataResolver = resolve<Product, HookContext>({});
 
-// Schema for updating existing entries
+// Schema for patching existing entries
 export const productPatchSchema = Type.Partial(productSchema, {
   $id: "ProductPatch",
 });
@@ -53,6 +53,21 @@ export const productPatchValidator = getValidator(
   dataValidator
 );
 export const productPatchResolver = resolve<Product, HookContext>({});
+
+// Schema for updating existing entries
+export const productUpdateSchema = Type.Pick(
+  productSchema,
+  ['id', 'name', 'description', 'price', 'weight', 'categoryId'],
+  {
+    $id: "ProductUpdate",
+  }
+);
+export type ProductUpdate = Static<typeof productUpdateSchema>;
+export const productUpdateValidator = getValidator(
+  productUpdateSchema,
+  dataValidator
+);
+export const productUpdateResolver = resolve<Product, HookContext>({});
 
 // Schema for allowed query properties
 export const productQueryProperties = Type.Pick(productSchema, [

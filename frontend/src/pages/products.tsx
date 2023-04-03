@@ -1,5 +1,6 @@
-import { Box, Container,  Heading,  Text } from "@chakra-ui/react";
+import { Box, Container, Heading, Text } from "@chakra-ui/react";
 import { CreateProduct } from "../components/products/create";
+import { ProductsList } from "../components/products/list";
 import { useAllProducts } from "../queries/products";
 
 export const Products = () => {
@@ -9,15 +10,13 @@ export const Products = () => {
   return (
     <>
       <Box mb={10}>
-        <Heading>Tous nos produits disponibles</Heading>
-        <Text fontSize={'xl'}>Faits maison et ...</Text>
+        <Heading>Tous les produits disponibles</Heading>
       </Box>
-      {breadsQuery.data?.map(bread => <li key={bread.id}>{bread.name}</li>)}
-      <Box mb={10}>
-        <Heading>Ajouter un nouveau produit</Heading>
-        {/* <Text fontSize={'xl'}>Fais maison et ...</Text> */}
+      <Box>
+        <ProductsList />
+        <Heading size='md' mt={10} mb={5}>Ajouter un nouveau produit</Heading>
+        <CreateProduct />
       </Box>
-      <CreateProduct />
     </>
   )
 }

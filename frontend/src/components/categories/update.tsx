@@ -16,8 +16,6 @@ export const UpdateCategory = ({ id }: { id: CategoryUpdate['id'] }) => {
 
   return (
     <Container>
-      <Box mb={10}>
-      </Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         <>
           <CategoryEditComponent form={form} />
