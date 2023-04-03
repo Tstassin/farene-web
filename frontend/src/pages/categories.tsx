@@ -1,6 +1,4 @@
 import { Box, Container, Heading, Text } from '@chakra-ui/react'
-import { Outlet } from 'react-router-dom'
-import { Authenticated } from '../components/auth/authenticated'
 import { CreateCategory } from '../components/categories/create'
 import { CategoriesList } from '../components/categories/list'
 
@@ -9,11 +7,13 @@ export const CategoriesPage = () => {
     <Container>
       <Box mb={10}>
         <Heading>Mes catégories de produits</Heading>
-        <Text fontSize={'xl'}>....</Text> 
-        <CategoriesList />
-        <CreateCategory />
       </Box>
+      <Box>
+      <CategoriesList />
+      <Heading size='md' mt={10} mb={5}>Ajouter une catégorie de produits</Heading>
+      <CreateCategory />
+    </Box>
       
-    </Container>
+    </Container >
   )
 }

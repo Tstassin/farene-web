@@ -35,7 +35,7 @@ export const categoryDataValidator = getValidator(
 );
 export const categoryDataResolver = resolve<Category, HookContext>({});
 
-// Schema for updating existing entries
+// Schema for patching existing entries
 export const categoryPatchSchema = Type.Partial(categorySchema, {
   $id: "CategoryPatch",
 });
@@ -45,6 +45,19 @@ export const categoryPatchValidator = getValidator(
   dataValidator
 );
 export const categoryPatchResolver = resolve<Category, HookContext>({});
+
+
+// Schema for updating existing entries
+export const categoryUpdateSchema = Type.Pick(categorySchema, ['id', 'name'], {
+  $id: "CategoryUpdate",
+});
+export type CategoryUpdate = Static<typeof categoryUpdateSchema>;
+export const categoryUpdateValidator = getValidator(
+  categoryUpdateSchema,
+  dataValidator
+);
+export const categoryUpdateResolver = resolve<Category, HookContext>({});
+
 
 // Schema for allowed query properties
 export const categoryQueryProperties = Type.Pick(categorySchema, [
