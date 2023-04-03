@@ -35,9 +35,8 @@ export const Order = () => {
       .reduce((acc, curr) => acc + curr.amount * curr.price, 0)
     : 0
 
-
   const onSubmit = async (values: OrderData) => {
-    values.orderItems.forEach(orderItem => orderItem.productId = parseInt(orderItem.productId))
+    console.log(values)
     orderCreateMutation.mutate(values)
   };
 
