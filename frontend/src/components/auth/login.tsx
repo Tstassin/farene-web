@@ -18,7 +18,7 @@ export const Login = () => {
   if (authenticationMutation.isSuccess) {
     navigate('/')
   }
-  
+
   const formInvalid = Boolean(errors.root?.invalid)
   const emailInvalid = Boolean(errors.email) || formInvalid
   const passwordInvalid = Boolean(errors.password) || formInvalid
@@ -66,6 +66,7 @@ export const Login = () => {
             </FormErrorMessage>
 
           </FormControl>
+
           <FormControl mb={5} isInvalid={passwordInvalid}>
             <FormLabel>Mot de passe</FormLabel>
             <Input
@@ -92,6 +93,8 @@ export const Login = () => {
           </Box>
         </>
       </form>
+
+      <Text mt={10}>Mot de passe oublié ?  <Link as={NavLink} to='/reset-password' textDecoration={'underline'}>cliquez-ici pour le réinitialiser</Link></Text>
     </>
   );
 }

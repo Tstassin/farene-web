@@ -50,6 +50,9 @@ export const user = (app: Application) => {
       update: [authenticate("jwt")],
       patch: [authenticate("jwt")],
       remove: [authenticate("jwt")],
+      generateResetCode: [],
+      verifyResetCode: [],
+      changePassword: []
     },
     before: {
       all: [

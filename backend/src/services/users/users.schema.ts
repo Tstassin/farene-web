@@ -15,6 +15,7 @@ export const userSchema = Type.Intersect([
       id: Type.Number(),
       email: Type.String(),
       password: Type.Optional(Type.String()),
+      resetCode: Type.Optional(Type.Number())
     },
     { $id: "User", additionalProperties: false }
   ),
@@ -27,6 +28,8 @@ export const userResolver = resolve<User, HookContext>({});
 export const userExternalResolver = resolve<User, HookContext>({
   // The password should never be visible externally
   password: async () => undefined,
+  // The reset code should never be visible externally
+  resetCode:async () => undefined
 });
 
 // Schema for creating new entries

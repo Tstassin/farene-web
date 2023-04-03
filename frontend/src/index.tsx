@@ -17,6 +17,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools/build/lib/dev
 import { client } from '../api/api';
 import { Protected } from './components/auth/authenticated';
 import { Layout } from './components/layout';
+import { ResetPassword } from './components/auth/reset-password';
 
 export const queryClient = new QueryClient()
 
@@ -36,6 +37,10 @@ export const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPassword />,
       },
       {
         path: "/login",

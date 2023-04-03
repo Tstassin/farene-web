@@ -24,6 +24,9 @@ export const userMethods = [
   "create",
   "patch",
   "remove",
+  "generateResetCode",
+  "verifyResetCode",
+  "changePassword"
 ] as const;
 
 export const userClient = (client: ClientApplication) => {

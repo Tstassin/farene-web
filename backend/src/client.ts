@@ -19,6 +19,7 @@ export type {
 import { productClient } from './services/products/products.shared'
 import { orderClient } from './services/orders/orders.shared'
 import { categoryClient } from './services/categories/categories.shared'
+import { userClient } from './services/users/users.shared'
 
 export interface Configuration {
   connection: TransportConnection<ServiceTypes>
@@ -50,5 +51,6 @@ export const createClient = <Configuration = any>(
   client.configure(productClient)
   client.configure(createPaymentIntentClient)
   client.configure(notificationClient)
+  client.configure(userClient)
   return client
 }
