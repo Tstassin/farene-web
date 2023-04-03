@@ -1,26 +1,34 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/client.html
-import { feathers } from "@feathersjs/feathers";
-import type { TransportConnection, Application } from "@feathersjs/feathers";
-import authenticationClient from "@feathersjs/authentication-client";
-import type { AuthenticationClientOptions } from "@feathersjs/authentication-client";
+import { feathers } from '@feathersjs/feathers'
+import type { TransportConnection, Application } from '@feathersjs/feathers'
+import authenticationClient from '@feathersjs/authentication-client'
+import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
-import { createPaymentIntentClient } from "./services/create-payment-intent/create-payment-intent.shared";
+import { notificationClient } from './services/notifications/notifications.shared'
+export type {
+  Notification,
+  NotificationData,
+  NotificationQuery,
+  NotificationPatch
+} from './services/notifications/notifications.shared'
+
+import { createPaymentIntentClient } from './services/create-payment-intent/create-payment-intent.shared'
 export type {
   CreatePaymentIntentData,
-  CreatePaymentIntentReturnData,
-} from "./services/create-payment-intent/create-payment-intent.shared";
+  CreatePaymentIntentReturnData
+} from './services/create-payment-intent/create-payment-intent.shared'
 
-import { productClient } from "./services/products/products.shared";
-import { orderClient } from "./services/orders/orders.shared";
-import { categoryClient } from "./services/categories/categories.shared";
+import { productClient } from './services/products/products.shared'
+import { orderClient } from './services/orders/orders.shared'
+import { categoryClient } from './services/categories/categories.shared'
 
 export interface Configuration {
-  connection: TransportConnection<ServiceTypes>;
+  connection: TransportConnection<ServiceTypes>
 }
 
 export interface ServiceTypes {}
 
-export type ClientApplication = Application<ServiceTypes, Configuration>;
+export type ClientApplication = Application<ServiceTypes, Configuration>
 
 /**
  * Returns a typed client for the backend app.
@@ -34,14 +42,15 @@ export const createClient = <Configuration = any>(
   connection: TransportConnection<ServiceTypes>,
   authenticationOptions: Partial<AuthenticationClientOptions> = {}
 ) => {
-  const client: ClientApplication = feathers();
+  const client: ClientApplication = feathers()
 
-  client.configure(connection);
-  client.set("connection", connection);
-  client.configure(authenticationClient(authenticationOptions));
-  client.configure(orderClient);
-  client.configure(categoryClient);
-  client.configure(productClient);
-  client.configure(createPaymentIntentClient);
-  return client;
-};
+  client.configure(connection)
+  client.set('connection', connection)
+  client.configure(authenticationClient(authenticationOptions))
+  client.configure(orderClient)
+  client.configure(categoryClient)
+  client.configure(productClient)
+  client.configure(createPaymentIntentClient)
+  client.configure(notificationClient)
+  return client
+}
