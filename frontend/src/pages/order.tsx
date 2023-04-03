@@ -11,12 +11,15 @@ import { QueryStatus } from "../components/queries/query-status";
 import { Link, useNavigate } from "react-router-dom";
 import { ProductInput } from "../components/products/product-input";
 import { OrderInstructions } from "../components/orders/order-instructions";
+import { useAllCategories } from "../queries/categories";
+import { category } from "../../../backend/src/services/categories/categories";
 dayjs.extend(localeData)
 
 export const Order = () => {
   const navigate = useNavigate()
   const orderCreateMutation = useOrderCreateMutation()
   const allProductsQuery = useAllProducts()
+  const allCategoriesQuery = useAllCategories()
   const { nextWeek, nextDeliveryDates } = useOrderDates().data || {}
   const methods = useForm<OrderData>();
   const { handleSubmit, register, control, watch, clearErrors, setError, formState: { errors, isDirty } } = methods;
@@ -28,6 +31,10 @@ export const Order = () => {
   console.log(errors)
 
   const allProductsSelected = watch('orderItems')
+  const allProductsByCategory = allCategoriesQuery.data?.map(category => ({
+    ...category,
+    products: allProductsQuery.data?.filter(product => product.categoryId === category.id)
+  }))
   const total = allProductsQuery.data && allProductsSelected
     ?
     allProductsSelected
@@ -49,26 +56,13 @@ export const Order = () => {
   return (
     <>
       <QueryStatus query={allProductsQuery}>
-        <Box mb={5}>
+        <Box mb={10}>
           <Heading>Formulaire de commande</Heading>
           <Text fontSize={'xl'}><>Pour la semaine du {nextWeekLabel}</></Text>
           <Text fontSize='sm'>
             Commandes jusque dimanche minuit
           </Text>
         </Box>
-        <Accordion mt={5} allowToggle mb={10}>
-          <AccordionItem>
-            <h2>
-              <AccordionButton>
-                <Box as="span" flex='1' textAlign='left'>
-                  Informations de commande et enlèvement
-                </Box>
-                <AccordionIcon />
-              </AccordionButton>
-            </h2>
-            <AccordionPanel pb={4}><OrderInstructions /></AccordionPanel>
-          </AccordionItem>
-        </Accordion>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <>
@@ -98,20 +92,41 @@ export const Order = () => {
                 </RadioGroup>
                 <FormErrorMessage>{errors.delivery?.message?.toString()}</FormErrorMessage>
               </FormControl>
+              <Accordion mt={5} allowToggle mb={10}>
+                <AccordionItem>
+                  <h2>
+                    <AccordionButton>
+                      <Box as="span" flex='1' textAlign='left'>
+                        Informations de commande et enlèvement
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4}><OrderInstructions /></AccordionPanel>
+                </AccordionItem>
+              </Accordion>
               <FormControl isRequired mt={10} isInvalid={Boolean(errors.orderItems?.root?.type === 'required')}>
                 <FormLabel>
-                  <Heading size={'md'} mb={3} display='inline'>Commande</Heading>
+                  <Heading size={'lg'} mb={3} display='inline'>Votre Commande</Heading>
                 </FormLabel>
-                <FormErrorMessage mb={3}>{'Veuillez ajouter au moins un pain à votre commande'}</FormErrorMessage>
-                <Divider mb={3} />
+                <FormErrorMessage mb={3}>{'Veuillez ajouter au moins un produit à votre commande'}</FormErrorMessage>
                 {
-                  allProductsQuery.data?.map((product, index) => {
-                    return (
-                      <ProductInput product={product} key={product.id} fieldArray={fieldArray} />
-                    )
+                  allProductsByCategory?.map(category => {
+                    return <>
+                      {category.products?.length > 0 && (
+                        <>
+                          <Heading size='md' mt={5}>{category.name}</Heading>
+                          <Divider my={3} />
+                        </>
+                      )}
+                      {category.products?.map((product, index) => {
+                        return (
+                          <ProductInput product={product} key={product.id} fieldArray={fieldArray} />
+                        )
+                      })}</>
                   })
                 }
-                <FormErrorMessage>{'Veuillez ajouter au moins un pain à votre commande'}</FormErrorMessage>
+                <FormErrorMessage>{'Veuillez ajouter au moins un produit à votre commande'}</FormErrorMessage>
               </FormControl>
               <Box display='flex' justifyContent='space-between' mt={6}>
                 <Heading size={'lg'} mb={3}>Total</Heading>
