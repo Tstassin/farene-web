@@ -1,0 +1,6 @@
+{
+  "port": 3031,
+  "origins": [
+    "https://commande.farene.be"
+  ]
+}
