@@ -5,7 +5,7 @@
   "source": "src/index.html",
   "scripts": {
     "start": "parcel",
-    "build": "parcel build --dist-dir ../backend/public"
+    "build": "parcel build"
   },
   "author": "",
   "license": "ISC",
