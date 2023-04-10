@@ -24,7 +24,6 @@ export const ResetPassword = () => {
 
   const changePasswordMutation = useChangePasswordMutation()
   const changePasswordSubmit = async (values: { password: string }) => {
-    console.log(values)
     const { password } = values;
     (await changePasswordMutation).mutate({ resetCode: resetCode.current!, password, email: email! })
   };

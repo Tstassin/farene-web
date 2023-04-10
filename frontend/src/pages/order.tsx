@@ -1,5 +1,5 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, Container, Divider, FormControl, FormErrorMessage, FormHelperText, FormLabel, Heading, ListItem, Radio, RadioGroup, Stack, Text, UnorderedList } from "@chakra-ui/react";
-import { useMemo } from "react";
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, Container, Divider, FormControl, FormErrorMessage, FormLabel, Heading, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import { Fragment, useMemo } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { OrderData } from '../../../backend/src/services/orders/orders.schema'
 import dayjs from 'dayjs'
@@ -8,11 +8,10 @@ import { useAllProducts } from "../queries/products";
 import localeData from 'dayjs/plugin/localeData'
 import fr from 'dayjs/locale/fr'
 import { QueryStatus } from "../components/queries/query-status";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ProductInput } from "../components/products/product-input";
 import { OrderInstructions } from "../components/orders/order-instructions";
 import { useAllCategories } from "../queries/categories";
-import { category } from "../../../backend/src/services/categories/categories";
 dayjs.extend(localeData)
 
 export const Order = () => {
@@ -28,7 +27,6 @@ export const Order = () => {
     name: "orderItems",
     rules: { required: true }
   });
-  console.log(errors)
 
   const allProductsSelected = watch('orderItems')
   const allProductsByCategory = allCategoriesQuery.data?.map(category => ({
@@ -43,7 +41,6 @@ export const Order = () => {
     : 0
 
   const onSubmit = async (values: OrderData) => {
-    console.log(values)
     orderCreateMutation.mutate(values)
   };
 
@@ -114,10 +111,10 @@ export const Order = () => {
                   allProductsByCategory?.map(category => {
                     return <>
                       {category.products?.length > 0 && (
-                        <>
+                        <Fragment key={category.id}>
                           <Heading size='md' mt={5}>{category.name}</Heading>
                           <Divider my={3} />
-                        </>
+                        </Fragment>
                       )}
                       {category.products?.map((product, index) => {
                         return (

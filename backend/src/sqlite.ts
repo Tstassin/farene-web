@@ -13,7 +13,7 @@ export const sqlite = (app: Application) => {
   const config = app.get("sqlite");
   const db = knex(config!);
   db.raw("PRAGMA foreign_keys = ON;").then(() => {
-    console.log("Foreign Key Check activated.");
+    console.info("Foreign Key Check activated.");
   });
 
   app.set("sqliteClient", db);

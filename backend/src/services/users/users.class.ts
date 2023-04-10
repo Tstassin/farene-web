@@ -25,7 +25,7 @@ export class UserService<
     const user = (await app.service('users').find({ query: { email }, paginate: false }))?.[0]
     if (user && user.email === email) {
       await app.service('users').patch(user.id, { resetCode }).then(user => sendResetCodeEmail(user))
-      console.log(resetCode)
+      console.debug(resetCode)
       return user
     }
     // We don't throw an error to avoid leaking users 

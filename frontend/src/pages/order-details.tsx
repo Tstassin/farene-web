@@ -1,7 +1,6 @@
-import { Button, Container, Divider, Heading, Text } from "@chakra-ui/react";
+import { Button, Divider, Heading, Text } from "@chakra-ui/react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import React, { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import CheckoutForm from "../components/payments/checkout-form";
 import { QueryStatus } from "../components/queries/query-status";

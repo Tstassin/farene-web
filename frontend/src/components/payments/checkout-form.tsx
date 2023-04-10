@@ -8,7 +8,6 @@ import {
 import { Button } from "@chakra-ui/react";
 
 export default function CheckoutForm({ clientSecret }: { clientSecret: string }) {
-  console.log({ clientSecret })
   const stripe = useStripe();
   const elements = useElements();
 
@@ -26,7 +25,6 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
     }
 
     stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      console.log(paymentIntent?.status)
       switch (paymentIntent?.status) {
         case "succeeded":
           setMessage("Payment succeeded!");

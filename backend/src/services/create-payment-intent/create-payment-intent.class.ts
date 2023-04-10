@@ -44,7 +44,6 @@ export class CreatePaymentIntentService<
     data: CreatePaymentIntentData,
     _params?: ServiceParams
   ): Promise<{ clientSecret: Stripe.PaymentIntent["client_secret"] }> {
-    console.log(orderId, data);
 
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({

@@ -1,16 +1,10 @@
 import { Heading, Text, Link, Box } from "@chakra-ui/react";
 import React from "react";
-import { NavLink, Outlet, useLoaderData } from "react-router-dom";
-import { User } from "../../backend/src/services/users/users.schema";
+import { NavLink } from "react-router-dom";
 import { Authenticated, NotAuthenticated } from "./components/auth/authenticated";
-import { Layout } from "./components/layout";
 import { OrderInstructions } from "./components/orders/order-instructions";
 
 export const Home: React.FC = () => {
-  const user = useLoaderData() as User | null
-  if (user) {
-    console.log({ 'logged in': user })
-  }
 
   return (
     <>
