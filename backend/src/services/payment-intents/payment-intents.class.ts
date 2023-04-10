@@ -49,7 +49,7 @@ export class PaymentIntentsService<
     orderId: Order['id'],
     data: PaymentIntentsData,
     _params?: ServiceParams
-  ): Promise<{ clientSecret: Stripe.PaymentIntent["client_secret"] }> {
+  ): Promise<Stripe.Response<Stripe.PaymentIntent>> {
 
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
@@ -60,9 +60,7 @@ export class PaymentIntentsService<
       },
     });
 
-    return {
-      clientSecret: paymentIntent.client_secret,
-    };
+    return paymentIntent;
   }
 }
 

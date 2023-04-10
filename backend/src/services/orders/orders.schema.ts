@@ -19,7 +19,8 @@ export const orderSchema = Type.Intersect([
       delivery: Type.String(),
       userId: Type.Number(),
       orderItems: Type.Array(orderItemSchema),
-      price: Type.Number()
+      price: Type.Number(),
+      paymentIntent: Type.Optional(Type.String())
     },
     { $id: "Order", additionalProperties: false }
   ),

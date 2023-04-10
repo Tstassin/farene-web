@@ -10,8 +10,7 @@ import { dataValidator } from "../../validators";
 // Schema for creating new payment intents
 export const paymentIntentsDataSchema = Type.Object(
   {
-    //orderId: Type.Number(),
-    //userId: Type.Number()
+    orderId: Type.Number()
   },
   { $id: "PaymentIntentsData", additionalProperties: false }
 );
@@ -35,9 +34,7 @@ export const paymentIntentsReturnDataSchema = Type.Object(
   { $id: "PaymentIntentsReturnData", additionalProperties: false }
 );
 
-export type PaymentIntentsReturnData = {
-  clientSecret: Stripe.PaymentIntent["client_secret"];
-};
+export type PaymentIntentsReturnData =  Stripe.PaymentIntent
 export const paymentIntentsReturnDataValidator = getValidator(
   paymentIntentsReturnDataSchema,
   dataValidator
