@@ -14,5 +14,10 @@
       },
       "key": "POSTMARK_KEY"
     }
+  },
+  "payments": {
+    "stripe": {
+      "secret_key": "STRIPE_SECRET_KEY"
+    }
   }
 }

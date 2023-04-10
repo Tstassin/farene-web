@@ -7,6 +7,7 @@ import type {
   ServiceInterface,
 } from "@feathersjs/feathers";
 import Stripe from "stripe";
+import { app } from "../../app";
 import type { Application } from "../../declarations";
 import type {
   CreatePaymentIntentReturnData,
@@ -20,23 +21,26 @@ export interface CreatePaymentIntentServiceOptions {
 }
 
 export interface CreatePaymentIntentParams
-  extends Params<CreatePaymentIntentData> {}
+  extends Params<CreatePaymentIntentData> { }
 
-const stripe = new Stripe("sk_test_tqcvbJtLwKUtMcIQm1bPLZq6", {
-  apiVersion: "2022-11-15",
-});
+let stripe: Stripe
 
 // This is a skeleton for a custom service class. Remove or add the methods you need here
 export class CreatePaymentIntentService<
   ServiceParams extends CreatePaymentIntentParams = CreatePaymentIntentParams
 > implements
-    ServiceInterface<
-      CreatePaymentIntentReturnData,
-      CreatePaymentIntentData,
-      ServiceParams
-    >
+  ServiceInterface<
+    CreatePaymentIntentReturnData,
+    CreatePaymentIntentData,
+    ServiceParams
+  >
 {
-  constructor(public options: CreatePaymentIntentServiceOptions) {}
+  constructor(public options: CreatePaymentIntentServiceOptions) {
+    stripe = new Stripe(app.get('payments').stripe.secret_key, {
+      apiVersion: "2022-11-15",
+    });
+    // TODO : Validate the API KEY
+  }
 
   // This method has to be added to the 'methods' option to make it available to clients
   async update(

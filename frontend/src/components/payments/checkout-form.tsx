@@ -81,10 +81,6 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
-      <LinkAuthenticationElement
-        id="link-authentication-element"
-        onChange={(e) => {setEmail(e.value.email)}}
-      />
       <PaymentElement id="payment-element" options={paymentElementOptions} />
       <Button type="submit" disabled={isLoading || !stripe || !elements} id="submit" mt={10}>
         <span id="button-text">

@@ -23,6 +23,13 @@ export const configurationSchema = Type.Intersect([
         key: Type.String(),
       })
     })
+  }),
+  Type.Object({
+    payments: Type.Object({
+      stripe: Type.Object({
+        secret_key: Type.String()
+      })
+    })
   })
 ]);
 

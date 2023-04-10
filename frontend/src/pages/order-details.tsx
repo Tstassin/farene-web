@@ -9,7 +9,7 @@ import { usePaymentIntentCreateMutation } from "../queries/payment-intents";
 import fr from 'dayjs/locale/fr'
 import dayjs from "dayjs";
 
-const stripePromise = loadStripe("pk_test_1KaGE07z9jcdVCoJgyGByCxa");
+const stripePromise = loadStripe("pk_test_51MrSeeFRObIGk3haL4aTpcyt0kOv4PRmaRB5thGPKt9XKNyB5oNwk95UBIp6N5QQonWWIYqJ7UkQOaBQeJZS40SU00tRSVWn92");
 
 export const OrderDetailsPage = () => {
   const params = useParams()

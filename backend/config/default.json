@@ -36,6 +36,11 @@
       "passwordField": "password"
     }
   },
+  "payments": {
+    "stripe": {
+      "secret_key": null
+    }
+  },
   "notifications": {
     "postmark": {
       "sender": {
