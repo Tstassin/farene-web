@@ -2,9 +2,9 @@
 import assert from "assert";
 import { app } from "../../../src/app";
 
-describe("create-payment-intent service", () => {
+describe("payment-intent service", () => {
   it("registered the service", () => {
-    const service = app.service("create-payment-intent");
+    const service = app.service("payment-intent");
 
     assert.ok(service, "Registered the service");
   });

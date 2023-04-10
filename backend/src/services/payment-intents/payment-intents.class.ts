@@ -10,32 +10,32 @@ import Stripe from "stripe";
 import { app } from "../../app";
 import type { Application } from "../../declarations";
 import type {
-  CreatePaymentIntentReturnData,
-  CreatePaymentIntentData,
-} from "./create-payment-intent.schema";
+  PaymentIntentsReturnData,
+  PaymentIntentsData,
+} from "./payment-intents.schema";
 
-export type { CreatePaymentIntentReturnData, CreatePaymentIntentData };
+export type { PaymentIntentsReturnData, PaymentIntentsData };
 
-export interface CreatePaymentIntentServiceOptions {
+export interface PaymentIntentsServiceOptions {
   app: Application;
 }
 
-export interface CreatePaymentIntentParams
-  extends Params<CreatePaymentIntentData> { }
+export interface PaymentIntentsParams
+  extends Params<PaymentIntentsData> { }
 
 let stripe: Stripe
 
 // This is a skeleton for a custom service class. Remove or add the methods you need here
-export class CreatePaymentIntentService<
-  ServiceParams extends CreatePaymentIntentParams = CreatePaymentIntentParams
+export class PaymentIntentsService<
+  ServiceParams extends PaymentIntentsParams = PaymentIntentsParams
 > implements
   ServiceInterface<
-    CreatePaymentIntentReturnData,
-    CreatePaymentIntentData,
+    PaymentIntentsReturnData,
+    PaymentIntentsData,
     ServiceParams
   >
 {
-  constructor(public options: CreatePaymentIntentServiceOptions) {
+  constructor(public options: PaymentIntentsServiceOptions) {
     stripe = new Stripe(app.get('payments').stripe.secret_key, {
       apiVersion: "2022-11-15",
     });
@@ -45,7 +45,7 @@ export class CreatePaymentIntentService<
   // This method has to be added to the 'methods' option to make it available to clients
   async update(
     orderId: NullableId,
-    data: CreatePaymentIntentData,
+    data: PaymentIntentsData,
     _params?: ServiceParams
   ): Promise<{ clientSecret: Stripe.PaymentIntent["client_secret"] }> {
 

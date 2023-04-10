@@ -1,5 +1,5 @@
 import { notification } from './notifications/notifications'
-import { createPaymentIntent } from './create-payment-intent/create-payment-intent'
+import { paymentIntents } from './payment-intents/payment-intents'
 import { orderItem } from './order-items/order-items'
 import { tag } from './tags/tags'
 import { category } from './categories/categories'
@@ -11,7 +11,7 @@ import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
   app.configure(notification)
-  app.configure(createPaymentIntent)
+  app.configure(paymentIntents)
   app.configure(orderItem)
   app.configure(tag)
   app.configure(category)

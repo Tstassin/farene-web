@@ -10,11 +10,11 @@ export type {
   NotificationData,
 } from './services/notifications/notifications.shared'
 
-import { createPaymentIntentClient } from './services/create-payment-intent/create-payment-intent.shared'
+import { paymentIntentsClient } from './services/payment-intents/payment-intents.shared'
 export type {
-  CreatePaymentIntentData,
-  CreatePaymentIntentReturnData
-} from './services/create-payment-intent/create-payment-intent.shared'
+  PaymentIntentsData,
+  PaymentIntentsReturnData
+} from './services/payment-intents/payment-intents.shared'
 
 import { productClient } from './services/products/products.shared'
 import { orderClient } from './services/orders/orders.shared'
@@ -49,7 +49,7 @@ export const createClient = <Configuration = any>(
   client.configure(orderClient)
   client.configure(categoryClient)
   client.configure(productClient)
-  client.configure(createPaymentIntentClient)
+  client.configure(paymentIntentClient)
   client.configure(notificationClient)
   client.configure(userClient)
   return client

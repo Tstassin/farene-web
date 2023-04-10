@@ -5,7 +5,7 @@ import { client } from "../../api/api"
 export const usePaymentIntentCreateMutation = () => {
   return useMutation({
     mutationFn: (orderId: Order['id']) => {
-      return client.service('create-payment-intent').update(orderId, {})
+      return client.service('payment-intent').update(orderId, {})
     },
   })
 }
