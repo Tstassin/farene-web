@@ -9,6 +9,8 @@ import type {
 import Stripe from "stripe";
 import { app } from "../../app";
 import type { Application } from "../../declarations";
+import { Order } from "../orders/orders.schema";
+import { calculateOrderPrice } from "../orders/orders.utils";
 import type {
   PaymentIntentsReturnData,
   PaymentIntentsData,
@@ -44,14 +46,14 @@ export class PaymentIntentsService<
 
   // This method has to be added to the 'methods' option to make it available to clients
   async update(
-    orderId: NullableId,
+    orderId: Order['id'],
     data: PaymentIntentsData,
     _params?: ServiceParams
   ): Promise<{ clientSecret: Stripe.PaymentIntent["client_secret"] }> {
 
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: 400,
+      amount: await calculateOrderPrice(orderId),
       currency: "eur",
       automatic_payment_methods: {
         enabled: false,
