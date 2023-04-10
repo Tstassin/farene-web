@@ -43,6 +43,11 @@ export const paymentIntents = (app: Application) => {
         schemaHooks.resolveExternal(paymentIntentsExternalResolver),
         schemaHooks.resolveResult(paymentIntentsReturnDataResolver),
       ],
+      get: [
+        authenticate("jwt"),
+        schemaHooks.resolveExternal(paymentIntentsExternalResolver),
+        schemaHooks.resolveResult(paymentIntentsReturnDataResolver),
+      ],
     },
     before: {
       create: [

@@ -16,7 +16,7 @@ export type paymentIntentsClientService = Pick<
 
 export const paymentIntentsPath = "payment-intent";
 
-export const paymentIntentsMethods = ["create"] as const;
+export const paymentIntentsMethods = ["create", "get"] as const;
 
 export const paymentIntentsClient = (client: ClientApplication) => {
   const connection = client.get("connection");

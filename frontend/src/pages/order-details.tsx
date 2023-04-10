@@ -5,7 +5,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import CheckoutForm from "../components/payments/checkout-form";
 import { QueryStatus } from "../components/queries/query-status";
 import { useOrder } from "../queries/orders";
-import { usePaymentIntentCreateMutation } from "../queries/payment-intents";
+import { usePaymentIntentCreateMutation, usePaymentIntentQuery } from "../queries/payment-intents";
 import fr from 'dayjs/locale/fr'
 import dayjs from "dayjs";
 import { PaymentSuccess } from "../components/payments/payment-success";
@@ -17,6 +17,7 @@ export const OrderDetailsPage = () => {
   const [searchParams] = useSearchParams()
   const orderQuery = useOrder(parseInt(params.orderId!), Boolean(params.orderId))
   const paymentIntentCreateMutation = usePaymentIntentCreateMutation()
+  const {data: paymentIntent} = usePaymentIntentQuery(orderQuery.data?.paymentIntent)
   const clientSecret = paymentIntentCreateMutation.data?.client_secret ?? searchParams.get('payment_intent_client_secret')
   const appearance = {
     theme: 'stripe' as const,

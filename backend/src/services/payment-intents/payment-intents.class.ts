@@ -57,6 +57,12 @@ export class PaymentIntentsService<
 
     return paymentIntent;
   }
+
+  // This method has to be added to the 'methods' option to make it available to clients
+  async get(paymentIntentId: Stripe.PaymentIntent['id']): Promise<Stripe.Response<Stripe.PaymentIntent>> {
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    return paymentIntent;
+  }
 }
 
 export const getOptions = (app: Application) => {
