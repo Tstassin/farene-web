@@ -6,8 +6,10 @@ import {
   useElements
 } from "@stripe/react-stripe-js";
 import { Alert, AlertIcon, Button, Stack } from "@chakra-ui/react";
+import { useLocation } from "react-router-dom";
 
 export default function CheckoutForm({ clientSecret }: { clientSecret: string }) {
+  const location = useLocation()
   const stripe = useStripe();
   const elements = useElements();
 
@@ -15,6 +17,8 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
   const [message, setMessage] = useState<null | string>(null);
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const stripe_return_url = new URL(location.pathname, window.location.href).toString()
 
   useEffect(() => {
     if (!stripe) {
@@ -53,12 +57,14 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
     }
 
     setIsLoading(true);
+    setMessage(null)
+    setErrorMessage(null)
 
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000",
+        return_url: stripe_return_url,
       },
     });
 
@@ -85,7 +91,12 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
     <form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement id="payment-element" options={paymentElementOptions} />
       <Stack spacing={3} mt={5}>
-        {message && <div id="payment-message">{message}</div>}
+        {message && (
+          <Alert status="success">
+            <AlertIcon />
+            {message}
+          </Alert>
+        )}
         {errorMessage && (
           <Alert status='error'>
             <AlertIcon />
