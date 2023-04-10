@@ -5,7 +5,7 @@ import {
   useStripe,
   useElements
 } from "@stripe/react-stripe-js";
-import { Button } from "@chakra-ui/react";
+import { Alert, AlertIcon, Button, Stack } from "@chakra-ui/react";
 
 export default function CheckoutForm({ clientSecret }: { clientSecret: string }) {
   const stripe = useStripe();
@@ -13,6 +13,7 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
 
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState<null | string>(null);
+  const [errorMessage, setErrorMessage] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -67,9 +68,9 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
     // be redirected to an intermediate site first to authorize the payment, then
     // redirected to the `return_url`.
     if (error.type === "card_error" || error.type === "validation_error") {
-      error.message && setMessage(error.message);
+      error.message && setErrorMessage(error.message);
     } else {
-      setMessage("An unexpected error occurred.");
+      setErrorMessage("An unexpected error occurred.");
     }
 
     setIsLoading(false);
@@ -78,17 +79,26 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
   const paymentElementOptions = {
     layout: "tabs" as const
   }
+  console.log(message)
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement id="payment-element" options={paymentElementOptions} />
-      <Button type="submit" disabled={isLoading || !stripe || !elements} id="submit" mt={10}>
+      <Stack spacing={3} mt={5}>
+        {message && <div id="payment-message">{message}</div>}
+        {errorMessage && (
+          <Alert status='error'>
+            <AlertIcon />
+            {errorMessage}
+          </Alert>
+        )}
+      </Stack>
+      <Button type="submit" disabled={isLoading || !stripe || !elements} id="submit" mt={5}>
         <span id="button-text">
           {isLoading ? <div className="spinner" id="spinner"></div> : "Payer ma commande"}
         </span>
       </Button>
       {/* Show any error or success messages */}
-      {message && <div id="payment-message">{message}</div>}
     </form>
   );
 }
