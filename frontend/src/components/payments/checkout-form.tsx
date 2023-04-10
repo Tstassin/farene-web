@@ -14,38 +14,11 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
   const elements = useElements();
 
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState<null | string>(null);
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const stripe_return_url = new URL(location.pathname, window.location.href).toString()
 
-  useEffect(() => {
-    if (!stripe) {
-      return;
-    }
-
-    if (!clientSecret) {
-      return;
-    }
-
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      switch (paymentIntent?.status) {
-        case "succeeded":
-          setMessage("Payment succeeded!");
-          break;
-        case "processing":
-          setMessage("Your payment is processing.");
-          break;
-        case "requires_payment_method":
-          setMessage("");
-          break;
-        default:
-          setMessage("Something went wrong.");
-          break;
-      }
-    });
-  }, [stripe]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,7 +30,6 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
     }
 
     setIsLoading(true);
-    setMessage(null)
     setErrorMessage(null)
 
     const { error } = await stripe.confirmPayment({
@@ -85,18 +57,12 @@ export default function CheckoutForm({ clientSecret }: { clientSecret: string })
   const paymentElementOptions = {
     layout: "tabs" as const
   }
-  console.log(message)
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement id="payment-element" options={paymentElementOptions} />
       <Stack spacing={3} mt={5}>
-        {message && (
-          <Alert status="success">
-            <AlertIcon />
-            {message}
-          </Alert>
-        )}
+        
         {errorMessage && (
           <Alert status='error'>
             <AlertIcon />
