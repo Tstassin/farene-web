@@ -17,7 +17,7 @@ export const OrderDetailsPage = () => {
   const [searchParams] = useSearchParams()
   const orderQuery = useOrder(parseInt(params.orderId!), Boolean(params.orderId))
   const paymentIntentCreateMutation = usePaymentIntentCreateMutation()
-  const clientSecret = paymentIntentCreateMutation.data?.clientSecret ?? searchParams.get('payment_intent_client_secret')
+  const clientSecret = paymentIntentCreateMutation.data?.client_secret ?? searchParams.get('payment_intent_client_secret')
   const appearance = {
     theme: 'stripe' as const,
   };

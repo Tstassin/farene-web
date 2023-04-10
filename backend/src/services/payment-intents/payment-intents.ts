@@ -38,24 +38,24 @@ export const paymentIntents = (app: Application) => {
   // Initialize hooks
   app.service(paymentIntentsPath).hooks({
     around: {
-      update: [
+      create: [
         authenticate("jwt"),
         schemaHooks.resolveExternal(paymentIntentsExternalResolver),
         schemaHooks.resolveResult(paymentIntentsReturnDataResolver),
       ],
     },
     before: {
-      update: [
+      create: [
         schemaHooks.validateData(paymentIntentsDataValidator),
         schemaHooks.resolveData(paymentIntentsDataResolver),
       ],
     },
     after: {
-      update: [
+      create: [
         async (context) => {
           if (context.data?.orderId) {
             console.log(context.data)
-            await app.service('orders').patch(context.data.orderId, {paymentIntent: context.result})
+            await app.service('orders').patch(context.data.orderId, {paymentIntent: context.result.id})
           }
           return context
         }
