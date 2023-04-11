@@ -30,4 +30,28 @@ describe("products service", () => {
     assert.ok(product.price === productData.price);
     assert.ok(product.weight === productData.weight);
   });
+  it("rounds prices to two decimals", async () => {
+    const category = await app.service("categories").create(getCategoryMock());
+
+    const product = await app
+      .service("products")
+      .create(getProductMock(category.id, { price: 1 }));
+    assert.ok(product.price === 1);
+
+    const product1 = await app
+      .service("products")
+      .create(getProductMock(category.id, { price: 1.1 }));
+    assert.equal(product1.price, 1.1);
+
+    const product2 = await app
+      .service("products")
+      .create(getProductMock(category.id, { price: 1.12345 }));
+    assert.equal(product2.price, 1.12);
+    assert.equal(product2.price, 1.1200000);
+
+    const product3 = await app
+      .service("products")
+      .create(getProductMock(category.id, { price: 1.10 }));
+    assert.equal(product3.price, 1.1);
+  });
 });

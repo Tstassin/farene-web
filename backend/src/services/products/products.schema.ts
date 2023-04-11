@@ -14,7 +14,7 @@ export const productSchema = Type.Intersect([
       id: Type.Number(),
       name: Type.String(),
       description: Type.String(),
-      price: Type.Number(),
+      price: Type.Number({}),
       weight: Type.Number(),
       categoryId: Type.Number(),
     },
@@ -41,7 +41,9 @@ export const productDataValidator = getValidator(
   productDataSchema,
   dataValidator
 );
-export const productDataResolver = resolve<Product, HookContext>({});
+export const productDataResolver = resolve<Product, HookContext>({
+  price: async (value, data, context) => Math.round(data.price * 100) / 100
+});
 
 // Schema for patching existing entries
 export const productPatchSchema = Type.Partial(productSchema, {
