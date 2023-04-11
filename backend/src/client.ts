@@ -8,8 +8,7 @@ import { stripeWebhooksClient } from './services/stripe-webhooks/stripe-webhooks
 export type {
   StripeWebhooks,
   StripeWebhooksData,
-  StripeWebhooksQuery,
-  StripeWebhooksPatch
+  StripeWebhooksQuery
 } from './services/stripe-webhooks/stripe-webhooks.shared'
 
 import { notificationClient } from './services/notifications/notifications.shared'

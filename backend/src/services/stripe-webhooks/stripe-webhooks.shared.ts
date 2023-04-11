@@ -4,12 +4,11 @@ import type { ClientApplication } from '../../client'
 import type {
   StripeWebhooks,
   StripeWebhooksData,
-  StripeWebhooksPatch,
   StripeWebhooksQuery,
   StripeWebhooksService
 } from './stripe-webhooks.class'
 
-export type { StripeWebhooks, StripeWebhooksData, StripeWebhooksPatch, StripeWebhooksQuery }
+export type { StripeWebhooks, StripeWebhooksData, StripeWebhooksQuery }
 
 export type StripeWebhooksClientService = Pick<
   StripeWebhooksService<Params<StripeWebhooksQuery>>,

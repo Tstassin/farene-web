@@ -20,7 +20,8 @@ export const orderSchema = Type.Intersect([
       userId: Type.Number(),
       orderItems: Type.Array(orderItemSchema),
       price: Type.Number(),
-      paymentIntent: Type.Optional(Type.String())
+      paymentIntent: Type.Optional(Type.String()),
+      paymentSuccess: Type.Integer({ default: 0, minimum: 0, maximum: 1 })
     },
     { $id: "Order", additionalProperties: false }
   ),
@@ -37,7 +38,7 @@ export const orderResolver = resolve<Order, HookContext>(
       }
       return value;
     },
-    price: virtual(async (order) => calculateOrderPrice(order)) 
+    price: virtual(async (order) => calculateOrderPrice(order))
   },
   {
     converter: async (data, context) => {
@@ -79,6 +80,7 @@ export const orderDataResolver = resolve<Order, HookContext>(
 
       return value;
     },
+    paymentSuccess: async () => 0
   },
   {
     converter: async (data) => {

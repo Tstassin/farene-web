@@ -1,11 +1,12 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.class.html#custom-services
 import type { Id, NullableId, Params, ServiceInterface } from '@feathersjs/feathers'
 import Stripe from 'stripe'
+import { app } from '../../app'
 
 import type { Application } from '../../declarations'
 
 type StripeWebhooks = 'ok'
-type StripeWebhooksData = Stripe.Event
+type StripeWebhooksData = Stripe.Event & { data: { object: Stripe.PaymentIntent } }
 type StripeWebhooksQuery = {}
 
 export type { StripeWebhooks, StripeWebhooksData, StripeWebhooksQuery }
@@ -22,13 +23,16 @@ export class StripeWebhooksService<ServiceParams extends StripeWebhooksParams = 
 {
   constructor(public options: StripeWebhooksServiceOptions) { }
 
-  async create(data: StripeWebhooksData, params?: ServiceParams): Promise<StripeWebhooks> {
-    this.handle_webhook(data)
+  async create(event: StripeWebhooksData, params?: ServiceParams): Promise<StripeWebhooks> {
+    this.handle_webhook(event)
     return 'ok'
   }
 
-  async handle_webhook(data: Stripe.Event) {
-    console.log(data.object)
+  async handle_webhook(event: StripeWebhooksData) {
+    if (event.data.object.status === 'succeeded') {
+      const { orderId } = event.data.object.metadata
+      const order = await app.service('orders').patch(orderId, { paymentSuccess: 1 })
+    }
   }
 }
 
