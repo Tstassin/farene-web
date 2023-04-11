@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   PaymentElement,
-  LinkAuthenticationElement,
   useStripe,
   useElements
 } from "@stripe/react-stripe-js";
 import { Alert, AlertIcon, Button, Stack } from "@chakra-ui/react";
-import { useLocation } from "react-router-dom";
+import Stripe from "stripe";
 
-export default function CheckoutForm({ clientSecret }: { clientSecret: string }) {
-  const location = useLocation()
+export default function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
 
-  const [email, setEmail] = useState('');
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
   const [isLoading, setIsLoading] = useState(false);
 
