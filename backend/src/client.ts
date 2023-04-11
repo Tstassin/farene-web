@@ -4,11 +4,16 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
-import { notificationClient } from './services/notifications/notifications.shared'
+import { stripeWebhooksClient } from './services/stripe-webhooks/stripe-webhooks.shared'
 export type {
-  Notification,
-  NotificationData,
-} from './services/notifications/notifications.shared'
+  StripeWebhooks,
+  StripeWebhooksData,
+  StripeWebhooksQuery,
+  StripeWebhooksPatch
+} from './services/stripe-webhooks/stripe-webhooks.shared'
+
+import { notificationClient } from './services/notifications/notifications.shared'
+export type { Notification, NotificationData } from './services/notifications/notifications.shared'
 
 import { paymentIntentsClient } from './services/payment-intents/payment-intents.shared'
 export type {
@@ -49,8 +54,9 @@ export const createClient = <Configuration = any>(
   client.configure(orderClient)
   client.configure(categoryClient)
   client.configure(productClient)
-  client.configure(paymentIntentClient)
+  client.configure(paymentIntentsClient)
   client.configure(notificationClient)
   client.configure(userClient)
+  client.configure(stripeWebhooksClient)
   return client
 }

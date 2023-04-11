@@ -1,3 +1,4 @@
+import { stripeWebhooks } from './stripe-webhooks/stripe-webhooks'
 import { notification } from './notifications/notifications'
 import { paymentIntents } from './payment-intents/payment-intents'
 import { orderItem } from './order-items/order-items'
@@ -10,6 +11,7 @@ import { order } from './orders/orders'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(stripeWebhooks)
   app.configure(notification)
   app.configure(paymentIntents)
   app.configure(orderItem)
