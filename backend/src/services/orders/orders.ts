@@ -59,6 +59,11 @@ export const order = (app: Application) => {
           resourceSchemaCreateResolver
         ),
       ],
+      patch: [
+        authenticate("jwt"),
+        resolveExternal(orderExternalResolver),
+        resolveResult(orderResolver),
+      ],
       getNextDeliveryDates: [authenticate("jwt")],
     },
     before: {
