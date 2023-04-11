@@ -28,7 +28,6 @@ export const sendNewAccountEmail = async (user: User) => {
   }
 };
 export const sendPaymentSuccess = async (user: User, order: Order, receipt_url?: string) => {
-  console.log(order.orderItems)
   const links: Notification['links'] = []
   if (receipt_url) {
     links.push({

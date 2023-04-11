@@ -43,7 +43,6 @@ export const orderResolver = resolve<Order, HookContext>(
   {
     converter: async (data, context) => {
       // We populate all order-items from the order
-      console.log('covnerter ')
       return {
         ...data,
         orderItems: await context.app

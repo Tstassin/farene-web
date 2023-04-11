@@ -55,7 +55,6 @@ export class NotificationService<ServiceParams extends NotificationParams = Noti
     }
     htmlBody += `<br /><br /><p><a href="http://farene.be">Farène microboulangerie</a></p>`
 
-    console.log(htmlBody)
     return await postmarkClient.sendEmail({
       'From': from,
       'To': to,

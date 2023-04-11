@@ -59,7 +59,6 @@ export const paymentIntents = (app: Application) => {
       create: [
         async (context) => {
           if (context.data?.orderId) {
-            console.log(context.data)
             await app.service('orders').patch(context.data.orderId, {paymentIntent: context.result.id})
           }
           return context
