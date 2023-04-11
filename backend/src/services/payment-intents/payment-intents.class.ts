@@ -45,15 +45,26 @@ export class PaymentIntentsService<
   }
 
   // This method has to be added to the 'methods' option to make it available to clients
-  async create({ orderId }: PaymentIntentsData): Promise<Stripe.Response<Stripe.PaymentIntent>> {
-    // Create a PaymentIntent with the order amount and currency
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: await calculateOrderPrice(orderId) * 100,
+  async create({ orderId }: PaymentIntentsData, params: ServiceParams): Promise<Stripe.Response<Stripe.PaymentIntent>> {
+    
+    const orderPrice = await calculateOrderPrice(orderId) * 100
+    const userEmail = params.user?.email
+
+    const paymentIntentCreateData = {
+      amount: orderPrice,
       currency: "eur",
       automatic_payment_methods: {
         enabled: false,
       },
-    });
+      receipt_email: userEmail,
+      metadata: {
+        orderId
+      }
+    }
+    console.log(paymentIntentCreateData)
+    
+    // Create a PaymentIntent with the order amount and currency
+    const paymentIntent = await stripe.paymentIntents.create(paymentIntentCreateData);
 
     return paymentIntent;
   }
