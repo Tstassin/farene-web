@@ -47,11 +47,13 @@ export class NotificationService<ServiceParams extends NotificationParams = Noti
 
     let htmlBody = body
 
+    htmlBody += '---<br />'
     if (links && links.length > 0) {
       for (const link of links) {
-        htmlBody += `<br /><br /><p>${link.text}<br />${link.url}</p>`
+        htmlBody += `<br /><br /><p><a href="${link.url}">${link.text}</a></p>`
       }
     }
+    htmlBody += `<br /><br /><p><a href="http://farene.be">Farène microboulangerie</a></p>`
 
     const test: any = {}
 

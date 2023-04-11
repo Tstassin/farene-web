@@ -4,9 +4,10 @@ import Stripe from 'stripe'
 import { app } from '../../app'
 
 import type { Application } from '../../declarations'
+import { sendPaymentSuccess } from '../../hooks/send-new-account-email'
 
 type StripeWebhooks = 'ok'
-type StripeWebhooksData = Stripe.Event & { data: { object: Stripe.PaymentIntent } }
+type StripeWebhooksData = Stripe.Event & { data: { object: Stripe.PaymentIntent & {receipt_url?: string} } }
 type StripeWebhooksQuery = {}
 
 export type { StripeWebhooks, StripeWebhooksData, StripeWebhooksQuery }
@@ -32,6 +33,8 @@ export class StripeWebhooksService<ServiceParams extends StripeWebhooksParams = 
     if (event.data.object.status === 'succeeded') {
       const { orderId } = event.data.object.metadata
       const order = await app.service('orders').patch(orderId, { paymentSuccess: 1 })
+      const user = await app.service('users').get(order.userId)
+      sendPaymentSuccess(user, order, event.data.object?.receipt_url)
     }
   }
 }
