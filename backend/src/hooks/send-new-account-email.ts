@@ -47,6 +47,7 @@ export const sendPaymentSuccess = async (user: User, order: Order, receipt_url?:
         + '<br>'
         + order.orderItems.map(orderItem => `${orderItem.amount} x ${orderItem.product.name}`).join('<br>')
         + '<br>'
+        + '<br>'
         + 'Prix Total :'
         + '<br>'
         + await calculateOrderPrice(order) + ' €'
