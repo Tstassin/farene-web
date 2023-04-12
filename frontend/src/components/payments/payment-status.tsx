@@ -1,35 +1,42 @@
 import { Alert, AlertIcon, AlertStatus } from "@chakra-ui/react";
 import Stripe from "stripe";
 
-export const PaymentStatus = ({ paymentIntent }: { paymentIntent: Stripe.PaymentIntent }) => {
+export const PaymentStatus = ({ status }: { status: string }) => {
   let message: string
-  let status: AlertStatus
+  let alertStatus: AlertStatus
 
-  switch (paymentIntent.status) {
+  switch (status) {
     case "succeeded":
       message = "Paiement réussi !"
-      status = 'success'
+      alertStatus = 'success'
       break;
     case "processing":
       message = "Paiement en cours de traitement."
-      status = 'loading'
+      alertStatus = 'loading'
       break;
     case "requires_payment_method":
       message = 'En attente de paiement.'
-      status = 'warning'
+      alertStatus = 'warning'
       break;
     case "canceled":
-      message = 'Paiement annulé'
-      status = 'error'
+      message = 'Paiement annulé, veuillez rééssayer.'
+      alertStatus = 'error'
+      break;
+    case "failed":
+      message = 'Paiement annulé, veuillez rééssayer.'
+      alertStatus = 'error'
+      break;
     case "requires_action":
-      message = 'Action requise'
-      status = 'info'
+      message = 'Action requise en attente'
+      alertStatus = 'info'
+      break;
     case "requires_confirmation":
       message = "Confirmation en attente"
-      status = 'info'
+      alertStatus = 'info'
+      break;
     default:
-      message = paymentIntent.status
-      status = 'info'
+      message = status
+      alertStatus = 'info'
       break;
   }
 
@@ -37,7 +44,7 @@ export const PaymentStatus = ({ paymentIntent }: { paymentIntent: Stripe.Payment
       message 
       ?
        (
-        <Alert status={status}>
+        <Alert status={alertStatus}>
           <AlertIcon />
           {message}
         </Alert>

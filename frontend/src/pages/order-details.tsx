@@ -19,6 +19,7 @@ if (process.env.NODE_ENV === 'development') {
 
 export const OrderDetailsPage = () => {
   const params = useParams()
+  const [searchParams] = useSearchParams()
   const orderQuery = useOrder(parseInt(params.orderId!), Boolean(params.orderId))
   const paymentIntentCreateMutation = usePaymentIntentCreateMutation()
   const paymentIntentQuery = usePaymentIntentQuery(orderQuery.data?.paymentIntent)
@@ -26,8 +27,10 @@ export const OrderDetailsPage = () => {
   const appearance = {
     theme: 'stripe' as const,
   };
-  const displayCheckoutForm = paymentIntent?.status === 'canceled' || paymentIntent?.status === 'requires_payment_method'
+  const displayCheckoutForm = paymentIntent?.status !== 'succeeded'
   const displayPayButton = orderQuery.isSuccess && !orderQuery.data.paymentIntent && !paymentIntent
+  const redirectStatus = searchParams.get('redirect_status')
+  const status = orderQuery.data?.paymentSuccess ? 'succeeded' as const : redirectStatus ?? paymentIntent?.status
 
   return (
     <>
@@ -64,8 +67,8 @@ export const OrderDetailsPage = () => {
           </Text>
         </Heading>
         {
-          paymentIntent &&
-          <Stack spacing={3} my={10}><PaymentStatus paymentIntent={paymentIntent} /></Stack>
+          paymentIntent && status && 
+          <Stack spacing={3} my={10}><PaymentStatus status={status} /></Stack>
         }
         {
           displayPayButton && <Button onClick={() => { paymentIntentCreateMutation.mutate(orderQuery.data?.id!) }}>Payer</Button>
