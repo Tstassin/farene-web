@@ -47,13 +47,13 @@ export class NotificationService<ServiceParams extends NotificationParams = Noti
 
     let htmlBody = body
 
-    htmlBody += '<br /><br />---<br />'
+    htmlBody += '<br /><br />---'
     if (links && links.length > 0) {
       for (const link of links) {
-        htmlBody += `<br /><br /><p><a href="${link.url}">${link.text}</a></p>`
+        htmlBody += `<br /><p><a href="${link.url}">${link.text}</a></p>`
       }
     }
-    htmlBody += `<br /><br /><p><a href="http://farene.be">Farène microboulangerie</a></p>`
+    htmlBody += `<br /><p><a href="http://farene.be">Farène microboulangerie</a></p>`
 
     return await postmarkClient.sendEmail({
       'From': from,
