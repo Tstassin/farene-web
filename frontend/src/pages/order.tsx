@@ -37,7 +37,7 @@ export const Order = () => {
     ?
     allProductsSelected
       .map(productSelected => ({ ...productSelected, price: allProductsQuery.data.find(product => productSelected.productId === product.id)?.price ?? 0 }))
-      .reduce((acc, curr) => acc + curr.amount * curr.price, 0)
+      .reduce((acc, curr) => acc + curr.amount * Math.round(curr.price * 100) / 100, 0)
     : 0
 
   const onSubmit = async (values: OrderData) => {

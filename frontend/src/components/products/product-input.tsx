@@ -16,8 +16,7 @@ export const ProductInput = ({ product, fieldArray }: OrderInputProps) => {
   const isProductSelected = fields.some(field => field.productId === product.id)
   const fieldArrayIndex = fields.findIndex(field => field.productId === product.id)
   const amount = watch(`orderItems.${fieldArrayIndex}.amount`)
-  const price = product.price
-  const total = product.price * amount
+  const total = Math.round(Math.round(product.price * 100) / 100 * amount * 100) / 100
 
   return (
     <Box mb={3}>
@@ -81,7 +80,7 @@ const ProductInputDetails = ({ product, onToggle }: ProductInputDetailsProps) =>
         {product.name}
       </Text>
       <Text>Poid: {product.weight}g</Text>
-      <Text>Prix: {product.price}€</Text>
+      <Text>Prix: {Math.round(product.price * 100)/100}€</Text>
       <Box my={3}>
         <Button variant='outline' onClick={onToggle} size='xs' mr={1} flexGrow={0}>Détails</Button>
       </Box>

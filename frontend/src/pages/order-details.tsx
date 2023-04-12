@@ -49,7 +49,7 @@ export const OrderDetailsPage = () => {
                   <li key={orderItem.id}>
                     {orderItem.product.name}
                     <Text textAlign='right'>
-                      {orderItem.amount} x {orderItem.product.price}€ = {orderItem.amount * orderItem.product.price}€
+                      {orderItem.amount} x {Math.round(orderItem.product.price * 100) / 100}€ = {orderItem.amount * Math.round(orderItem.product.price * 100) / 100}€
                     </Text>
                     <Divider mt={5} />
                   </li>
@@ -62,12 +62,15 @@ export const OrderDetailsPage = () => {
 
         <Heading size='md' mb={'10'}>
           Prix Total à payer
-          <Text as='span' float={'right'}>
-            {orderQuery.data?.price}€
-          </Text>
+          {
+            orderQuery.data?.price !== undefined &&
+            <Text as='span' float={'right'}>
+              {Math.round(orderQuery.data.price * 100) / 100}€
+            </Text>
+          }
         </Heading>
         {
-          paymentIntent && status && 
+          paymentIntent && status &&
           <Stack spacing={3} my={10}><PaymentStatus status={status} /></Stack>
         }
         {
