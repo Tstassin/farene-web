@@ -67,9 +67,9 @@ export default function CheckoutForm() {
           </Alert>
         )}
       </Stack>
-      <Button type="submit" disabled={isLoading || !stripe || !elements} id="submit" mt={5}>
+      <Button type="submit" disabled={isLoading || !stripe || !elements} id="submit" mt={5} isLoading={isLoading} loadingText='En cours...'>
         <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : "Payer ma commande"}
+          Payer ma commande
         </span>
       </Button>
       {/* Show any error or success messages */}
