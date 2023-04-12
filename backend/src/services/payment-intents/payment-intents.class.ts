@@ -50,13 +50,11 @@ export class PaymentIntentsService<
     const orderPrice = await calculateOrderPrice(orderId) * 100
     const userEmail = params.user?.email
 
-    const paymentIntentCreateData = {
+    const paymentIntentCreateData: Stripe.PaymentIntentCreateParams = {
       amount: orderPrice,
       currency: "eur",
-      automatic_payment_methods: {
-        enabled: false,
-      },
       receipt_email: userEmail,
+      payment_method_types: ['card', 'bancontact'],
       metadata: {
         orderId
       }
