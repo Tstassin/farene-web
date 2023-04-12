@@ -72,7 +72,7 @@ const root = createRoot(container!); // createRoot(container!) if you use TypeSc
 
 root.render(
   <QueryClientProvider client={queryClient}>
-    <ReactQueryDevtools initialIsOpen={true} />
+    {/* <ReactQueryDevtools initialIsOpen={true} /> */}
     <ChakraProvider>
       <RouterProvider router={router} />
     </ChakraProvider>
