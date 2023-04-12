@@ -30,8 +30,8 @@ export const Header = () => {
         <Authenticated>
           <>
             <NavItem to={'/order'}>Commander</NavItem>
-            <NavItem to={'/products'}>Produits</NavItem>
-            <NavItem to={'/categories'}>Catégories</NavItem>
+            {/* <NavItem to={'/products'}>Produits</NavItem>
+            <NavItem to={'/categories'}>Catégories</NavItem> */}
             <Link as='button' onClick={() => { logoutQuery.mutate() }}>
               Déconnexion
             </Link>
