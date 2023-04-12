@@ -18,9 +18,9 @@ export const Home: React.FC = () => {
         <NotAuthenticated>
           <>
             <Text fontSize={'xl'}>
-              <Link as={NavLink} to='/register'><u>Créez un compte</u></Link> pour commander et payer en ligne.
+              <Link as={NavLink} to='/register'><u>Créez un compte</u></Link> pour commander et payer en ligne.<br />
+              <Link as={NavLink} to='/login'><u>Connectez-vous</u></Link> si vous avez déjà un compte.
               <br />
-              <Link as={NavLink} to='/login'><u>Connectez-vous</u></Link> directement.
             </Text>
           </>
         </NotAuthenticated>
