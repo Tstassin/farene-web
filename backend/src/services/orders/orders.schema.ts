@@ -67,7 +67,7 @@ export const orderDataSchema = Type.Intersect(
       ),
     }),
   ],
-  { $id: "OrderData" }
+  { $id: "OrderData", additionalProperties: false }
 );
 export type OrderData = Static<typeof orderDataSchema>;
 export const orderDataValidator = getValidator(orderDataSchema, dataValidator);
@@ -102,6 +102,24 @@ export const orderPatchValidator = getValidator(
   dataValidator
 );
 export const orderPatchResolver = resolve<Order, HookContext>({});
+
+// Schema for code payment
+export const orderPayWithCodeSchema =
+  Type.Object(
+    {
+      id: orderSchema.properties.id,
+      code: Type.String()
+    },
+    {
+      $id: "OrderPayWithCode", additionalProperties: false
+    }
+  );
+export type OrderPayWithCode = Static<typeof orderPayWithCodeSchema>;
+export const orderPayWithCodeValidator = getValidator(
+  orderPayWithCodeSchema,
+  dataValidator
+);
+export const orderPayWithCodeResolver = resolve<Order, HookContext>({});
 
 // Schema for allowed query properties
 export const orderQueryProperties = Type.Pick(orderSchema, [

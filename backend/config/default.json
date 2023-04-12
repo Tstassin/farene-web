@@ -39,6 +39,9 @@
   "payments": {
     "stripe": {
       "secret_key": null
+    },
+    "b2b": {
+      "code": "MICROBOULANGERIE"
     }
   },
   "notifications": {

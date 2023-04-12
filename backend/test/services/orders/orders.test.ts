@@ -10,7 +10,7 @@ import { getCategoryMock } from "../categories/categories.mocks";
 import { getUserMock } from "../users/users.mocks";
 import { getOrderMock } from "./orders.mocks";
 import { cleanAll } from "../../utils/clean-all";
-import { FeathersError } from "@feathersjs/errors/lib";
+import { FeathersError, PaymentError } from "@feathersjs/errors/lib";
 
 const userTemplate: UserData = { email: "user1@test.com", password: "a" };
 
@@ -223,5 +223,39 @@ describe("orders service", () => {
       assert.match(error.message, /Invalid delivery date or format/);
       return true;
     });
+  });
+
+  it("rejects if payment with code using wrong code", async () => {
+    const user = await app.service("users").create(getUserMock());
+    const category = await app.service("categories").create(getCategoryMock());
+    const product = await app
+      .service("products")
+      .create(getProductMock(category.id));
+
+    const orderData = await getOrderMock(product.id);
+
+    const order = await app.service("orders").create(orderData, { user });
+    const payWithCodeFn = () => app.service("orders").payWithCode( {id: order.id, code: 'BLABLA'});
+
+    await assert.rejects(payWithCodeFn, (err: PaymentError) => {
+      const error = err.toJSON();
+      assert.equal(error.className, 'payment-error');
+      assert.equal(error.code, 402);
+      return true;
+    });
+  });
+  it("sets paymentSuccess to true (1) if payment with code using correct code", async () => {
+    const user = await app.service("users").create(getUserMock());
+    const category = await app.service("categories").create(getCategoryMock());
+    const product = await app
+      .service("products")
+      .create(getProductMock(category.id));
+
+    const orderData = await getOrderMock(product.id);
+
+    const order = await app.service("orders").create(orderData, { user });
+    const orderPayed = await app.service("orders").payWithCode( {id: order.id, code: app.get('payments').b2b.code});
+
+    assert.equal(orderPayed.paymentSuccess, 1)
   });
 });

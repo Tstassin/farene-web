@@ -23,6 +23,7 @@ export const orderMethods = [
   "get",
   "create",
   "getNextDeliveryDates",
+  "payWithCode"
 ] as const;
 
 export const orderClient = (client: ClientApplication) => {

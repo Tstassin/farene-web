@@ -4,11 +4,13 @@ import { KnexService } from "@feathersjs/knex";
 import type { KnexAdapterParams, KnexAdapterOptions } from "@feathersjs/knex";
 
 import type { Application } from "../../declarations";
-import type { Order, OrderData, OrderPatch, OrderQuery } from "./orders.schema";
+import type { Order, OrderData, OrderPatch,  OrderPayWithCode,  OrderQuery } from "./orders.schema";
 import { allowedWeekDays } from "../../config/orders";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import isoWeek from "dayjs/plugin/isoWeek";
+import { app } from "../../app";
+import { PaymentError } from "@feathersjs/errors/lib";
 
 dayjs.extend(utc);
 dayjs.extend(isoWeek);
@@ -33,6 +35,13 @@ export class OrderService<
         d.format("YYYY-MM-DD")
       ),
     };
+  }
+  async payWithCode(data: OrderPayWithCode):Promise<Order> {
+    const {id, code} = data
+    if (code === app.get('payments').b2b.code) {
+      const order = await app.service('orders').patch(id, {paymentSuccess: 1})
+      return order
+    } else throw new PaymentError('Code invalide')
   }
 }
 

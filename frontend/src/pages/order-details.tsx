@@ -1,6 +1,6 @@
-import { Button, Divider, Heading, Stack, Text } from "@chakra-ui/react";
+import { Button, Divider,  Heading, Stack, Text } from "@chakra-ui/react";
 import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { useParams, useSearchParams } from "react-router-dom";
 import CheckoutForm from "../components/payments/checkout-form";
 import { QueryStatus } from "../components/queries/query-status";
@@ -9,8 +9,10 @@ import { usePaymentIntentCreateMutation, usePaymentIntentQuery } from "../querie
 import fr from 'dayjs/locale/fr'
 import dayjs from "dayjs";
 import { PaymentStatus } from "../components/payments/payment-status";
+import { useState } from "react";
+import { PayWithCodeModal } from "../components/payments/pay-with-code-modal";
 
-let stripePromise
+let stripePromise: Promise<Stripe | null>
 if (process.env.NODE_ENV === 'development') {
   stripePromise = loadStripe("pk_test_51MrSeeFRObIGk3haL4aTpcyt0kOv4PRmaRB5thGPKt9XKNyB5oNwk95UBIp6N5QQonWWIYqJ7UkQOaBQeJZS40SU00tRSVWn92");
 } else {
@@ -18,6 +20,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 export const OrderDetailsPage = () => {
+  const [showB2BPayment, setShowB2BPayment] = useState(false)
   const params = useParams()
   const [searchParams] = useSearchParams()
   const orderQuery = useOrder(parseInt(params.orderId!), Boolean(params.orderId))
@@ -27,10 +30,12 @@ export const OrderDetailsPage = () => {
   const appearance = {
     theme: 'stripe' as const,
   };
-  const displayCheckoutForm = paymentIntent?.status !== 'succeeded'
-  const displayPayButton = orderQuery.isSuccess && !orderQuery.data.paymentIntent && !paymentIntent
+
+  const orderPaymentSuccess = Boolean(orderQuery.isSuccess && orderQuery.data.paymentSuccess)
+  const orderPaymentSuccessStatus = orderPaymentSuccess ? 'succeeded' : undefined
   const redirectStatus = searchParams.get('redirect_status')
-  const status = orderQuery.data?.paymentSuccess ? 'succeeded' as const : redirectStatus ?? paymentIntent?.status
+  const paymentIntentStatus = paymentIntent && paymentIntent.status
+  const status = redirectStatus ?? orderPaymentSuccessStatus ?? paymentIntentStatus
 
   return (
     <>
@@ -70,14 +75,16 @@ export const OrderDetailsPage = () => {
           }
         </Heading>
         {
-          paymentIntent && status &&
-          <Stack spacing={3} my={10}><PaymentStatus status={status} /></Stack>
+          status &&
+          <Stack spacing={3} my={10}>
+            <PaymentStatus status={status} />
+          </Stack>
         }
         {
-          displayPayButton && <Button onClick={() => { paymentIntentCreateMutation.mutate(orderQuery.data?.id!) }}>Payer</Button>
+          !paymentIntent && status !== 'succeeded' && <Button colorScheme={"blue"} mr={2} onClick={() => { paymentIntentCreateMutation.mutate(orderQuery.data?.id!) }}>Payer</Button>
         }
         {
-          paymentIntent && displayCheckoutForm && (
+          paymentIntent && status !== 'succeeded' && (
             <>
               <Elements options={{
                 clientSecret: paymentIntent.client_secret ?? undefined,
@@ -89,7 +96,11 @@ export const OrderDetailsPage = () => {
             </>
           )
         }
+        {
+          status !== 'succeeded' && <Button fontSize='sm' variant={'ghost'} color='GrayText' onClick={() => { setShowB2BPayment(true) }}>Payer avec un code professionnel</Button>
+        }
       </QueryStatus>
+      {orderQuery.isSuccess && <PayWithCodeModal orderId={orderQuery.data?.id} isOpen={showB2BPayment} closeAction={() => setShowB2BPayment(false)} />}
     </>
   )
 }

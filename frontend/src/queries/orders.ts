@@ -1,6 +1,6 @@
 import { useMutation, useQuery, UseQueryOptions } from "@tanstack/react-query"
 import { queryClient } from ".."
-import { Order, OrderData, OrderPatch } from "../../../backend/src/services/orders/orders.schema"
+import { Order, OrderData, OrderPatch, OrderPayWithCode } from "../../../backend/src/services/orders/orders.schema"
 import { client } from "../../api/api"
 
 export const useAllOrders = () => {
@@ -29,6 +29,17 @@ export const useOrderCreateMutation = () => {
   return useMutation({
     mutationFn: (data: OrderData) => {
       return client.service('orders').create(data)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['orders'])
+    }
+  })
+}
+
+export const useOrderPayWithCodeMutation = () => {
+  return useMutation({
+    mutationFn: (data: OrderPayWithCode) => {
+      return client.service('orders').payWithCode(data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['orders'])

@@ -9,6 +9,8 @@ import {
   orderExternalResolver,
   orderDataResolver,
   orderQueryResolver,
+  orderPayWithCodeResolver,
+  orderPayWithCodeValidator,
 } from "./orders.schema";
 
 import type { Application } from "../../declarations";
@@ -65,6 +67,13 @@ export const order = (app: Application) => {
         resolveResult(orderResolver),
       ],
       getNextDeliveryDates: [authenticate("jwt")],
+      payWithCode: [
+        authenticate('jwt'),
+        resolveExternal(orderExternalResolver),
+        resolveResult(orderResolver),
+        validateData(orderPayWithCodeValidator),
+        resolveResult(orderPayWithCodeResolver),
+      ]
     },
     before: {
       find: [
