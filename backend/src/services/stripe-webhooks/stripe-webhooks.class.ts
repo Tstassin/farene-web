@@ -4,7 +4,7 @@ import Stripe from 'stripe'
 import { app } from '../../app'
 
 import type { Application } from '../../declarations'
-import { sendPaymentSuccess } from '../../hooks/send-new-account-email'
+import { sendPaymentSuccess } from '../../hooks/send-payment-success'
 
 type StripeWebhooks = 'ok'
 type StripeWebhooksData = Stripe.Event & { data: { object: Stripe.PaymentIntent & {receipt_url?: string} } }
