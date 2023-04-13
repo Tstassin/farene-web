@@ -5,7 +5,7 @@
   "source": "src/index.html",
   "scripts": {
     "start": "parcel",
-    "build": "parcel build"
+    "build": "rm -rf .parcel-cache && parcel build"
   },
   "author": "",
   "license": "ISC",
