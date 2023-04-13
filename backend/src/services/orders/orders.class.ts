@@ -63,11 +63,11 @@ export class OrderService<
 
     // A A-Z sorted array of all products SKU's as keys of objects with amount 0
     // [{sku1 :0}, {sku2: 0}, ...]
-    const productsSkus = await (await app.service('products').find({paginate: false}))
-    .map(p => (p.sku || p.name)).sort().map(sku => ({[sku]: 0}))
+    const productsSkus = await (await app.service('products').find({ paginate: false }))
+      .map(p => (p.sku || p.name)).sort().map(sku => ({ [sku]: 0 }))
 
     // order contains all skus with amount: 0
-    forCsv.forEach(order => {Object.assign(order, ...productsSkus)})
+    forCsv.forEach(order => { Object.assign(order, ...productsSkus) })
 
     // fill order with items ordered using sku's previously filled
     forCsv.forEach(order => {
@@ -78,12 +78,12 @@ export class OrderService<
       //@ts-expect-error
       delete order.orderItems
     })
-    
+
     try {
       const parser = new Parser();
       const csv = parser.parse(forCsv);
       //console.log(csv);
-      return csv
+      return ({ csv })
     } catch (err) {
       console.error(err);
     }

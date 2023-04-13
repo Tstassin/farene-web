@@ -25,6 +25,12 @@ export const useOrderDates = () => {
   })
 }
 
+export const useOrdersExport = () => {
+  return useMutation({
+    mutationFn: () => client.service('orders').exportOrders(),
+  })
+}
+
 export const useOrderCreateMutation = () => {
   return useMutation({
     mutationFn: (data: OrderData) => {

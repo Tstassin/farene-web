@@ -73,6 +73,9 @@ export const order = (app: Application) => {
         resolveResult(orderResolver),
         validateData(orderPayWithCodeValidator),
         resolveResult(orderPayWithCodeResolver),
+      ],
+      exportOrders: [
+        authenticate('jwt'),
       ]
     },
     before: {

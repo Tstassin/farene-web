@@ -18,6 +18,7 @@ import { client } from '../api/api';
 import { Protected } from './components/auth/authenticated';
 import { Layout } from './components/layout';
 import { ResetPassword } from './components/auth/reset-password';
+import { ExportPage } from './pages/export';
 
 export const queryClient = new QueryClient()
 
@@ -61,6 +62,10 @@ export const router = createBrowserRouter([
       {
         path: "/categories",
         element: <Protected><CategoriesPage /></Protected>,
+      },
+      {
+        path: "/export",
+        element: <Protected><ExportPage /></Protected>,
       },
     ]
   }
