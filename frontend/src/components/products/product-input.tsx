@@ -16,7 +16,7 @@ export const ProductInput = ({ product, fieldArray }: OrderInputProps) => {
   const isProductSelected = fields.some(field => field.productId === product.id)
   const fieldArrayIndex = fields.findIndex(field => field.productId === product.id)
   const amount = watch(`orderItems.${fieldArrayIndex}.amount`)
-  const total = Math.round(Math.round(product.price * 100) / 100 * amount * 100) / 100
+  const total = Math.round(Math.round(product.price * 100) / 100 * (isNaN(amount) ? 0 : amount) * 100) / 100
 
   return (
     <Box mb={3}>
