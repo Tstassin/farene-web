@@ -4,7 +4,7 @@ import { KnexService } from "@feathersjs/knex";
 import type { KnexAdapterParams, KnexAdapterOptions } from "@feathersjs/knex";
 
 import type { Application } from "../../declarations";
-import type { Order, OrderData, OrderPatch,  OrderPayWithCode,  OrderQuery } from "./orders.schema";
+import type { Order, OrderData, OrderPatch, OrderPayWithCode, OrderQuery } from "./orders.schema";
 import { allowedWeekDays } from "../../config/orders";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -17,7 +17,7 @@ dayjs.extend(isoWeek);
 
 export type { Order, OrderData, OrderPatch, OrderQuery };
 
-export interface OrderParams extends KnexAdapterParams<OrderQuery> {}
+export interface OrderParams extends KnexAdapterParams<OrderQuery> { }
 
 // By default calls the standard Knex adapter service methods but can be customized with your own functionality.
 export class OrderService<
@@ -36,12 +36,30 @@ export class OrderService<
       ),
     };
   }
-  async payWithCode(data: OrderPayWithCode):Promise<Order> {
-    const {id, code} = data
+  async payWithCode(data: OrderPayWithCode): Promise<Order> {
+    const { id, code } = data
     if (code === app.get('payments').b2b.code) {
-      const order = await app.service('orders').patch(id, {paymentSuccess: 1})
+      const order = await app.service('orders').patch(id, { paymentSuccess: 1 })
       return order
     } else throw new PaymentError('Code invalide')
+  }
+  async exportOrders() {
+    const allOrders = await app.service('orders').find({ query: { paymentSuccess: 1 }, paginate: false })
+    console.log(allOrders)
+    allOrders.forEach(o => {
+      Object.assign(
+        o,
+        ...o.orderItems
+          .map(
+            oI => ({
+              [oI.product.name]: oI.amount
+            })
+          )
+      )
+      //@ts-expect-error
+      delete o['orderItems']
+    })
+    return allOrders
   }
 }
 
@@ -53,3 +71,4 @@ export const getOptions = (app: Application): KnexAdapterOptions => {
     multi: ["remove"],
   };
 };
+
