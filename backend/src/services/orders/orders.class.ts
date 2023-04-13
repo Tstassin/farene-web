@@ -73,7 +73,7 @@ export class OrderService<
     forCsv.forEach(order => {
       order.orderItems.forEach(orderItem => {
         //@ts-expect-error
-        order[orderItem.product.sku] = orderItem.amount
+        order[orderItem.product.sku || orderItem.product.name] = orderItem.amount
       })
       //@ts-expect-error
       delete order.orderItems
