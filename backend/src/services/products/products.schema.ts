@@ -17,6 +17,7 @@ export const productSchema = Type.Intersect([
       price: Type.Number({}),
       weight: Type.Number(),
       categoryId: Type.Number(),
+      sku: Type.String(),
     },
     { $id: "Product", additionalProperties: false }
   ),
@@ -31,7 +32,7 @@ export const productExternalResolver = resolve<Product, HookContext>({});
 // Schema for creating new entries
 export const productDataSchema = Type.Pick(
   productSchema,
-  ["name", "description", "price", "weight", "categoryId"],
+  ["name", "description", "price", "weight", "categoryId", "sku"],
   {
     $id: "ProductData",
   }
@@ -59,7 +60,7 @@ export const productPatchResolver = resolve<Product, HookContext>({});
 // Schema for updating existing entries
 export const productUpdateSchema = Type.Pick(
   productSchema,
-  ['id', 'name', 'description', 'price', 'weight', 'categoryId'],
+  ['id', 'name', 'description', 'price', 'weight', 'categoryId', 'sku'],
   {
     $id: "ProductUpdate",
   }
@@ -76,6 +77,7 @@ export const productQueryProperties = Type.Pick(productSchema, [
   "id",
   "name",
   "categoryId",
+  "sku"
 ]);
 export const productQuerySchema = Type.Intersect(
   [

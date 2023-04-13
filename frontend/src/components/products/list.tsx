@@ -17,6 +17,7 @@ export const ProductsList = () => {
     <QueryStatus query={allProductsQuery}>
       <ul>
         {allProductsQuery.data?.map(product => <li key={product.id}>
+          [{product.sku}]{' '}
           {product.name}
           <Button ml={5} size={'xs'} onClick={() => productRemoveMutation.mutate(product.id)}>Supprimer</Button>
           <Button ml={5} size={'xs'} onClick={() => setShowUpdateModalValue(product.id)}>Modifier</Button>
@@ -31,11 +32,7 @@ export const ProductsList = () => {
           <ModalBody>
             {currentProductQuery.isSuccess && <UpdateProduct id={currentProductQuery.data.id} />}
           </ModalBody>
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={() => setShowUpdateModalValue(undefined)}>
-              Fermer
-            </Button>
-          </ModalFooter>
+          <ModalFooter />
           </QueryStatus>
         </ModalContent>
       </Modal>

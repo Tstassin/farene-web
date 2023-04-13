@@ -22,6 +22,15 @@ export const ProductEditComponent = ({ form }: ProductEditComponentProps) => {
           })}
         />
       </FormControl>
+      <FormControl mb={5} isInvalid={Boolean(errors.name)}>
+        <FormLabel>Code unique</FormLabel>
+        <Input
+          type='text'
+          {...register('sku', {
+            required: 'Ce champ est obligatoire'
+          })}
+        />
+      </FormControl>
       <FormControl mb={5} isInvalid={Boolean(errors.description)}>
         <FormLabel>Description</FormLabel>
         <Input
