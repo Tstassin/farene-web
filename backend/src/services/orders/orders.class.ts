@@ -11,6 +11,8 @@ import utc from "dayjs/plugin/utc";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { app } from "../../app";
 import { PaymentError } from "@feathersjs/errors/lib";
+//@ts-expect-error no types for json2csv
+import { Parser } from '@json2csv/plainjs';
 
 dayjs.extend(utc);
 dayjs.extend(isoWeek);
@@ -23,6 +25,7 @@ export interface OrderParams extends KnexAdapterParams<OrderQuery> { }
 export class OrderService<
   ServiceParams extends Params = OrderParams
 > extends KnexService<Order, OrderData, OrderParams, OrderPatch> {
+
   async getNextDeliveryDates() {
     const now = dayjs().utc();
     const nextOrderWeek = now.endOf("isoWeek").add(1, "day");
@@ -36,6 +39,7 @@ export class OrderService<
       ),
     };
   }
+
   async payWithCode(data: OrderPayWithCode): Promise<Order> {
     const { id, code } = data
     if (code === app.get('payments').b2b.code) {
@@ -43,23 +47,46 @@ export class OrderService<
       return order
     } else throw new PaymentError('Code invalide')
   }
+
   async exportOrders() {
-    const allOrders = await app.service('orders').find({ query: { paymentSuccess: 1 }, paginate: false })
-    console.log(allOrders)
-    allOrders.forEach(o => {
-      Object.assign(
-        o,
-        ...o.orderItems
-          .map(
-            oI => ({
-              [oI.product.name]: oI.amount
-            })
-          )
-      )
+    let allOrders = await app.service('orders').find({ query: { paymentSuccess: 1 }, paginate: false })
+
+    // Base info from order
+    let forCsv = await Promise.all(allOrders.map(async order => (
+      {
+        commande: order.id,
+        date: order.delivery,
+        email: (await app.service('users').get(order.userId)).email,
+        orderItems: order.orderItems
+      }
+    )))
+
+    // A A-Z sorted array of all products SKU's as keys of objects with amount 0
+    // [{sku1 :0}, {sku2: 0}, ...]
+    const productsSkus = await (await app.service('products').find({paginate: false}))
+    .map(p => (p.sku || p.name)).sort().map(sku => ({[sku]: 0}))
+
+    // order contains all skus with amount: 0
+    forCsv.forEach(order => {Object.assign(order, ...productsSkus)})
+
+    // fill order with items ordered using sku's previously filled
+    forCsv.forEach(order => {
+      order.orderItems.forEach(orderItem => {
+        //@ts-expect-error
+        order[orderItem.product.sku] = orderItem.amount
+      })
       //@ts-expect-error
-      delete o['orderItems']
+      delete order.orderItems
     })
-    return allOrders
+    
+    try {
+      const parser = new Parser();
+      const csv = parser.parse(forCsv);
+      //console.log(csv);
+      return csv
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
 
