@@ -53,6 +53,7 @@ export class OrderService<
 
   async exportOrders() {
     let allOrders = await app.service('orders').find({ query: { paymentSuccess: 1 }, paginate: false })
+    const allProducts = await app.service('products').find({ paginate: false })
 
     // Base info from order
     let forCsv = await Promise.all(allOrders.map(async order => (
@@ -75,8 +76,11 @@ export class OrderService<
     // fill order with items ordered using sku's previously filled
     forCsv.forEach(order => {
       order.orderItems.forEach(orderItem => {
-        //@ts-expect-error
-        order[orderItem.product.sku || orderItem.product.name] = orderItem.amount
+        const product = allProducts.find(p => p.id === orderItem.product.id)
+        const sku = product?.sku || orderItem.product.sku || product?.name || orderItem.product.name
+        //@ts-expect-error sku generated cannot be infered as legal key for order object 
+        order[sku] = 
+        orderItem.amount
       })
       //@ts-expect-error
       delete order.orderItems
