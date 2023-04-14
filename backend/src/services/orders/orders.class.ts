@@ -9,6 +9,7 @@ import { allowedWeekDays } from "../../config/orders";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import isoWeek from "dayjs/plugin/isoWeek";
+import fr from "dayjs/locale/fr";
 import { app } from "../../app";
 import { PaymentError } from "@feathersjs/errors/lib";
 //@ts-expect-error no types for json2csv
@@ -62,7 +63,7 @@ export class OrderService<
     let forCsv = await Promise.all(allOrders.map(async order => (
       {
         commande: order.id,
-        date: order.delivery,
+        date: dayjs(order.delivery, 'YYYY-MM-DD').tz('Europe/Paris').locale(fr).format('dddd DD MMMM'),
         email: (await app.service('users').get(order.userId)).email,
         orderItems: order.orderItems
       }
