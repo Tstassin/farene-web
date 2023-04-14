@@ -13,6 +13,7 @@ import { app } from "../../app";
 import { PaymentError } from "@feathersjs/errors/lib";
 //@ts-expect-error no types for json2csv
 import { Parser } from '@json2csv/plainjs';
+import { sendPaymentSuccess } from "../../hooks/send-payment-success";
 
 dayjs.extend(utc);
 dayjs.extend(isoWeek);
@@ -40,10 +41,12 @@ export class OrderService<
     };
   }
 
-  async payWithCode(data: OrderPayWithCode): Promise<Order> {
+  async payWithCode(data: OrderPayWithCode, params: OrderParams): Promise<Order> {
     const { id, code } = data
     if (code === app.get('payments').b2b.code) {
       const order = await app.service('orders').patch(id, { paymentSuccess: 1 })
+      const user = await app.service('users').get(order.userId)
+      await sendPaymentSuccess(user, order)
       return order
     } else throw new PaymentError('Code invalide')
   }
