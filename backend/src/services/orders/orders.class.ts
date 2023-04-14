@@ -22,6 +22,9 @@ export type { Order, OrderData, OrderPatch, OrderQuery };
 
 export interface OrderParams extends KnexAdapterParams<OrderQuery> { }
 
+// TODO : fix this asap, no future-proof at all
+const exportsProductOrder = [5, 4, 9, 8, 2, 3, 6, 7, 10, 11, 12, 24, 25, 26, 16, 17, 13, 15, 18, 19, 20, 21, 22, 23]
+
 // By default calls the standard Knex adapter service methods but can be customized with your own functionality.
 export class OrderService<
   ServiceParams extends Params = OrderParams
@@ -67,10 +70,21 @@ export class OrderService<
 
     // A A-Z sorted array of all products SKU's as keys of objects with amount 0
     // [{sku1 :0}, {sku2: 0}, ...]
-    const productsSkus = await (await app.service('products').find({ paginate: false }))
-      .map(p => (p.sku || p.name)).sort().map(sku => ({ [sku]: 0 }))
+    // If product id's referenced doesn't exist anymore they are thrown
+    const productsSkus = exportsProductOrder
+      .map(pId => allProducts.find(p => p.id === pId)?.sku)
+      .reduce((acc: string[], curr) => curr ? [...acc, curr] : acc, [])
+      .map(sku => ({ [sku]: 0 }))
 
-    // order contains all skus with amount: 0
+    /* const productsSkus = await (
+      await app.service('products')
+        .find({ paginate: false })
+    )
+      .sort(p)
+      .map(p => (p.sku || p.name))
+      .map(sku => ({ [sku]: 0 })) */
+
+    // Each order contains all skus in correct order with amount: 0
     forCsv.forEach(order => { Object.assign(order, ...productsSkus) })
 
     // fill order with items ordered using sku's previously filled
@@ -79,8 +93,8 @@ export class OrderService<
         const product = allProducts.find(p => p.id === orderItem.product.id)
         const sku = product?.sku || orderItem.product.sku || product?.name || orderItem.product.name
         //@ts-expect-error sku generated cannot be infered as legal key for order object 
-        order[sku] = 
-        orderItem.amount
+        order[sku] =
+          orderItem.amount
       })
       //@ts-expect-error
       delete order.orderItems
