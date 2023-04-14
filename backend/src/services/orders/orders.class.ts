@@ -104,7 +104,7 @@ export class OrderService<
       const parser = new Parser();
       const csv = parser.parse(forCsv);
       //console.log(csv);
-      return ({ csv })
+      return ({ csv, forCsv })
     } catch (err) {
       console.error(err);
     }
