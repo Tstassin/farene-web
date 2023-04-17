@@ -235,7 +235,7 @@ describe("orders service", () => {
     const orderData = await getOrderMock(product.id);
 
     const order = await app.service("orders").create(orderData, { user });
-    const payWithCodeFn = () => app.service("orders").payWithCode( {id: order.id, code: 'BLABLA'});
+    const payWithCodeFn = () => app.service("orders").payWithCode( {id: order.id, code: 'BLABLA'}, {});
 
     await assert.rejects(payWithCodeFn, (err: PaymentError) => {
       const error = err.toJSON();
@@ -254,7 +254,7 @@ describe("orders service", () => {
     const orderData = await getOrderMock(product.id);
 
     const order = await app.service("orders").create(orderData, { user });
-    const orderPayed = await app.service("orders").payWithCode( {id: order.id, code: app.get('payments').b2b.code});
+    const orderPayed = await app.service("orders").payWithCode( {id: order.id, code: app.get('payments').b2b.code}, {});
 
     assert.equal(orderPayed.paymentSuccess, 1)
   });

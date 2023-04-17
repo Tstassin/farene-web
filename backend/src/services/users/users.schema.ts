@@ -13,8 +13,10 @@ export const userSchema = Type.Intersect([
   Type.Object(
     {
       id: Type.Number(),
-      email: Type.String(),
-      password: Type.Optional(Type.String()),
+      email: Type.String({ format: 'email' }),
+      firstName: Type.Optional(Type.String()),
+      lastName: Type.Optional(Type.String()),
+      password: Type.Optional(Type.String({ minLength: 1 })),
       resetCode: Type.Optional(Type.Number())
     },
     { $id: "User", additionalProperties: false }
@@ -29,12 +31,12 @@ export const userExternalResolver = resolve<User, HookContext>({
   // The password should never be visible externally
   password: async () => undefined,
   // The reset code should never be visible externally
-  resetCode:async () => undefined
+  resetCode: async () => undefined
 });
 
 // Schema for creating new entries
-export const userDataSchema = Type.Pick(userSchema, ["email", "password"], {
-  $id: "UserData",
+export const userDataSchema = Type.Pick(userSchema, ["email", "password", "firstName", "lastName"], {
+  $id: "UserData", additionalProperties: false
 });
 export type UserData = Static<typeof userDataSchema>;
 export const userDataValidator = getValidator(userDataSchema, dataValidator);
@@ -43,8 +45,8 @@ export const userDataResolver = resolve<User, HookContext>({
 });
 
 // Schema for updating existing entries
-export const userPatchSchema = Type.Partial(userSchema, {
-  $id: "UserPatch",
+export const userPatchSchema = Type.Pick(userSchema, ["password", "firstName", "lastName", "resetCode"], {
+  $id: "UserPatch", additionalProperties: false
 });
 export type UserPatch = Static<typeof userPatchSchema>;
 export const userPatchValidator = getValidator(userPatchSchema, dataValidator);
