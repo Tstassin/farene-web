@@ -55,12 +55,16 @@ export class NotificationService<ServiceParams extends NotificationParams = Noti
     }
     htmlBody += `<br /><p><a href="http://farene.be">Farène microboulangerie</a></p>`
 
-    return await postmarkClient.sendEmail({
+    return await this._sendEmail({
       'From': from,
       'To': to,
       'Subject': subject,
       'HtmlBody': htmlBody
     })
+  }
+
+  async _sendEmail(email: postmark.Models.Message):Promise<postmark.Models.MessageSendingResponse> {
+    return await postmarkClient.sendEmail(email)
   }
 }
 
