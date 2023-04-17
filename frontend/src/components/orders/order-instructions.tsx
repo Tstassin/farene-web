@@ -3,12 +3,12 @@ import { Box, Heading, ListItem, Text, UnorderedList } from "@chakra-ui/react"
 export const OrderInstructions = () => {
   return (
     <Box>
-      <Heading size={'sm'} mb={3}>Commandes</Heading>
+      <Heading size={'sm'} mb={3}>Commandes chaque semaine</Heading>
       <Text mb={6}>
         Les commandes sont ouvertes chaque semaine pour la semaine suivante.
         Les commandes se clôturent tous les dimanches à minuit.
       </Text>
-      <Heading size={'sm'} mb={3}>Enlèvement</Heading>
+      <Heading size={'sm'} mb={3}>Enlèvement les Mardi et Jeudi</Heading>
       <Text mb={6}>
         <UnorderedList>
           <ListItem mb={3}>
