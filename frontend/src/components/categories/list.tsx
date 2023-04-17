@@ -16,7 +16,7 @@ export const CategoriesList = () => {
       <ul>
         {allCategoriesQuery.data?.map(category => <li key={category.id}>
           {category.name}
-          <Button ml={5} size={'xs'} onClick={() => categoryRemoveMutation.mutate(category.id)}>Supprimer</Button>
+          {/* <Button ml={5} size={'xs'} onClick={() => categoryRemoveMutation.mutate(category.id)}>Supprimer</Button> */}
           <Button ml={5} size={'xs'} onClick={() => setShowUpdateModalValue(category.id)}>Modifier</Button>
         </li>)}
       </ul>
