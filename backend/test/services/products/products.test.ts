@@ -29,6 +29,7 @@ describe("products service", () => {
     assert.ok(product.createdAt === product.updatedAt);
     assert.ok(product.price === productData.price);
     assert.ok(product.weight === productData.weight);
+    assert.equal(product.disabled, productData.disabled);
   });
   it("rounds prices to two decimals", async () => {
     const category = await app.service("categories").create(getCategoryMock());
@@ -53,5 +54,13 @@ describe("products service", () => {
       .service("products")
       .create(getProductMock(category.id, { price: 1.10 }));
     assert.equal(product3.price, 1.1);
+
+    const patchedPrice = await app.service('products').patch(product3.id, {price: 2000.233})
+    assert.equal(patchedPrice.price, 2000.23);
+    const {createdAt, updatedAt, id, ...updateProductData} = product3
+
+    const updatedPrice = await app.service('products').update(product3.id, {...updateProductData, price: 2000.233})
+    assert.equal(updatedPrice.price, 2000.23);
+
   });
 });

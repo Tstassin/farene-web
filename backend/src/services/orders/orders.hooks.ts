@@ -36,9 +36,11 @@ export const checkDeliveryDate = async (
 ) => {
   if (Array.isArray(context.data)) {
     throw new BadRequest("Please create one order at a time");
-  }
+  } 
+  if (!context.data) throw new BadRequest('No data provided to checkDeliveryDate method')
+  if(!('delivery' in context.data )) throw new BadRequest('No delivery date provided to checkDelviveryDate method')
 
-  const deliveryDate = context.data?.delivery;
+  const deliveryDate = context.data.delivery;
   if (!dayjs(deliveryDate, "YYYY-MM-DD", true).isValid()) {
     throw new BadRequest("Invalid delivery date or format :" + deliveryDate);
   }

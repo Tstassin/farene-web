@@ -7,7 +7,7 @@ import { noEmails } from "../../utils/no-emails";
 import { getUserMock } from "./users.mocks";
 import { describe } from 'mocha'
 
-describe.only("users service", () => {
+describe("users service", () => {
   before(noEmails)
   beforeEach(cleanAll)
   it("registered the service", () => {
@@ -15,7 +15,7 @@ describe.only("users service", () => {
 
     assert.ok(service, "Registered the service");
   });
-  describe.only('Create', async () => {
+  describe('Create', async () => {
     it("creates a user with all info", async () => {
       const service = app.service("users");
       const userData = getUserMock();

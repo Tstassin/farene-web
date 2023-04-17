@@ -19,7 +19,7 @@ import { CategoryService, getOptions } from "./categories.class";
 import { categoryPath, categoryMethods } from "./categories.shared";
 import {
   resourceSchemaCreateResolver,
-  resourceSchemaUpdateResolver,
+  resourceSchemaPatchResolver,
 } from "../common/resources";
 
 export * from "./categories.class";
@@ -61,7 +61,7 @@ export const category = (app: Application) => {
         schemaHooks.validateData(categoryPatchValidator),
         schemaHooks.resolveData(
           categoryPatchResolver,
-          resourceSchemaUpdateResolver
+          resourceSchemaPatchResolver
         ),
       ],
       remove: [],

@@ -16,6 +16,7 @@ export const logErrorToConsole = (error: any) => {
   if (typeof error === 'string') logger.error(error)
   else {
     const { code, message } = error;
+    //console.log(error)
     logger.error({ code, message });
   
     // Log validation errors

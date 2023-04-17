@@ -23,6 +23,7 @@ export const productMethods = [
   "get",
   "create",
   "patch",
+  "update",
   "remove",
 ] as const;
 

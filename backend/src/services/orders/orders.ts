@@ -11,6 +11,7 @@ import {
   orderQueryResolver,
   orderPayWithCodeResolver,
   orderPayWithCodeValidator,
+  orderPatchValidator,
 } from "./orders.schema";
 
 import type { Application } from "../../declarations";
@@ -18,7 +19,7 @@ import { OrderService, getOptions } from "./orders.class";
 import { orderPath, orderMethods } from "./orders.shared";
 import { authenticate } from "@feathersjs/authentication/";
 import {
-  resourceSchemaCreateResolver,
+  resourceSchemaCreateResolver, resourceSchemaPatchResolver,
 } from "../common/resources";
 import { checkDeliveryDate, createOrderItems } from "./orders.hooks";
 
@@ -87,6 +88,10 @@ export const order = (app: Application) => {
         validateQuery(orderQueryValidator),
         resolveQuery(orderQueryResolver),
       ],
+      patch: [
+        validateData(orderPatchValidator),
+        resolveData(resourceSchemaPatchResolver)
+      ]
     },
     after: {},
     error: {},

@@ -7,7 +7,8 @@ export const baseProductMock: ProductData = {
   weight: 900,
   price: 5,
   categoryId: 1,
-  sku: 'PE'
+  sku: 'PE',
+  disabled: 0
 };
 export const getProductMock = (
   categoryId: Category["id"],

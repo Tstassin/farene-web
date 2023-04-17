@@ -20,7 +20,7 @@ import { UserService, getOptions } from "./users.class";
 import { userPath, userMethods } from "./users.shared";
 import {
   resourceSchemaCreateResolver,
-  resourceSchemaUpdateResolver,
+  resourceSchemaPatchResolver,
 } from "../common/resources";
 import { logErrorToConsole } from "../../hooks/log-error";
 import { sendNewAccountEmail } from "../../hooks/send-new-account-email";
@@ -69,7 +69,7 @@ export const user = (app: Application) => {
         schemaHooks.validateData(userPatchValidator),
         schemaHooks.resolveData(
           userPatchResolver,
-          resourceSchemaUpdateResolver
+          resourceSchemaPatchResolver
         ),
       ],
       remove: [],

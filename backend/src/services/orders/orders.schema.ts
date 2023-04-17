@@ -92,10 +92,29 @@ export const orderDataResolver = resolve<Order, HookContext>(
   }
 );
 
-// Schema for updating existing entries
-export const orderPatchSchema = Type.Partial(orderSchema, {
-  $id: "OrderPatch",
-});
+// Schema for patching existing entries
+// Only paymentSuccess and paymentIntent allowed atm
+// They cannot be 'undone', they must be patched to a value
+export const orderPatchSchema =
+  Type.Partial(
+    Type.Intersect(
+      [
+        Type.Pick(
+          orderSchema,
+          ['paymentSuccess'],
+        ),
+        Type.Required(
+          Type.Pick(
+            orderSchema,
+            ['paymentIntent'],
+          )
+        ),
+      ]
+    ),
+    {
+      $id: "OrderPatch", additionalProperties: false
+    }
+  );
 export type OrderPatch = Static<typeof orderPatchSchema>;
 export const orderPatchValidator = getValidator(
   orderPatchSchema,

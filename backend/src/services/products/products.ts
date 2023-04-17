@@ -12,6 +12,8 @@ import {
   productDataResolver,
   productPatchResolver,
   productQueryResolver,
+  productUpdateValidator,
+  productUpdateResolver,
 } from "./products.schema";
 
 import type { Application } from "../../declarations";
@@ -19,6 +21,7 @@ import { ProductService, getOptions } from "./products.class";
 import { productPath, productMethods } from "./products.shared";
 import {
   resourceSchemaCreateResolver,
+  resourceSchemaPatchResolver,
   resourceSchemaUpdateResolver,
 } from "../common/resources";
 
@@ -61,6 +64,13 @@ export const product = (app: Application) => {
         schemaHooks.validateData(productPatchValidator),
         schemaHooks.resolveData(
           productPatchResolver,
+          resourceSchemaPatchResolver
+        ),
+      ],
+      update: [
+        schemaHooks.validateData(productUpdateValidator),
+        schemaHooks.resolveData(
+          productUpdateResolver,
           resourceSchemaUpdateResolver
         ),
       ],

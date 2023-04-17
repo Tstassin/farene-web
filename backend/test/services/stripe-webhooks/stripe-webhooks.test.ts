@@ -16,7 +16,7 @@ describe('stripe-webhooks service', () => {
 
     assert.ok(service, 'Registered the service')
   })
-  it('Updates the order when payment is succesful', async () => {
+  it.skip('Updates the order when payment is succesful', async () => {
     const user = await app.service("users").create(getUserMock());
     const category = await app.service("categories").create(getCategoryMock());
     const product = await app

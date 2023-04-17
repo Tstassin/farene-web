@@ -17,6 +17,7 @@ export const ProductsList = () => {
     <QueryStatus query={allProductsQuery}>
       <ul>
         {allProductsQuery.data?.map(product => <li key={product.id}>
+          {product.disabled ? 'X ' : '✓ '}
           [{product.sku}]{' '}
           {product.name}
           {/* <Button ml={5} size={'xs'} onClick={() => productRemoveMutation.mutate(product.id)}>Supprimer</Button> */}

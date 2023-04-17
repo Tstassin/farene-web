@@ -14,10 +14,11 @@ export const productSchema = Type.Intersect([
       id: Type.Number(),
       name: Type.String(),
       description: Type.String(),
-      price: Type.Number({}),
+      price: Type.Number(),
       weight: Type.Number(),
       categoryId: Type.Number(),
       sku: Type.String(),
+      disabled: Type.Integer({ default: 0, minimum: 0, maximum: 1 })
     },
     { $id: "Product", additionalProperties: false }
   ),
@@ -32,9 +33,9 @@ export const productExternalResolver = resolve<Product, HookContext>({});
 // Schema for creating new entries
 export const productDataSchema = Type.Pick(
   productSchema,
-  ["name", "description", "price", "weight", "categoryId", "sku"],
+  ["name", "description", "price", "weight", "categoryId", "sku", "disabled"],
   {
-    $id: "ProductData",
+    $id: "ProductData", additionalProperties: false
   }
 );
 export type ProductData = Static<typeof productDataSchema>;
@@ -43,26 +44,33 @@ export const productDataValidator = getValidator(
   dataValidator
 );
 export const productDataResolver = resolve<Product, HookContext>({
-  price: async (value, data, context) => Math.round(data.price * 100) / 100
+  price: async newPrice => Math.round(newPrice! * 100) / 100
 });
 
 // Schema for patching existing entries
-export const productPatchSchema = Type.Partial(productSchema, {
-  $id: "ProductPatch",
-});
+export const productPatchSchema =
+  Type.Partial(
+    Type.Pick(productSchema, ['name', 'description', 'price', 'weight', 'categoryId', 'sku', 'disabled']),
+    {
+      $id: "ProductPatch",
+      additionalProperties: false
+    }
+  )
 export type ProductPatch = Static<typeof productPatchSchema>;
 export const productPatchValidator = getValidator(
   productPatchSchema,
   dataValidator
 );
-export const productPatchResolver = resolve<Product, HookContext>({});
+export const productPatchResolver = resolve<Product, HookContext>({
+  price: async (newPrice, data) => newPrice ? Math.round(newPrice * 100) / 100 : data.price
+});
 
 // Schema for updating existing entries
 export const productUpdateSchema = Type.Pick(
   productSchema,
-  ['id', 'name', 'description', 'price', 'weight', 'categoryId', 'sku'],
+  ['name', 'description', 'price', 'weight', 'categoryId', 'sku', 'disabled'],
   {
-    $id: "ProductUpdate",
+    $id: "ProductUpdate", additionalProperties: false
   }
 );
 export type ProductUpdate = Static<typeof productUpdateSchema>;
@@ -70,14 +78,17 @@ export const productUpdateValidator = getValidator(
   productUpdateSchema,
   dataValidator
 );
-export const productUpdateResolver = resolve<Product, HookContext>({});
+export const productUpdateResolver = resolve<Product, HookContext>({
+  price: async newPrice =>  Math.round(newPrice! * 100) / 100 
+});
 
 // Schema for allowed query properties
 export const productQueryProperties = Type.Pick(productSchema, [
   "id",
   "name",
   "categoryId",
-  "sku"
+  "sku",
+  "disabled"
 ]);
 export const productQuerySchema = Type.Intersect(
   [

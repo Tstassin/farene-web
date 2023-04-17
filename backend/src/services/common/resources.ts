@@ -15,9 +15,16 @@ export const resourceSchemaCreateResolver = resolve<
   createdAt: async () => new Date().toISOString(),
   updatedAt: async () => new Date().toISOString(),
 });
+export const resourceSchemaPatchResolver = resolve<
+  ResourceSchema,
+  HookContext
+>({
+  updatedAt: async () => new Date().toISOString(),
+});
 export const resourceSchemaUpdateResolver = resolve<
   ResourceSchema,
   HookContext
 >({
   updatedAt: async () => new Date().toISOString(),
+  createdAt: async (value, data, context) =>  await (await context.app.service('products').get(context.id!)).createdAt
 });

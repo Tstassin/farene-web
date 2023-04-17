@@ -17,7 +17,7 @@ dayjs.extend(localeData)
 export const Order = () => {
   const navigate = useNavigate()
   const orderCreateMutation = useOrderCreateMutation()
-  const allProductsQuery = useAllProducts()
+  const allProductsQuery = useAllProducts({disabled: 0})
   const allCategoriesQuery = useAllCategories()
   const { nextWeek, nextDeliveryDates } = useOrderDates().data || {}
   const methods = useForm<OrderData>();

@@ -19,7 +19,7 @@ import { OrderItemService, getOptions } from "./order-items.class";
 import { orderItemPath, orderItemMethods } from "./order-items.shared";
 import {
   resourceSchemaCreateResolver,
-  resourceSchemaUpdateResolver,
+  resourceSchemaPatchResolver,
 } from "../common/resources";
 
 export * from "./order-items.class";
@@ -61,7 +61,7 @@ export const orderItem = (app: Application) => {
         schemaHooks.validateData(orderItemPatchValidator),
         schemaHooks.resolveData(
           orderItemPatchResolver,
-          resourceSchemaUpdateResolver
+          resourceSchemaPatchResolver
         ),
       ],
       remove: [],

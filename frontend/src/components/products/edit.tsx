@@ -82,6 +82,18 @@ export const ProductEditComponent = ({ form }: ProductEditComponentProps) => {
           {allCategoriesQuery.data?.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}
         </Select>
       </FormControl>
+      <FormControl mb={5} isInvalid={Boolean(errors.disabled)}>
+        <FormLabel>Statut du produit</FormLabel>
+        <Select
+          {...register('disabled', {
+            required: 'Ce champ est obligatoire',
+            setValueAs: value => parseInt(value)
+          })}
+        >
+          <option value={0}>En vente</option>
+          <option value={1}>Désactivé</option>
+        </Select>
+      </FormControl>
     </>
   )
 }

@@ -1,10 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { queryClient } from ".."
-import { Product, ProductData, ProductPatch } from "../../../backend/src/services/products/products.schema"
+import { OrderQuery } from "../../../backend/src/services/orders/orders.schema"
+import { Product, ProductData, ProductPatch, ProductQuery, ProductUpdate } from "../../../backend/src/services/products/products.schema"
 import { client } from "../../api/api"
 
-export const useAllProducts = () => {
-  return useQuery({ queryKey: ['products'], queryFn: () => client.service('products').find({ paginate: false }) })
+export const useAllProducts = (query?: ProductQuery) => {
+  return useQuery({ queryKey: ['products'], queryFn: () => client.service('products').find({ query, paginate: false }) })
 }
 
 const fetchProduct = async (id: Product['id'] | undefined) => {
@@ -33,9 +34,9 @@ export const useProductCreateMutation = () => {
 
 export const useProductUpdateMutation = () => {
   return useMutation({
-    mutationFn: (values: { id: Product['id'] } & ProductPatch) => {
+    mutationFn: (values: { id: Product['id'] } & ProductUpdate) => {
       const { id, ...data } = values
-      return client.service('products').patch(id, data)
+      return client.service('products').update(id, data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['products'])
