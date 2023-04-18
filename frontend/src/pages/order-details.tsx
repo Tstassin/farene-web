@@ -1,4 +1,4 @@
-import { Button, Divider,  Heading, Stack, Text } from "@chakra-ui/react";
+import { Alert, AlertIcon, Button, Divider, Heading, Stack, Text } from "@chakra-ui/react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { useParams, useSearchParams } from "react-router-dom";
@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import { PaymentStatus } from "../components/payments/payment-status";
 import { useState } from "react";
 import { PayWithCodeModal } from "../components/payments/pay-with-code-modal";
+import { FeathersError } from "@feathersjs/errors/lib";
 
 let stripePromise: Promise<Stripe | null>
 if (process.env.NODE_ENV === 'development') {
@@ -74,12 +75,17 @@ export const OrderDetailsPage = () => {
             </Text>
           }
         </Heading>
-        {
-          status &&
-          <Stack spacing={3} my={10}>
+        <Stack spacing={3} my={10}>
+          {
+            paymentIntentCreateMutation.isError && <Alert status="error">
+              <AlertIcon /> {paymentIntentCreateMutation.error instanceof FeathersError && paymentIntentCreateMutation.error.message}
+            </Alert>
+          }
+          {
+            status &&
             <PaymentStatus status={status} />
-          </Stack>
-        }
+          }
+        </Stack>
         {
           !paymentIntent && status !== 'succeeded' && <Button colorScheme={"blue"} mr={2} onClick={() => { paymentIntentCreateMutation.mutate(orderQuery.data?.id!) }}>Payer</Button>
         }

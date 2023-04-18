@@ -61,8 +61,7 @@ export class PaymentIntentsService<
     }
     
     // Create a PaymentIntent with the order amount and currency
-    const paymentIntent = await stripe.paymentIntents.create(paymentIntentCreateData);
-
+   const paymentIntent = await stripe.paymentIntents.create(paymentIntentCreateData);
     return paymentIntent;
   }
 
