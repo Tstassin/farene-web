@@ -10,7 +10,7 @@ import { getCategoryMock } from "../categories/categories.mocks";
 import { getUserMock } from "../users/users.mocks";
 import { getOrderMock } from "./orders.mocks";
 import { cleanAll } from "../../utils/clean-all";
-import { FeathersError, PaymentError } from "@feathersjs/errors/lib";
+import { BadRequest, FeathersError, PaymentError } from "@feathersjs/errors/lib";
 
 const userTemplate: UserData = { email: "user1@test.com", password: "a" };
 
@@ -235,15 +235,15 @@ describe("orders service", () => {
     const orderData = await getOrderMock(product.id);
 
     const order = await app.service("orders").create(orderData, { user });
-    const payWithCodeFn = () => app.service("orders").payWithCode( {id: order.id, code: 'BLABLA'}, {});
+    const payWithCodeFn = () => app.service("orders").payWithCode({ id: order.id, code: 'BLABLA' }, {});
 
-    await assert.rejects(payWithCodeFn, (err: PaymentError) => {
-      const error = err.toJSON();
+    await assert.rejects(payWithCodeFn, (error: PaymentError) => {
       assert.equal(error.className, 'payment-error');
       assert.equal(error.code, 402);
       return true;
     });
   });
+
   it("sets paymentSuccess to true (1) if payment with code using correct code", async () => {
     const user = await app.service("users").create(getUserMock());
     const category = await app.service("categories").create(getCategoryMock());
@@ -254,8 +254,30 @@ describe("orders service", () => {
     const orderData = await getOrderMock(product.id);
 
     const order = await app.service("orders").create(orderData, { user });
-    const orderPayed = await app.service("orders").payWithCode( {id: order.id, code: app.get('payments').b2b.code}, {});
+    const orderPayed = await app.service("orders").payWithCode({ id: order.id, code: app.get('payments').b2b.code }, {});
 
     assert.equal(orderPayed.paymentSuccess, 1)
   });
+
+
+  it('doesnt patch an order which is outdated', async () => {
+    const user = await app.service("users").create(getUserMock());
+    const category = await app.service("categories").create(getCategoryMock());
+    const product = await app
+      .service("products")
+      .create(getProductMock(category.id));
+    const nextDeliveryDate = await (await app.service('orders').getNextDeliveryDates()).nextDeliveryDates[0]
+    const pastWeekDeliveryDate = dayjs(nextDeliveryDate).subtract(7, 'days').toISOString()
+    const orderData: OrderData = {
+      ...(await getOrderMock(product.id)),
+    };
+    const order = await app.service("orders").create(orderData, { user });
+    await app.service('orders').Model.table('orders').where({ id: order.id }).update({ delivery: pastWeekDeliveryDate })
+    const orderUpdateFn = () => app.service('orders').patch(order.id, { paymentSuccess: 0 }, { user })
+    await assert.rejects(orderUpdateFn, (err: BadRequest) => {
+      assert.match(err.message, /order is outdated please make a new order/);
+      assert.strictEqual(err.code, 400);
+      return true;
+    });
+  })
 });

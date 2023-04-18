@@ -45,7 +45,7 @@ export const useOrderCreateMutation = () => {
 export const useOrderPayWithCodeMutation = () => {
   return useMutation({
     mutationFn: (data: OrderPayWithCode) => {
-      return client.service('orders').payWithCode(data)
+      return client.service('orders').payWithCode(data, {})
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['orders'])

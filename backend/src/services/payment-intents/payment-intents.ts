@@ -18,8 +18,7 @@ import {
   paymentIntentsPath,
   paymentIntentsMethods,
 } from "./payment-intents.shared";
-import { BadRequest } from "@feathersjs/errors/lib";
-import dayjs from "dayjs";
+import { checkOrderIsOutdated } from "./payment-intents.hooks";
 
 export * from "./payment-intents.class";
 export * from "./payment-intents.schema";
@@ -54,16 +53,7 @@ export const paymentIntents = (app: Application) => {
     before: {
       create: [
         schemaHooks.validateData(paymentIntentsDataValidator),
-        async (context) => {
-          if (!context.data) throw new BadRequest('no data provided for paymentIntent creation')
-          if (!('orderId' in context.data)) throw new BadRequest('no orderId provided for paymentIntent creation')
-          const order = await context.app.service('orders').get(context.data.orderId)
-          const nextWeek = await (await app.service('orders').getNextDeliveryDates()).nextWeek
-          if (dayjs(order.delivery, 'YYYY-MM-DD', true).isBefore(nextWeek)) {
-            throw new BadRequest('order is outdated please make a new order')
-          }
-          return context
-        },
+        checkOrderIsOutdated,
         schemaHooks.resolveData(paymentIntentsDataResolver),
       ],
     },

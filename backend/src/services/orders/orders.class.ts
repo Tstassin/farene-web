@@ -1,5 +1,5 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.class.html#database-services
-import type { Params } from "@feathersjs/feathers";
+import type { Id, NullableId, Params } from "@feathersjs/feathers";
 import { KnexService } from "@feathersjs/knex";
 import type { KnexAdapterParams, KnexAdapterOptions } from "@feathersjs/knex";
 
@@ -29,7 +29,7 @@ const exportsProductOrder = [5, 4, 9, 8, 2, 3, 6, 7, 10, 11, 12, 24, 25, 26, 16,
 // By default calls the standard Knex adapter service methods but can be customized with your own functionality.
 export class OrderService<
   ServiceParams extends Params = OrderParams
-> extends KnexService<Order, OrderData, OrderParams, OrderPatch> {
+> extends KnexService<Order, OrderData, OrderParams, OrderPatch | OrderPayWithCode> {
 
   async getNextDeliveryDates() {
     const now = dayjs().utc();

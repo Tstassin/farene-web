@@ -1,9 +1,10 @@
-import { BadRequest, FeathersError } from "@feathersjs/errors/lib";
+import { BadRequest } from "@feathersjs/errors/lib";
 import { HookContext } from "@feathersjs/feathers";
 import dayjs from "dayjs";
 import { Application, NextFunction } from "../../declarations";
 import { Order, OrderData, OrderParams, OrderService } from "./orders.class";
 import { transaction } from "@feathersjs/knex/lib";
+import { isOrderIsOutdated } from "./orders.utils";
 
 export const createOrderItems = async (
   context: HookContext<Application, OrderService<OrderParams>>,
@@ -36,9 +37,9 @@ export const checkDeliveryDate = async (
 ) => {
   if (Array.isArray(context.data)) {
     throw new BadRequest("Please create one order at a time");
-  } 
+  }
   if (!context.data) throw new BadRequest('No data provided to checkDeliveryDate method')
-  if(!('delivery' in context.data )) throw new BadRequest('No delivery date provided to checkDelviveryDate method')
+  if (!('delivery' in context.data)) throw new BadRequest('No delivery date provided to checkDelviveryDate method')
 
   const deliveryDate = context.data.delivery;
   if (!dayjs(deliveryDate, "YYYY-MM-DD", true).isValid()) {
@@ -53,3 +54,23 @@ export const checkDeliveryDate = async (
   }
   await next()
 };
+
+
+export const checkOrderIsOutdated = async (
+  context: HookContext<Application, OrderService<OrderParams>>
+) => {
+  const noOrderIdError = 'No order id in context to check if order is outdated'
+  let orderId: number
+  if (context.id) {
+    orderId = typeof context.id === "string" ? parseInt(context.id) : context.id
+  } else if (context.data && 'id' in context.data) {
+    orderId = context.data.id
+  } else {
+    throw new BadRequest(noOrderIdError)
+  }
+  const isOutdated = await isOrderIsOutdated(orderId)
+  if (isOutdated) {
+    throw new BadRequest('order is outdated please make a new order')
+  }
+  return context
+}

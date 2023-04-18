@@ -21,7 +21,7 @@ import { authenticate } from "@feathersjs/authentication/";
 import {
   resourceSchemaCreateResolver, resourceSchemaPatchResolver,
 } from "../common/resources";
-import { checkDeliveryDate, createOrderItems } from "./orders.hooks";
+import { checkDeliveryDate, checkOrderIsOutdated, createOrderItems } from "./orders.hooks";
 
 export * from "./orders.class";
 export * from "./orders.schema";
@@ -67,13 +67,16 @@ export const order = (app: Application) => {
         resolveExternal(orderExternalResolver),
         resolveResult(orderResolver),
       ],
+      update: [
+        authenticate("jwt"),
+        resolveExternal(orderExternalResolver),
+        resolveResult(orderResolver),
+      ],
       getNextDeliveryDates: [authenticate("jwt")],
       payWithCode: [
         authenticate('jwt'),
         resolveExternal(orderExternalResolver),
         resolveResult(orderResolver),
-        validateData(orderPayWithCodeValidator),
-        resolveResult(orderPayWithCodeResolver),
       ],
       exportOrders: [
         authenticate('jwt'),
@@ -90,7 +93,17 @@ export const order = (app: Application) => {
       ],
       patch: [
         validateData(orderPatchValidator),
+        checkOrderIsOutdated,
         resolveData(resourceSchemaPatchResolver)
+      ],
+      update: [
+        validateData(orderPatchValidator),
+        checkOrderIsOutdated,
+        resolveData(resourceSchemaPatchResolver)
+      ],
+      payWithCode: [
+        validateData(orderPayWithCodeValidator),
+        checkOrderIsOutdated,
       ]
     },
     after: {},
