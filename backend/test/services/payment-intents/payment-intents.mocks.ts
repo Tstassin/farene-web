@@ -7,8 +7,15 @@ export const mockStripePaymentIntentsCreate = () => {
     .stub(PaymentIntentsService.prototype, '_createPaymentIntent')
     .callsFake(
       async (data: Stripe.PaymentIntentCreateParams) => {
-        console.log('stubbed', data)
-        return new Promise(resolve => resolve(mockedCreatedPaymentIntent))
+        const { amount, metadata } = data
+        return new Promise(resolve => resolve(
+          {
+            ...mockedCreatedPaymentIntent,
+            amount,
+            // @ts-expect-error we know we pass metadata, at least with orderId, it is tested
+            metadata
+          }
+        ))
       }
     )
   return _createPaymentIntent

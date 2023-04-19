@@ -60,7 +60,7 @@ describe("payment-intent service", () => {
     assert.ok(service, "Registered the service");
   });
 
-  describe.only('Create a paymentIntent', async () => {
+  describe('Create a paymentIntent', async () => {
     it('Updates the order with paymentIntent when created', async () => {
       const paymentIntent = await app.service('payment-intent').create({ orderId: order.id }, { user })
       const updatedOrder = await app.service('orders').get(order.id)
