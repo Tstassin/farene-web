@@ -80,6 +80,7 @@ export const orderItemQueryProperties = Type.Pick(orderItemSchema, [
   "id",
   "product",
   "orderId",
+  "createdAt"
 ]);
 export const orderItemQuerySchema = Type.Intersect(
   [

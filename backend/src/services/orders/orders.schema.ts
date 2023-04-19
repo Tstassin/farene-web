@@ -32,13 +32,6 @@ export type Order = Static<typeof orderSchema>;
 export const orderValidator = getValidator(orderSchema, dataValidator);
 export const orderResolver = resolve<Order, HookContext>(
   {
-    // If there is a user (e.g. with authentication), they are only allowed to see their own data
-    userId: async (value, user, context) => {
-      if (context.params.user) {
-        return context.params.user.id;
-      }
-      return value;
-    },
     price: virtual(async (order) => calculateOrderPrice(order))
   },
   {
@@ -145,7 +138,8 @@ export const orderPayWithCodeResolver = resolve<Order, HookContext>({});
 export const orderQueryProperties = Type.Pick(orderSchema, [
   "delivery",
   "userId",
-  "paymentSuccess"
+  "paymentSuccess",
+  "createdAt"
 ]);
 export const orderQuerySchema = Type.Intersect(
   [

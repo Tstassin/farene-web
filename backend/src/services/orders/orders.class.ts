@@ -34,10 +34,12 @@ export class OrderService<
   async getNextDeliveryDates() {
     const now = dayjs().utc();
     const nextOrderWeek = now.endOf("isoWeek").add(1, "day");
+    const thisWeek = nextOrderWeek.subtract(7, "days")
     const nextAllowedDeliveryDates = allowedWeekDays.map((allowedWeekDay) =>
       nextOrderWeek.isoWeekday(allowedWeekDay)
     );
-    return {
+    return {    
+      thisWeek: thisWeek.format("YYYY-MM-DD"),
       nextWeek: nextOrderWeek.format("YYYY-MM-DD"),
       nextDeliveryDates: nextAllowedDeliveryDates.map((d) =>
         d.format("YYYY-MM-DD")
