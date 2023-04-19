@@ -29,7 +29,7 @@ export const ExportPage = () => {
 
   return (
     <>
-      <Box my={5}>
+      {/* <Box my={5}>
         <Heading>Commandes cette semaine</Heading>
       </Box>
       {
@@ -60,7 +60,7 @@ export const ExportPage = () => {
             </Tbody>
           </Table>
         </TableContainer>
-      </Box>
+      </Box> */}
       <Box mb={10}>
         <Heading>Export des commandes</Heading>
       </Box>
