@@ -46,7 +46,7 @@ export class PaymentIntentsService<
 
   // This method has to be added to the 'methods' option to make it available to clients
   async create({ orderId }: PaymentIntentsData, params: ServiceParams): Promise<Stripe.Response<Stripe.PaymentIntent>> {
-    
+
     const orderPrice = Math.round((await calculateOrderPrice(orderId)) * 100)
     const userEmail = params.user?.email
 
@@ -59,10 +59,15 @@ export class PaymentIntentsService<
         orderId
       }
     }
-    
+
     // Create a PaymentIntent with the order amount and currency
-   const paymentIntent = await stripe.paymentIntents.create(paymentIntentCreateData);
+    const paymentIntent = await this._createPaymentIntent(paymentIntentCreateData);
     return paymentIntent;
+  }
+
+  async _createPaymentIntent(data: Stripe.PaymentIntentCreateParams) {
+    const paymentIntent = stripe.paymentIntents.create(data)
+    return paymentIntent
   }
 
   // This method has to be added to the 'methods' option to make it available to clients
