@@ -2,7 +2,7 @@ import { Alert, AlertIcon, Box, Button, Heading, Table, TableContainer, Tbody, T
 import { useRef } from 'react'
 import { OrderItem } from '../../../backend/src/services/order-items/order-items.schema'
 import { useOrderItems } from '../queries/order-items'
-import { useOrderDates, useOrdersExport } from '../queries/orders'
+import { useOrders, useOrderDates, useOrdersExport } from '../queries/orders'
 
 export const ExportPage = () => {
   const ordersExportMutation = useOrdersExport()
@@ -10,7 +10,8 @@ export const ExportPage = () => {
   const { data: orderDates } = useOrderDates()
   const { thisWeek } = orderDates ?? {}
 
-  const allOrderItemsQuery = useOrderItems({ 'createdAt': { $gte: thisWeek } }, Boolean(thisWeek))
+  const allPayedOrdersQuery = useOrders({paymentSuccess: 1, 'createdAt': { $gte: thisWeek }}, Boolean(thisWeek))
+  const allOrderItemsQuery = useOrderItems({ 'createdAt': { $gte: thisWeek }, orderId: {$in: allPayedOrdersQuery.data?.data?.map(o => o.id)} }, Boolean(thisWeek && allPayedOrdersQuery.isSuccess))
   const productsAmountsOrdered =
     allOrderItemsQuery?.data?.data?.reduce((acc: Record<OrderItem['product']['sku'], number>, curr) => {
       acc[curr.product.sku] = (acc[curr.product.sku] ?? 0) + curr.amount

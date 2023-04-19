@@ -144,7 +144,8 @@ export const orderPayWithCodeResolver = resolve<Order, HookContext>({});
 export const orderQueryProperties = Type.Pick(orderSchema, [
   "delivery",
   "userId",
-  "paymentSuccess"
+  "paymentSuccess",
+  "createdAt"
 ]);
 export const orderQuerySchema = Type.Intersect(
   [

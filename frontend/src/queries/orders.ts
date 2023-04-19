@@ -1,12 +1,13 @@
 import { useMutation, useQuery, UseQueryOptions } from "@tanstack/react-query"
 import { queryClient } from ".."
-import { Order, OrderData, OrderPatch, OrderPayWithCode } from "../../../backend/src/services/orders/orders.schema"
+import { Order, OrderData, OrderPatch, OrderPayWithCode, OrderQuery } from "../../../backend/src/services/orders/orders.schema"
 import { client } from "../../api/api"
 
-export const useAllOrders = () => {
+export const useOrders = (query?: OrderQuery, enabled = true) => {
   return useQuery({
-    queryKey: ['orders'],
-    queryFn: () => client.service('orders').find({ paginate: false })
+    queryKey: ['orders', query],
+    queryFn: () => client.service('orders').find({ query }),
+    enabled
   })
 }
 
