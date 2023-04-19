@@ -13,12 +13,12 @@ import { Products } from './pages/products';
 import { CategoriesPage } from './pages/categories';
 import { OrderDetailsPage } from './pages/order-details';
 import ErrorPage from './pages/error-page';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools/build/lib/devtools';
 import { client } from '../api/api';
 import { Protected } from './components/auth/authenticated';
 import { Layout } from './components/layout';
 import { ResetPassword } from './components/auth/reset-password';
 import { ExportPage } from './pages/export';
+import { PromoteUserPage } from './pages/promote';
 
 export const queryClient = new QueryClient()
 
@@ -66,6 +66,10 @@ export const router = createBrowserRouter([
       {
         path: "/export",
         element: <Protected><ExportPage /></Protected>,
+      },
+      {
+        path: "/promote",
+        element: <Protected><PromoteUserPage /></Protected>,
       },
     ]
   }

@@ -24,6 +24,7 @@ import {
   resourceSchemaPatchResolver,
   resourceSchemaUpdateResolver,
 } from "../common/resources";
+import { restrictToAdmin } from "../users/users.hooks";
 
 export * from "./products.class";
 export * from "./products.schema";
@@ -54,6 +55,7 @@ export const product = (app: Application) => {
       find: [],
       get: [],
       create: [
+        restrictToAdmin,
         schemaHooks.validateData(productDataValidator),
         schemaHooks.resolveData(
           productDataResolver,
@@ -61,6 +63,7 @@ export const product = (app: Application) => {
         ),
       ],
       patch: [
+        restrictToAdmin,
         schemaHooks.validateData(productPatchValidator),
         schemaHooks.resolveData(
           productPatchResolver,
@@ -68,6 +71,7 @@ export const product = (app: Application) => {
         ),
       ],
       update: [
+        restrictToAdmin,
         schemaHooks.validateData(productUpdateValidator),
         schemaHooks.resolveData(
           productUpdateResolver,

@@ -280,4 +280,46 @@ describe("orders service", () => {
       return true;
     });
   })
+
+  it('only shows the orders of the logged user', async () => {
+    const user1 = await app.service("users").create(getUserMock({
+      email: 'user1@example.com',
+      password: 'a'
+    }));
+    const user2 = await app.service("users").create(getUserMock({
+      email: 'user2@example.com',
+      password: 'a'
+    }));
+    const category = await app.service("categories").create(getCategoryMock());
+    const product = await app
+      .service("products")
+      .create(getProductMock(category.id));
+    const orderData = await getOrderMock(product.id);
+    const orderFromUser1 = await app.service("orders").create(orderData, { user: user1 });
+    const orderFromUser2 = await app.service("orders").create(orderData, { user: user2 });
+    const orders = await app.service('orders').find({user: user1})
+    assert.equal(orders.data.length, 1)
+    assert.deepEqual(orders.data[0], orderFromUser1)
+  })
+  it('Shows all orders to the admins', async () => {
+    const user1 = await app.service("users").create(getUserMock({
+      email: 'user1@example.com',
+      password: 'a'
+    }));
+    const user2 = await app.service("users").create(getUserMock({
+      email: 'user2@example.com',
+      password: 'a'
+    }));
+    const category = await app.service("categories").create(getCategoryMock());
+    const product = await app
+    .service("products")
+    .create(getProductMock(category.id));
+    const orderData = await getOrderMock(product.id);
+    const orderFromUser1 = await app.service("orders").create(orderData, { user: user1 });
+    const orderFromUser2 = await app.service("orders").create(orderData, { user: user2 });
+    const admin = await app.service('users').patch(user2.id, {admin: 1});
+    const orders = await app.service('orders').find({user: admin})
+    assert.equal(orders.data.length, 2)
+  })
+  
 });

@@ -1,5 +1,20 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import { User, UserQuery } from "../../../backend/src/services/users/users.schema"
 import { client } from "../../api/api"
+
+export const useMakeUserAdminMutation = () => {
+
+  return useMutation({
+    mutationFn: (userId: User['id']) => client.service('users').patch(userId, { admin: 1 })
+  })
+}
+
+export const useUsers = (query?: UserQuery) => {
+  return useQuery({
+    queryFn: () => client.service('users').find({query}),
+    queryKey: ['users', query]
+  })
+}
 
 export const useGenerateResetCodeMutation = () => {
 

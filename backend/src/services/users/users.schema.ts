@@ -7,6 +7,7 @@ import { passwordHash } from "@feathersjs/authentication-local";
 import type { HookContext } from "../../declarations";
 import { dataValidator, queryValidator } from "../../validators";
 import { resourceSchema } from "../common/resources";
+import { restrictResource } from "./users.utils";
 
 // Main data model schema
 export const userSchema = Type.Intersect([
@@ -16,8 +17,9 @@ export const userSchema = Type.Intersect([
       email: Type.String({ format: 'email' }),
       firstName: Type.Optional(Type.String()),
       lastName: Type.Optional(Type.String()),
-      password: Type.Optional(Type.String({ minLength: 1 })),
-      resetCode: Type.Optional(Type.Number())
+      password: Type.Optional(Type.String({ minLength: 1 })), //TODO.. optional ??
+      resetCode: Type.Optional(Type.Number()),
+      admin: Type.Integer()
     },
     { $id: "User", additionalProperties: false }
   ),
@@ -42,12 +44,20 @@ export type UserData = Static<typeof userDataSchema>;
 export const userDataValidator = getValidator(userDataSchema, dataValidator);
 export const userDataResolver = resolve<User, HookContext>({
   password: passwordHash({ strategy: "local" }),
+  admin: async () => 0
 });
 
 // Schema for updating existing entries
-export const userPatchSchema = Type.Pick(userSchema, ["password", "firstName", "lastName", "resetCode"], {
-  $id: "UserPatch", additionalProperties: false
-});
+export const userPatchSchema =
+  Type.Partial(
+    Type.Pick(
+      userSchema,
+      ["password", "firstName", "lastName", "resetCode", "admin"],
+      {
+        $id: "UserPatch", additionalProperties: false
+      }
+    )
+  );
 export type UserPatch = Static<typeof userPatchSchema>;
 export const userPatchValidator = getValidator(userPatchSchema, dataValidator);
 export const userPatchResolver = resolve<User, HookContext>({
@@ -55,7 +65,7 @@ export const userPatchResolver = resolve<User, HookContext>({
 });
 
 // Schema for allowed query properties
-export const userQueryProperties = Type.Pick(userSchema, ["id", "email"]);
+export const userQueryProperties = Type.Pick(userSchema, ["id", "email", "admin"]);
 export const userQuerySchema = Type.Intersect(
   [
     querySyntax(userQueryProperties),
@@ -68,11 +78,5 @@ export type UserQuery = Static<typeof userQuerySchema>;
 export const userQueryValidator = getValidator(userQuerySchema, queryValidator);
 export const userQueryResolver = resolve<UserQuery, HookContext>({
   // If there is a user (e.g. with authentication), they are only allowed to see their own data
-  id: async (value, user, context) => {
-    if (context.params.user) {
-      return context.params.user.id;
-    }
-
-    return value;
-  },
+  id: restrictResource,
 });

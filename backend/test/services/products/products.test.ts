@@ -5,6 +5,8 @@ import { describe } from "mocha";
 import { getCategoryMock } from "../categories/categories.mocks";
 import { getProductMock } from "./products.mocks";
 import { cleanAll } from "../../utils/clean-all";
+import { getUserMock } from "../users/users.mocks";
+import { Forbidden } from "@feathersjs/errors/lib";
 
 describe("products service", () => {
   beforeEach(cleanAll)
@@ -55,12 +57,41 @@ describe("products service", () => {
       .create(getProductMock(category.id, { price: 1.10 }));
     assert.equal(product3.price, 1.1);
 
-    const patchedPrice = await app.service('products').patch(product3.id, {price: 2000.233})
+    const patchedPrice = await app.service('products').patch(product3.id, { price: 2000.233 })
     assert.equal(patchedPrice.price, 2000.23);
-    const {createdAt, updatedAt, id, ...updateProductData} = product3
+    const { createdAt, updatedAt, id, ...updateProductData } = product3
 
-    const updatedPrice = await app.service('products').update(product3.id, {...updateProductData, price: 2000.233})
+    const updatedPrice = await app.service('products').update(product3.id, { ...updateProductData, price: 2000.233 })
     assert.equal(updatedPrice.price, 2000.23);
 
   });
+  it("users cannot create a product", async () => {
+    const user = await app.service('users').create(getUserMock())
+    const category = await app.service("categories").create(getCategoryMock());
+    const productData = getProductMock(category.id);
+    const createProductFn = () => app
+      .service("products")
+      .create(getProductMock(category.id), { user });
+    await assert.rejects(createProductFn, (err: Forbidden) => {
+      const error = err.toJSON();
+      console.log(error)
+      assert.match(err.message, /Error/);
+      assert.match(err.name, /Forbidden/);
+      assert.strictEqual(err.code, 403);
+      return true;
+    });
+  })
+  it("admins can create products", async () => {
+    const user = await app.service('users').create(getUserMock())
+    const admin = await app.service('users').patch(user.id, {admin: 1})
+    const category = await app.service("categories").create(getCategoryMock());
+    const productData = getProductMock(category.id);
+    const product = await app
+      .service("products")
+      .create(getProductMock(category.id), { user: admin });
+    assert.ok(product)
+  })
+
+  // TODO users cannot / admins can patch/update
+
 });

@@ -8,6 +8,7 @@ import { dataValidator, queryValidator } from "../../validators";
 import { resourceSchema } from "../common/resources";
 import { orderItemSchema, orderItemDataSchema } from "../order-items/order-items.schema";
 import { calculateOrderPrice } from "./orders.utils";
+import { restrictResource } from "../users/users.utils";
 
 /**
  * Main data model
@@ -161,11 +162,5 @@ export const orderQueryValidator = getValidator(
 );
 export const orderQueryResolver = resolve<OrderQuery, HookContext>({
   // If there is a user (e.g. with authentication), they are only allowed to see their own data
-  userId: async (value, user, context) => {
-    if (context.params.user) {
-      return context.params.user.id;
-    }
-
-    return value;
-  },
+  userId: restrictResource
 });
