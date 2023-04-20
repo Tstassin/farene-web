@@ -20,6 +20,9 @@ export type {
   PaymentIntentsReturnData
 } from './services/payment-intents/payment-intents.shared'
 
+import { AuthenticationResult } from '@feathersjs/authentication/lib'
+export type { AuthenticationResult }
+
 import { productClient } from './services/products/products.shared'
 import { orderClient } from './services/orders/orders.shared'
 import { categoryClient } from './services/categories/categories.shared'
@@ -29,7 +32,7 @@ export interface Configuration {
   connection: TransportConnection<ServiceTypes>
 }
 
-export interface ServiceTypes {}
+export interface ServiceTypes { }
 
 export type ClientApplication = Application<ServiceTypes, Configuration>
 

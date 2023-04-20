@@ -14,11 +14,12 @@ import { CategoriesPage } from './pages/categories';
 import { OrderDetailsPage } from './pages/order-details';
 import ErrorPage from './pages/error-page';
 import { client } from '../api/api';
-import { Protected } from './components/auth/authenticated';
+import { AdminProtected, Protected } from './components/auth/authenticated';
 import { Layout } from './components/layout';
 import { ResetPassword } from './components/auth/reset-password';
 import { ExportPage } from './pages/export';
 import { PromoteUserPage } from './pages/promote';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools/build/lib/devtools';
 
 export const queryClient = new QueryClient()
 
@@ -27,6 +28,7 @@ export const router = createBrowserRouter([
     element: <Layout />,
     loader: async () => {
       const auth = await client.authentication.reAuthenticate().catch(console.error)
+      if (auth) queryClient.setQueryData(['authentication'], auth)
       return auth?.user || null
     },
     errorElement: <ErrorPage />,
@@ -57,19 +59,19 @@ export const router = createBrowserRouter([
       },
       {
         path: "/products",
-        element: <Protected><Products /></Protected>,
+        element: <AdminProtected><Products /></AdminProtected>,
       },
       {
         path: "/categories",
-        element: <Protected><CategoriesPage /></Protected>,
+        element: <AdminProtected><CategoriesPage /></AdminProtected>,
       },
       {
         path: "/export",
-        element: <Protected><ExportPage /></Protected>,
+        element: <AdminProtected><ExportPage /></AdminProtected>,
       },
       {
         path: "/promote",
-        element: <Protected><PromoteUserPage /></Protected>,
+        element: <AdminProtected><PromoteUserPage /></AdminProtected>,
       },
     ]
   }
@@ -81,7 +83,7 @@ const root = createRoot(container!); // createRoot(container!) if you use TypeSc
 
 root.render(
   <QueryClientProvider client={queryClient}>
-    {/* <ReactQueryDevtools initialIsOpen={true} /> */}
+    <ReactQueryDevtools initialIsOpen={true} /> 
     <ChakraProvider>
       <RouterProvider router={router} />
     </ChakraProvider>

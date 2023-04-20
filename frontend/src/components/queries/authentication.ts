@@ -1,5 +1,5 @@
 import { FeathersError } from "@feathersjs/errors/lib"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom"
 import { queryClient } from "../.."
 import { client } from "../../../api/api"
