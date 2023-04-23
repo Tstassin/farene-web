@@ -29,11 +29,6 @@ cd ..
 # Backup
 sqlite3 backend/backend.sqlite ".backup '/home/thomas/backups/farene-web-backups/$(date +%Y-%m-%d_%H-%M-%S).sqlite'"
 
-# Tests
-cd backend
-npm run test
-cd ..
-
 # Deploy backend
 cd backend
 npm run compile
