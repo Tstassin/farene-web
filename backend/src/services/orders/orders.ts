@@ -22,6 +22,7 @@ import {
   resourceSchemaCreateResolver, resourceSchemaPatchResolver,
 } from "../common/resources";
 import { checkDeliveryDate, checkOrderIsOutdated, createOrderItems } from "./orders.hooks";
+import { disallow } from "feathers-hooks-common";
 
 export * from "./orders.class";
 export * from "./orders.schema";
@@ -62,12 +63,17 @@ export const order = (app: Application) => {
           resourceSchemaCreateResolver
         ),
       ],
+      update: [
+        authenticate("jwt"),
+        resolveExternal(orderExternalResolver),
+        resolveResult(orderResolver),
+      ],
       patch: [
         authenticate("jwt"),
         resolveExternal(orderExternalResolver),
         resolveResult(orderResolver),
       ],
-      update: [
+      remove: [
         authenticate("jwt"),
         resolveExternal(orderExternalResolver),
         resolveResult(orderResolver),
@@ -91,16 +97,14 @@ export const order = (app: Application) => {
         validateQuery(orderQueryValidator),
         resolveQuery(orderQueryResolver),
       ],
+      create: [],
       patch: [
         validateData(orderPatchValidator),
         checkOrderIsOutdated,
         resolveData(resourceSchemaPatchResolver)
       ],
-      update: [
-        validateData(orderPatchValidator),
-        checkOrderIsOutdated,
-        resolveData(resourceSchemaPatchResolver)
-      ],
+      update: [disallow()],
+      remove: [disallow()],
       payWithCode: [
         validateData(orderPayWithCodeValidator),
         checkOrderIsOutdated,
