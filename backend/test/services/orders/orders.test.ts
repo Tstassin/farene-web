@@ -2,324 +2,304 @@
 import assert from "assert";
 import { app } from "../../../src/app";
 import { describe } from "mocha";
-import { UserData } from "../../../src/services/users/users.schema";
-import { OrderData } from "../../../src/services/orders/orders.schema";
+import { User, UserData } from "../../../src/services/users/users.schema";
+import { Order, OrderData } from "../../../src/services/orders/orders.schema";
 import dayjs from "dayjs";
 import { getProductMock } from "../products/products.mocks";
 import { getCategoryMock } from "../categories/categories.mocks";
 import { getUserMock } from "../users/users.mocks";
 import { getOrderMock } from "./orders.mocks";
 import { cleanAll } from "../../utils/clean-all";
-import { BadRequest, FeathersError, PaymentError } from "@feathersjs/errors/lib";
+import { BadRequest, FeathersError, PaymentError, NotFound, GeneralError } from "@feathersjs/errors/lib";
+import { Category } from "../../../src/services/categories/categories.schema";
+import { Product } from "../../../src/services/products/products.schema";
 
 const userTemplate: UserData = { email: "user1@test.com", password: "a" };
 
+const assertRejects = async (fn: () => Promise<any>, ErrorType: typeof FeathersError, errMessage: RegExp | string, data?: any) => {
+  await assert.rejects(fn, (err: FeathersError) => {
+    if (typeof errMessage === 'string') {
+      assert.ok(err.message.includes(errMessage));
+    } else {
+      assert.match(err.message, errMessage);
+    }
+    assert.ok(err instanceof ErrorType);
+    if (data) assert.deepEqual(err.data, data)
+    return true;
+  });
+}
+
+
+
 describe("orders service", () => {
-  beforeEach(cleanAll);
+
+  const ordersService = app.service('orders')
+  let user: User
+  let category: Category
+  let product: Product
+  let orderData: Readonly<OrderData>
+
+  const useBaseOrderMocks = () => {
+    beforeEach(async () => {
+      user = await app.service("users").create(getUserMock());
+      category = await app.service("categories").create(getCategoryMock());
+      product = await app
+        .service("products")
+        .create(getProductMock(category.id));
+      orderData = await getOrderMock(product.id);
+    })
+
+    afterEach(cleanAll);
+  }
+
+
   it("registered the service", () => {
     const service = app.service("orders");
     assert.ok(service, "Registered the service");
   });
 
-  it("creates an order", async () => {
-    const user = await app.service("users").create(getUserMock());
-    const category = await app.service("categories").create(getCategoryMock());
-    const product = await app
-      .service("products")
-      .create(getProductMock(category.id));
-    const orderData = await getOrderMock(product.id);
-    const order = await app.service("orders").create(orderData, { user });
-
-    assert.ok(order);
-    assert.ok(order.createdAt !== null);
-    assert.ok(order.updatedAt !== null);
-    assert.ok(order.userId === user.id);
-    assert.ok(order.delivery === orderData.delivery);
-    assert.ok(order.price === (orderData.orderItems[0].amount * product.price));
-    assert.ok(order.paymentIntent === null);
-    assert.ok(order.paymentSuccess === 0);
-  });
-
-  it("rejects if no product in order", async () => {
-    const user = await app.service("users").create(getUserMock());
-    const category = await app.service("categories").create(getCategoryMock());
-    const product = await app
-      .service("products")
-      .create(getProductMock(category.id));
-
-    const orderFn = (orderData: OrderData) =>
-      app.service("orders").create(orderData, { user });
-
-    // Testing undefined
-    const orderData: OrderData = {
-      ...(await getOrderMock(product.id)),
-      orderItems: undefined as any,
-    };
-    await assert.rejects(orderFn(orderData));
-
-    // Testing null
-    orderData.orderItems = null as any;
-    await assert.rejects(orderFn(orderData));
-
-    /**
-     * TODO
-     */
-    // Testing empty array
-    //orderData.products = []
-    //await assert.rejects(orderFn(orderData))
-  });
-
-  it("rejects if product doesnt exist", async () => {
-    const user = await app.service("users").create(getUserMock());
-    const category = await app.service("categories").create(getCategoryMock());
-    const product = await app
-      .service("products")
-      .create(getProductMock(category.id));
-    const orderData: OrderData = {
-      ...(await getOrderMock(product.id)),
-      orderItems: [
-        {
-          productId: product.id + 1,
-          amount: 1,
-        },
-      ],
-    };
-
-    const orderFn = () => app.service("orders").create(orderData, { user });
-    await assert.rejects(orderFn, (err: FeathersError) => {
-      const error = err.toJSON();
-      assert.match(err.message, /No record found for/);
-      assert.strictEqual(err.code, 404);
-      return true;
-    });
-  });
-
-  it("rejects if product doesnt exist", async () => {
-    const user = await app.service("users").create(getUserMock());
-    const category = await app.service("categories").create(getCategoryMock());
-    const product = await app
-      .service("products")
-      .create(getProductMock(category.id));
-    const orderData: OrderData = {
-      ...(await getOrderMock(product.id)),
-      orderItems: [
-        {
-          productId: product.id + 1,
-          amount: 1,
-        },
-      ],
-    };
-
-    const orderFn = () => app.service("orders").create(orderData, { user });
-    await assert.rejects(orderFn, (err: FeathersError) => {
-      const error = err.toJSON();
-      assert.match(err.message, /No record found for/);
-      assert.strictEqual(err.code, 404);
-      return true;
-    });
-  });
-
-  /**
-   * TODO
-   */
-  it.skip("rejects if no amount is set for a product", async () => {
-    const user = await app.service("users").create(getUserMock());
-    const category = await app.service("categories").create(getCategoryMock());
-    const product1 = await app
-      .service("products")
-      .create(getProductMock(category.id));
-    const product2 = await app
-      .service("products")
-      .create(getProductMock(category.id, { name: "Un autre pain" }));
-    const orderData: OrderData = {
-      ...(await getOrderMock(product1.id)),
-      orderItems: [
-        {
-          productId: product1.id,
-          amount: 1,
-        },
-        {
-          productId: product2.id,
-          amount: 0,
-        },
-      ],
-    };
-
-    const orderFn = async () =>
-      app.service("orders").create(orderData, { user });
-    await assert.rejects(orderFn, (err: FeathersError) => {
-      const error = err.toJSON();
-      assert.strictEqual(error.name, "GeneralError");
-      return true;
-    });
-  });
-
-  it("rejects if user doesnt exist", async () => {
-    const user = await app.service("users").create(getUserMock());
-    const category = await app.service("categories").create(getCategoryMock());
-    const product = await app
-      .service("products")
-      .create(getProductMock(category.id));
-    const orderData: OrderData = {
-      ...(await getOrderMock(product.id)),
-      orderItems: [
-        {
-          productId: product.id + 1,
-          amount: 1,
-        },
-      ],
-    };
-
-    const orderFn = async () =>
-      app
-        .service("orders")
-        .create(orderData, { user: { ...user, id: user.id + 1 } });
-
-    await assert.rejects(orderFn, (err: FeathersError) => {
-      const error = err.toJSON();
-      assert.strictEqual(error.name, "GeneralError");
-      assert.match(
-        error.message,
-        /SQLITE_CONSTRAINT: FOREIGN KEY constraint failed/
-      );
-      assert.match(error.message, /insert into `orders`/);
-      return true;
-    });
-  });
-
-  it("rejects if delivery date is in the past", async () => {
-    const user = await app.service("users").create(getUserMock());
-    const category = await app.service("categories").create(getCategoryMock());
-    const product = await app
-      .service("products")
-      .create(getProductMock(category.id));
-
-    const orderData = await getOrderMock(product.id);
-    orderData.delivery = dayjs().subtract(1, "day").format("YYYY-MM-DD");
-
-    const orderFn = () => app.service("orders").create(orderData, { user });
-
-    await assert.rejects(orderFn, (err: FeathersError) => {
-      const error = err.toJSON();
-      assert.match(error.message, /No delivery on/);
-      return true;
-    });
-  });
-
-  it("rejects if delivery date is not valid", async () => {
-    const user = await app.service("users").create(getUserMock());
-    const category = await app.service("categories").create(getCategoryMock());
-    const product = await app
-      .service("products")
-      .create(getProductMock(category.id));
-
-    const orderData = await getOrderMock(product.id);
-    orderData.delivery = "NOT VALID";
-
-    const orderFn = () => app.service("orders").create(orderData, { user });
-
-    await assert.rejects(orderFn, (err: FeathersError) => {
-      const error = err.toJSON();
-      assert.match(error.message, /Invalid delivery date or format/);
-      return true;
-    });
-  });
-
-  it("rejects if payment with code using wrong code", async () => {
-    const user = await app.service("users").create(getUserMock());
-    const category = await app.service("categories").create(getCategoryMock());
-    const product = await app
-      .service("products")
-      .create(getProductMock(category.id));
-
-    const orderData = await getOrderMock(product.id);
-
-    const order = await app.service("orders").create(orderData, { user });
-    const payWithCodeFn = () => app.service("orders").payWithCode({ id: order.id, code: 'BLABLA' }, {});
-
-    await assert.rejects(payWithCodeFn, (error: PaymentError) => {
-      assert.equal(error.className, 'payment-error');
-      assert.equal(error.code, 402);
-      return true;
-    });
-  });
-
-  it("sets paymentSuccess to true (1) if payment with code using correct code", async () => {
-    const user = await app.service("users").create(getUserMock());
-    const category = await app.service("categories").create(getCategoryMock());
-    const product = await app
-      .service("products")
-      .create(getProductMock(category.id));
-
-    const orderData = await getOrderMock(product.id);
-
-    const order = await app.service("orders").create(orderData, { user });
-    const orderPayed = await app.service("orders").payWithCode({ id: order.id, code: app.get('payments').b2b.code }, {});
-
-    assert.equal(orderPayed.paymentSuccess, 1)
-  });
-
-
-  it('doesnt patch an order which is outdated', async () => {
-    const user = await app.service("users").create(getUserMock());
-    const category = await app.service("categories").create(getCategoryMock());
-    const product = await app
-      .service("products")
-      .create(getProductMock(category.id));
-    const nextDeliveryDate = await (await app.service('orders').getNextDeliveryDates()).nextDeliveryDates[0]
-    const pastWeekDeliveryDate = dayjs(nextDeliveryDate).subtract(7, 'days').toISOString()
-    const orderData: OrderData = {
-      ...(await getOrderMock(product.id)),
-    };
-    const order = await app.service("orders").create(orderData, { user });
-    await app.service('orders').Model.table('orders').where({ id: order.id }).update({ delivery: pastWeekDeliveryDate })
-    const orderUpdateFn = () => app.service('orders').patch(order.id, { paymentSuccess: 0 }, { user })
-    await assert.rejects(orderUpdateFn, (err: BadRequest) => {
-      assert.match(err.message, /order is outdated please make a new order/);
-      assert.strictEqual(err.code, 400);
-      return true;
+  describe('Create', () => {
+    useBaseOrderMocks()
+    it("creates an order", async () => {
+      const order = await ordersService.create(orderData, { user });
+      assert.ok(order);
+      assert.ok(order.createdAt !== null);
+      assert.ok(order.updatedAt !== null);
+      assert.ok(order.userId === user.id);
+      assert.ok(order.delivery === orderData.delivery);
+      assert.ok(order.price === (orderData.orderItems[0].amount * product.price));
+      assert.ok(order.paymentIntent === null);
+      assert.ok(order.paymentSuccess === 0);
     });
   })
 
-  it('only shows the orders of the logged user', async () => {
-    const user1 = await app.service("users").create(getUserMock({
-      email: 'user1@example.com',
-      password: 'a'
-    }));
-    const user2 = await app.service("users").create(getUserMock({
-      email: 'user2@example.com',
-      password: 'a'
-    }));
-    const category = await app.service("categories").create(getCategoryMock());
-    const product = await app
-      .service("products")
-      .create(getProductMock(category.id));
-    const orderData = await getOrderMock(product.id);
-    const orderFromUser1 = await app.service("orders").create(orderData, { user: user1 });
-    const orderFromUser2 = await app.service("orders").create(orderData, { user: user2 });
-    const orders = await app.service('orders').find({user: user1})
-    assert.equal(orders.data.length, 1)
-    assert.deepEqual(orders.data[0], orderFromUser1)
+  describe('Delivery date', () => {
+    describe('Only allows delivery dates in YYYY-MM-DD format', () => {
+      useBaseOrderMocks()
+      it('On create', async () => {
+        const orderFn = () => ordersService.create({ ...orderData, delivery: Date.now().toString() })
+        await assertRejects(orderFn, BadRequest, 'No delivery on')
+      })
+    })
+    describe("Rejects if delivery date is in the past", () => {
+      useBaseOrderMocks()
+      it('On create', async () => {
+        const pastDeliveryDate = dayjs().subtract(1, "day").format("YYYY-MM-DD");
+
+        const orderFn = () => app.service("orders").create({ ...orderData, delivery: pastDeliveryDate }, { user });
+
+        await assertRejects(orderFn, BadRequest, /No delivery on/)
+      })
+    });
+
+    describe("rejects if delivery date is not valid", () => {
+      useBaseOrderMocks()
+      it('On create', async () => {
+        const badDeliveryDate = "NOT VALID";
+
+        const orderFn = () => app.service("orders").create({ ...orderData, delivery: badDeliveryDate }, { user });
+
+        await assertRejects(orderFn, BadRequest, /Invalid delivery date or format/)
+      });
+    });
   })
-  it('Shows all orders to the admins', async () => {
-    const user1 = await app.service("users").create(getUserMock({
-      email: 'user1@example.com',
-      password: 'a'
-    }));
-    const user2 = await app.service("users").create(getUserMock({
-      email: 'user2@example.com',
-      password: 'a'
-    }));
-    const category = await app.service("categories").create(getCategoryMock());
-    const product = await app
-    .service("products")
-    .create(getProductMock(category.id));
-    const orderData = await getOrderMock(product.id);
-    const orderFromUser1 = await app.service("orders").create(orderData, { user: user1 });
-    const orderFromUser2 = await app.service("orders").create(orderData, { user: user2 });
-    const admin = await app.service('users').patch(user2.id, {admin: 1});
-    const orders = await app.service('orders').find({user: admin})
-    assert.equal(orders.data.length, 2)
+
+  // TODO : Move to order-items !!
+  describe('Order Items', () => {
+    describe('At least an order item is required', async () => {
+      useBaseOrderMocks()
+      it('On create', async () => {
+        const orderFn = (orderData: OrderData) =>
+          app.service("orders").create(orderData, { user });
+
+        // Testing undefined
+        await assertRejects(
+          () => orderFn({
+            ...orderData,
+            //@ts-expect-error types already protect us
+            orderItems: undefined
+          }),
+          BadRequest,
+          'validation failed'
+        )
+
+        // Testing null
+        await assertRejects(
+          () => orderFn({
+            ...orderData,
+            //@ts-expect-error types already protect us
+            orderItems: null
+          }),
+          BadRequest,
+          'validation failed'
+        )
+        // Empty array
+        await assertRejects(
+          () => orderFn({
+            ...orderData,
+            orderItems: []
+          }),
+          BadRequest,
+          'No orderItems in order'
+        )
+      })
+    })
+    describe('Ordered products must exist', () => {
+      useBaseOrderMocks()
+      it('On create', async () => {
+
+
+        const orderFn = () => app.service("orders").create({
+          ...orderData,
+          orderItems: [
+            {
+              productId: product.id + 1,
+              amount: 1,
+            },
+          ],
+        }, { user });
+        await assertRejects(orderFn, NotFound, /No record found for/)
+      })
+    })
+    describe('Ordered products cannot be disabled products', () => {
+      useBaseOrderMocks()
+      it('On create', async () => {
+        const disabledProduct = await app.service('products').create(getProductMock(category.id, { disabled: 1 }))
+        const orderFn = () => app.service("orders").create({
+          ...orderData,
+          orderItems: [
+            {
+              productId: disabledProduct.id,
+              amount: 1,
+            },
+          ],
+        }, { user });
+        await assertRejects(orderFn, BadRequest, "Error resolving data", {
+          product: {
+            name: 'BadRequest',
+            message: 'Cannot order a product which is disabled',
+            code: 400,
+            className: 'bad-request'
+          }
+        })
+      })
+    })
+    describe('Order-items have an amount > 1 specified', () => {
+      useBaseOrderMocks()
+      it('On create', async () => {
+        const orderFn = () => app.service("orders").create({
+          ...orderData,
+          orderItems: [
+            {
+              productId: product.id,
+              amount: 0,
+            },
+          ],
+        }, { user });
+        await assertRejects(orderFn, BadRequest, 'validation failed', [
+          {
+            instancePath: '/orderItems/0/amount',
+            schemaPath: '#/properties/orderItems/items/properties/amount/minimum',
+            keyword: 'minimum',
+            params: { comparison: '>=', limit: 1 },
+            message: 'must be >= 1'
+          }
+        ])
+      })
+    })
   })
-  
+
+  describe('User', () => {
+    describe("Orders are for an existing user", () => {
+      useBaseOrderMocks()
+      it('On create', async () => {
+        const orderFn = async () =>
+          app
+            .service("orders")
+            .create(orderData, { user: { ...user, id: 0 } });
+
+        await assertRejects(orderFn, GeneralError, /SQLITE_CONSTRAINT: FOREIGN KEY constraint failed/)
+        await assertRejects(orderFn, GeneralError, /insert into `orders`/)
+      })
+    });
+  })
+
+
+  describe('Pay with a code', () => {
+    useBaseOrderMocks()
+    it("rejects if payment with code using wrong code", async () => {
+
+      const order = await app.service("orders").create(orderData, { user });
+      const payWithCodeFn = () => app.service("orders").payWithCode({ id: order.id, code: 'BLABLA' }, {});
+
+      await assert.rejects(payWithCodeFn, (error: PaymentError) => {
+        assert.equal(error.className, 'payment-error');
+        assert.equal(error.code, 402);
+        return true;
+      });
+    });
+    it("sets paymentSuccess to true (1) if payment with code using correct code", async () => {
+
+      const order = await app.service("orders").create(orderData, { user });
+      const orderPayed = await app.service("orders").payWithCode({ id: order.id, code: app.get('payments').b2b.code }, {});
+
+      assert.equal(orderPayed.paymentSuccess, 1)
+    });
+  })
+
+  // TODO : wrong implementation, should be handled on the payment intent side
+  describe('Payment success', () => {
+    useBaseOrderMocks()
+    it('doesnt patch an order which is outdated', async () => {
+      const nextDeliveryDate = await (await app.service('orders').getNextDeliveryDates()).nextDeliveryDates[0]
+      const pastWeekDeliveryDate = dayjs(nextDeliveryDate).subtract(7, 'days').toISOString()
+      const orderData: OrderData = {
+        ...(await getOrderMock(product.id)),
+      };
+      const order = await app.service("orders").create(orderData, { user });
+      await app.service('orders').Model.table('orders').where({ id: order.id }).update({ delivery: pastWeekDeliveryDate })
+      const orderUpdateFn = () => app.service('orders').patch(order.id, { paymentSuccess: 0 }, { user })
+      await assert.rejects(orderUpdateFn, (err: BadRequest) => {
+        assert.match(err.message, /order is outdated please make a new order/);
+        assert.strictEqual(err.code, 400);
+        return true;
+      });
+    })
+
+  })
+
+  describe('Access control', () => {
+    useBaseOrderMocks()
+    it('only shows the orders of the logged user', async () => {
+      const user1 = await app.service("users").create(getUserMock({
+        email: 'user1@example.com',
+        password: 'a'
+      }));
+      const user2 = await app.service("users").create(getUserMock({
+        email: 'user2@example.com',
+        password: 'a'
+      }));
+      const orderFromUser1 = await app.service("orders").create(orderData, { user: user1 });
+      const orderFromUser2 = await app.service("orders").create(orderData, { user: user2 });
+      const orders = await app.service('orders').find({ user: user1 })
+      assert.equal(orders.data.length, 1)
+      assert.deepEqual(orders.data[0], orderFromUser1)
+    })
+    it('Shows all orders to the admins', async () => {
+      const user1 = await app.service("users").create(getUserMock({
+        email: 'user1@example.com',
+        password: 'a'
+      }));
+      const user2 = await app.service("users").create(getUserMock({
+        email: 'user2@example.com',
+        password: 'a'
+      }));
+      const orderFromUser1 = await app.service("orders").create(orderData, { user: user1 });
+      const orderFromUser2 = await app.service("orders").create(orderData, { user: user2 });
+      const admin = await app.service('users').patch(user2.id, { admin: 1 });
+      const orders = await app.service('orders').find({ user: admin })
+      assert.equal(orders.data.length, 2)
+    })
+  })
+
 });

@@ -7,13 +7,14 @@ import type { HookContext } from "../../declarations";
 import { dataValidator, queryValidator } from "../../validators";
 import { resourceSchema } from "../common/resources";
 import { productSchema } from "../products/products.schema";
+import { BadRequest } from "@feathersjs/errors/lib";
 
 // Main data model schema
 export const orderItemSchema = Type.Intersect([
   Type.Object(
     {
       id: Type.Number(),
-      amount: Type.Number(),
+      amount: Type.Number({ minimum: 1 }),
       product: productSchema,
       orderId: Type.Number(),
     },
@@ -24,7 +25,14 @@ export const orderItemSchema = Type.Intersect([
 export type OrderItem = Static<typeof orderItemSchema>;
 export const orderItemValidator = getValidator(orderItemSchema, dataValidator);
 export const orderItemResolver = resolve<OrderItem, HookContext>(
-  {},
+  {
+    product: async product => {
+      if (product!.disabled === 1) {
+        throw new BadRequest('Cannot order a product which is disabled')
+      }
+      return product
+    }
+  },
   {
     converter: async (data) => ({
       ...data,
