@@ -27,9 +27,7 @@ npm i
 cd ..
 
 # Backup
-cd backend
 sqlite3 backend/backend.sqlite ".backup '/home/thomas/backups/farene-web-backups/$(date +%Y-%m-%d_%H-%M-%S).sqlite'"
-cd ..
 
 # Tests
 cd backend
@@ -47,7 +45,7 @@ cd ..
 cd frontend
 rm -rf .parcel-cache
 npm run build
+cd ..
 
 # Done
-cd ..
 echo "Deployment done"
