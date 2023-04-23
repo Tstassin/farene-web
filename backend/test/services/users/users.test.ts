@@ -3,12 +3,10 @@ import { BadRequest } from "@feathersjs/errors/lib";
 import assert from "assert";
 import { app } from "../../../src/app";
 import { cleanAll } from "../../utils/clean-all";
-import { noEmails } from "../../utils/no-emails";
 import { getUserMock } from "./users.mocks";
 import { describe } from 'mocha'
 
 describe("users service", () => {
-  before(noEmails)
   beforeEach(cleanAll)
   it("registered the service", () => {
     const service = app.service("users");
