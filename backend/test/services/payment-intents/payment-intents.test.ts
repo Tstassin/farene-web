@@ -90,7 +90,7 @@ describe("payment-intent service", () => {
 
     it('Sets orderId in metadata', async () => {
       const paymentIntent = await app.service('payment-intent').create({ orderId: order.id }, { user })
-      sinon.assert.calledWith(mockedStripePaymentIntentCreate, sinon.match({ metadata: {orderId: order.id} }))
+      sinon.assert.calledWith(mockedStripePaymentIntentCreate, sinon.match({ metadata: { orderId: order.id } }))
     })
 
     it('doesnt create a payment intent for an order which is outdated', async () => {

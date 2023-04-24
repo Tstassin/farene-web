@@ -95,7 +95,7 @@ export const orderPatchSchema =
       [
         Type.Pick(
           orderSchema,
-          ['paymentSuccess'],
+          ['paymentSuccess', 'delivery'],
         ),
         Type.Required(
           Type.Pick(

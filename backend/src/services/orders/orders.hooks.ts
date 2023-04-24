@@ -56,9 +56,12 @@ export const checkDeliveryDate = async (
 };
 
 
-export const checkOrderIsOutdated = async (
+export const noPaymentOnOutdatedOrder = async (
   context: HookContext<Application, OrderService<OrderParams>>
 ) => {
+  const {paymentSuccess, paymentIntent} = context.data || {}
+  // We don't allow payments for outdated orders
+  if (!paymentIntent && !paymentSuccess) return context
   const noOrderIdError = 'No order id in context to check if order is outdated'
   let orderId: number
   if (context.id) {

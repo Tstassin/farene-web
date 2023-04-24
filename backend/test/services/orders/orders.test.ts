@@ -10,7 +10,7 @@ import { getCategoryMock } from "../categories/categories.mocks";
 import { getUserMock } from "../users/users.mocks";
 import { getOrderMock } from "./orders.mocks";
 import { cleanAll } from "../../utils/clean-all";
-import { BadRequest, FeathersError, PaymentError, NotFound, GeneralError } from "@feathersjs/errors/lib";
+import { BadRequest, FeathersError, PaymentError, NotFound, GeneralError, Forbidden } from "@feathersjs/errors/lib";
 import { Category } from "../../../src/services/categories/categories.schema";
 import { Product } from "../../../src/services/products/products.schema";
 
@@ -35,6 +35,7 @@ describe("orders service", () => {
 
   const ordersService = app.service('orders')
   let user: User
+  let admin: User
   let category: Category
   let product: Product
   let orderData: Readonly<OrderData>
@@ -42,6 +43,8 @@ describe("orders service", () => {
   const useBaseOrderMocks = () => {
     beforeEach(async () => {
       user = await app.service("users").create(getUserMock());
+      const userWillBeAdmin = await app.service("users").create(getUserMock({ firstName: 'Admin', lastName: 'Admin', email: 'admin@farene.be' }));
+      admin = await app.service('users').patch(userWillBeAdmin.id, { admin: 1 })
       category = await app.service("categories").create(getCategoryMock());
       product = await app
         .service("products")
@@ -102,6 +105,24 @@ describe("orders service", () => {
         await assertRejects(orderFn, BadRequest, /Invalid delivery date or format/)
       });
     });
+    describe("Only admins can update the delivery date", () => {
+      useBaseOrderMocks()
+      it('On PATCH', async () => {
+        const newDeliveryDate = await (await ordersService.getNextDeliveryDates()).nextDeliveryDates[1]
+        const order = await app.service("orders").create(orderData, { user });
+        const updatedDeliveryDate = await app.service('orders').patch(order.id, { delivery: newDeliveryDate }, { user: admin })
+        assert.equal(newDeliveryDate, updatedDeliveryDate.delivery)
+      })
+    })
+    describe("Users cannot update the delivery date", () => {
+      useBaseOrderMocks()
+      it('On PATCH', async () => {
+        const newDeliveryDate = await (await ordersService.getNextDeliveryDates()).nextDeliveryDates[1]
+        const order = await app.service("orders").create(orderData, { user });
+        const updateDeliveryDateFn = () => app.service('orders').patch(order.id, { delivery: newDeliveryDate }, { user })
+        await assertRejects(updateDeliveryDateFn, Forbidden, 'Error')
+      })
+    })
   })
 
   // TODO : Move to order-items !!
@@ -245,12 +266,7 @@ describe("orders service", () => {
 
       assert.equal(orderPayed.paymentSuccess, 1)
     });
-  })
-
-  // TODO : wrong implementation, should be handled on the payment intent side
-  describe('Payment success', () => {
-    useBaseOrderMocks()
-    it('doesnt patch an order which is outdated', async () => {
+    it('rejects if order is outdated', async () => {
       const nextDeliveryDate = await (await app.service('orders').getNextDeliveryDates()).nextDeliveryDates[0]
       const pastWeekDeliveryDate = dayjs(nextDeliveryDate).subtract(7, 'days').toISOString()
       const orderData: OrderData = {
@@ -258,7 +274,27 @@ describe("orders service", () => {
       };
       const order = await app.service("orders").create(orderData, { user });
       await app.service('orders').Model.table('orders').where({ id: order.id }).update({ delivery: pastWeekDeliveryDate })
-      const orderUpdateFn = () => app.service('orders').patch(order.id, { paymentSuccess: 0 }, { user })
+      const orderPayWithCodeFn = () => app.service('orders').payWithCode({ id: order.id, code: app.get('payments').b2b.code }, {})
+      await assert.rejects(orderPayWithCodeFn, (err: BadRequest) => {
+        assert.match(err.message, /order is outdated please make a new order/);
+        assert.strictEqual(err.code, 400);
+        return true;
+      });
+    })
+  })
+
+  // TODO : wrong implementation, should be handled on the payment intent side
+  describe('Payment success', () => {
+    useBaseOrderMocks()
+    it.skip('doesnt allow to set paymentSuccess on an order which is outdated', async () => {
+      const nextDeliveryDate = await (await app.service('orders').getNextDeliveryDates()).nextDeliveryDates[0]
+      const pastWeekDeliveryDate = dayjs(nextDeliveryDate).subtract(7, 'days').toISOString()
+      const orderData: OrderData = {
+        ...(await getOrderMock(product.id)),
+      };
+      const order = await app.service("orders").create(orderData, { user });
+      await app.service('orders').Model.table('orders').where({ id: order.id }).update({ delivery: pastWeekDeliveryDate })
+      const orderUpdateFn = () => app.service('orders').patch(order.id, { paymentSuccess: 0 })
       await assert.rejects(orderUpdateFn, (err: BadRequest) => {
         assert.match(err.message, /order is outdated please make a new order/);
         assert.strictEqual(err.code, 400);

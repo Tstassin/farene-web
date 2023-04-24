@@ -21,8 +21,9 @@ import { authenticate } from "@feathersjs/authentication/";
 import {
   resourceSchemaCreateResolver, resourceSchemaPatchResolver,
 } from "../common/resources";
-import { checkDeliveryDate, checkOrderIsOutdated, createOrderItems } from "./orders.hooks";
-import { disallow } from "feathers-hooks-common";
+import { checkDeliveryDate, createOrderItems, noPaymentOnOutdatedOrder } from "./orders.hooks";
+import { disallow, iff } from "feathers-hooks-common";
+import { restrictToAdmin } from "../users/users.hooks";
 
 export * from "./orders.class";
 export * from "./orders.schema";
@@ -99,15 +100,16 @@ export const order = (app: Application) => {
       ],
       create: [],
       patch: [
+        restrictToAdmin,
         validateData(orderPatchValidator),
-        checkOrderIsOutdated,
+        noPaymentOnOutdatedOrder,
         resolveData(resourceSchemaPatchResolver)
       ],
       update: [disallow()],
       remove: [disallow()],
       payWithCode: [
         validateData(orderPayWithCodeValidator),
-        checkOrderIsOutdated,
+        noPaymentOnOutdatedOrder,
       ]
     },
     after: {},
