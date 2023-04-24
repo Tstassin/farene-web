@@ -18,12 +18,12 @@ case "$choice" in
 esac
 
 # Install
-npm i 
+npm ci 
 cd backend
-npm i 
+npm ci 
 cd ..
 cd frontend
-npm i
+npm ci
 cd ..
 
 # Backup
