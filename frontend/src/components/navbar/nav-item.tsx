@@ -1,14 +1,16 @@
 import { Link, Text, TextProps } from "@chakra-ui/react"
 import React from "react"
+import { NavLink } from "react-router-dom"
 
 interface NavItemProps extends TextProps{
   children: React.ReactNode
-  to?: string
+  noDecorate?: boolean
+  to: string
 }
 
-export const NavItem: React.FC<NavItemProps> = ({ children, to = "/", ...rest }) => {
+export const NavItem: React.FC<NavItemProps> = ({ children, to, noDecorate = false, ...rest }) => {
   return (
-    <Link href={to}>
+    <Link as={NavLink} to={to} textDecoration={noDecorate ? 'none' : 'underline'}>
       <Text display="block" {...rest}>
         {children}
       </Text>

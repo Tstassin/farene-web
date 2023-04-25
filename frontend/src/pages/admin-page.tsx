@@ -1,5 +1,5 @@
-import { Box, Heading, HStack, Link, } from "@chakra-ui/react";
-import { NavLink } from "react-router-dom";
+import { Box, Heading, HStack } from "@chakra-ui/react";
+import { NavItem } from "../components/navbar/nav-item";
 
 export const AdminPage = () => {
 
@@ -11,20 +11,20 @@ export const AdminPage = () => {
       <Box>
         <Heading size='md' mt={10} mb={5}>Commandes</Heading>
         <HStack>
-          <Link as={NavLink} to='/export'>Export</Link>
-          <Link as={NavLink} to='/orders'>Liste</Link>
+          <NavItem to='/export'>Export</NavItem>
+          <NavItem to='/orders'>Liste</NavItem>
         </HStack>
       </Box>
       <Box>
         <Heading size='md' mt={10} mb={5}>Produits</Heading>
         <HStack>
-          <Link as={NavLink} to='/products'>Liste</Link>
+          <NavItem to='/products'>Liste</NavItem>
         </HStack>
       </Box>
       <Box>
         <Heading size='md' mt={10} mb={5}>Catégories</Heading>
         <HStack>
-          <Link as={NavLink} to='/categories'>Liste</Link>
+          <NavItem to='/categories'>Liste</NavItem>
         </HStack>
       </Box>
     </>

@@ -16,7 +16,7 @@ export const Header = () => {
       py={8}
     >
       <Box>
-        <NavItem to='/' fontSize="lg" fontWeight="bold">
+        <NavItem to='/' fontSize="lg" fontWeight="bold" noDecorate>
           Farène
         </NavItem>
       </Box>
@@ -35,7 +35,7 @@ export const Header = () => {
             <NavItem to={'/order'}>Commander</NavItem>
             {/* <NavItem to={'/products'}>Produits</NavItem>
             <NavItem to={'/categories'}>Catégories</NavItem> */}
-            <Link as='button' onClick={() => { logoutQuery.mutate() }}>
+            <Link as='button' onClick={() => { logoutQuery.mutate() }} textDecoration='underline'>
               Déconnexion
             </Link>
           </>
