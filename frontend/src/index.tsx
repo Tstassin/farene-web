@@ -20,6 +20,7 @@ import { ResetPassword } from './components/auth/reset-password';
 import { ExportPage } from './pages/export';
 import { PromoteUserPage } from './pages/promote';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools/build/lib/devtools';
+import { AdminPage } from './pages/admin-page';
 
 export const queryClient = new QueryClient()
 
@@ -72,6 +73,10 @@ export const router = createBrowserRouter([
       {
         path: "/promote",
         element: <AdminProtected><PromoteUserPage /></AdminProtected>,
+      },
+      {
+        path: "/admin",
+        element: <AdminProtected><AdminPage /></AdminProtected>,
       },
     ]
   }

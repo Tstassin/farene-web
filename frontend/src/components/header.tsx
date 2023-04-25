@@ -1,5 +1,5 @@
 import { Box, Flex, Link, Stack } from "@chakra-ui/react";
-import { Authenticated, NotAuthenticated } from "./auth/authenticated";
+import { Admin, Authenticated, NotAuthenticated } from "./auth/authenticated";
 import { NavItem } from "./navbar/nav-item";
 import { useLogoutMutation } from "./queries/authentication";
 
@@ -29,6 +29,9 @@ export const Header = () => {
       >
         <Authenticated>
           <>
+            <Admin>
+              <NavItem to={'/admin'}>Admin</NavItem>
+            </Admin>
             <NavItem to={'/order'}>Commander</NavItem>
             {/* <NavItem to={'/products'}>Produits</NavItem>
             <NavItem to={'/categories'}>Catégories</NavItem> */}
