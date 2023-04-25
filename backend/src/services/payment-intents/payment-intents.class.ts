@@ -1,15 +1,11 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.class.html#custom-services
-import { BadRequest } from "@feathersjs/errors/lib";
 import type {
-  Id,
-  NullableId,
   Params,
   ServiceInterface,
 } from "@feathersjs/feathers";
 import Stripe from "stripe";
 import { app } from "../../app";
 import type { Application } from "../../declarations";
-import { Order } from "../orders/orders.schema";
 import { calculateOrderPrice } from "../orders/orders.utils";
 import type {
   PaymentIntentsReturnData,
@@ -72,6 +68,10 @@ export class PaymentIntentsService<
 
   // This method has to be added to the 'methods' option to make it available to clients
   async get(paymentIntentId: Stripe.PaymentIntent['id']): Promise<Stripe.Response<Stripe.PaymentIntent>> {
+    return this._get(paymentIntentId);
+  }
+
+  async _get(paymentIntentId: Stripe.PaymentIntent['id']): Promise<Stripe.Response<Stripe.PaymentIntent>> {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
     return paymentIntent;
   }

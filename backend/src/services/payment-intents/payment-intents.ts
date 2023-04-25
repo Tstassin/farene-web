@@ -55,7 +55,7 @@ export const paymentIntents = (app: Application) => {
         schemaHooks.validateData(paymentIntentsDataValidator),
         checkOrderIsOutdated,
         schemaHooks.resolveData(paymentIntentsDataResolver),
-      ],
+      ]
     },
     after: {
       create: [
@@ -65,6 +65,9 @@ export const paymentIntents = (app: Application) => {
           }
           return context
         }
+      ],
+      get: [
+        checkOrderIsOutdated
       ],
       all: [],
     },

@@ -13,7 +13,7 @@ import { BadRequest } from "@feathersjs/errors/lib";
 import { User } from "../../../src/services/users/users.schema";
 import { Category } from "../../../src/services/categories/categories.schema";
 import { Product } from "../../../src/services/products/products.schema";
-import { mockedCreatedPaymentIntent, mockStripePaymentIntentsCreate } from "./payment-intents.mocks";
+import { mockedCreatedPaymentIntent, mockStripePaymentIntentsCreate, mockStripePaymentIntentsGet } from "./payment-intents.mocks";
 import Sinon, * as sinon from "sinon";
 import Stripe from "stripe";
 import { calculateOrderPrice } from "../../../src/services/orders/orders.utils";
@@ -25,34 +25,38 @@ let order: Order
 let nextDeliveryDate: string
 let pastWeekDeliveryDate: string
 let mockedStripePaymentIntentCreate: Sinon.SinonStub<[data: Stripe.PaymentIntentCreateParams], Promise<Stripe.Response<Stripe.PaymentIntent>>>
+let mockedStripePaymentIntentGet: Sinon.SinonStub<[paymentIntentId: string], Promise<Stripe.Response<Stripe.PaymentIntent>>>
 
 describe("payment-intent service", () => {
-  beforeEach(cleanAll)
-  beforeEach(async () => {
-    user = await app.service("users").create(getUserMock());
-    category = await app.service("categories").create(getCategoryMock());
-    product = await app
-      .service("products")
-      .create(getProductMock(category.id));
-    const orderData: OrderData = {
-      ...(await getOrderMock(product.id)),
-      orderItems: [
-        {
-          productId: product.id,
-          amount: 1,
-        },
-      ],
-    };
-    order = await app.service("orders").create(orderData, { user });
-    nextDeliveryDate = await (await app.service('orders').getNextDeliveryDates()).nextDeliveryDates[0]
-    pastWeekDeliveryDate = dayjs(nextDeliveryDate).subtract(7, 'days').toISOString()
-  })
-  beforeEach(async () => {
-    mockedStripePaymentIntentCreate = mockStripePaymentIntentsCreate()
-  })
-  afterEach(async () => {
-    mockedStripePaymentIntentCreate.restore()
-  })
+  const useMocks = () => {
+    beforeEach(async () => {
+      await cleanAll()
+      user = await app.service("users").create(getUserMock());
+      category = await app.service("categories").create(getCategoryMock());
+      product = await app
+        .service("products")
+        .create(getProductMock(category.id));
+      const orderData: OrderData = {
+        ...(await getOrderMock(product.id)),
+        orderItems: [
+          {
+            productId: product.id,
+            amount: 1,
+          },
+        ],
+      };
+      order = await app.service("orders").create(orderData, { user });
+      nextDeliveryDate = await (await app.service('orders').getNextDeliveryDates()).nextDeliveryDates[0]
+      pastWeekDeliveryDate = dayjs(nextDeliveryDate).subtract(7, 'days').toISOString()
+      mockedStripePaymentIntentCreate = mockStripePaymentIntentsCreate()
+      mockedStripePaymentIntentGet = mockStripePaymentIntentsGet()
+    })
+    afterEach(async () => {
+      mockedStripePaymentIntentCreate.restore()
+      mockedStripePaymentIntentGet.restore()
+      await cleanAll()
+    })
+  }
 
   it("registered the service", () => {
     const service = app.service("payment-intent");
@@ -61,11 +65,12 @@ describe("payment-intent service", () => {
   });
 
   describe('Create a paymentIntent', async () => {
+    useMocks()
     it('Updates the order with paymentIntent when created', async () => {
       const paymentIntent = await app.service('payment-intent').create({ orderId: order.id }, { user })
       const updatedOrder = await app.service('orders').get(order.id)
 
-      assert.equal(mockedCreatedPaymentIntent.id, updatedOrder.paymentIntent)
+      assert.equal(mockedCreatedPaymentIntent(0, { orderId: order.id.toString() }).id, updatedOrder.paymentIntent)
     })
 
     it('Sets receipt email whe calling stripe create payment intent method', async () => {
@@ -99,6 +104,28 @@ describe("payment-intent service", () => {
       await assert.rejects(paymentIntentCreateFn, (err: BadRequest) => {
         const error = err.toJSON();
         console.log(error)
+        assert.match(err.message, /order is outdated please make a new order/);
+        assert.strictEqual(err.code, 400);
+        return true;
+      });
+    })
+  })
+
+  describe('GET a paymentIntent', async () => {
+    useMocks()
+    it('doesnt return a payment intent to a user for an order which is outdated', async () => {
+      console.log(mockStripePaymentIntentsGet)
+      const paymentIntent = await app.service('payment-intent').create({ orderId: order.id }, {})
+      const updatedOrder = await app.service('orders').Model.table('orders').where({ id: order.id }).update({ delivery: pastWeekDeliveryDate })
+      console.log('will get')
+      console.log('will get')
+      console.log('will get')
+      console.log('will get')
+      console.log('will get')
+      console.log('will get')
+      const paymentIntentGetFn = () => app.service('payment-intent').get(paymentIntent.id)
+      await assert.rejects(paymentIntentGetFn, (err: BadRequest) => {
+        const error = err.toJSON();
         assert.match(err.message, /order is outdated please make a new order/);
         assert.strictEqual(err.code, 400);
         return true;

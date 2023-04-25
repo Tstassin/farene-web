@@ -1,6 +1,8 @@
 import Stripe from "stripe"
-import { PaymentIntentsService } from "../../../src/services/payment-intents/payment-intents.class"
+import { PaymentIntentsParams, PaymentIntentsService } from "../../../src/services/payment-intents/payment-intents.class"
 import * as sinon from 'sinon'
+
+let lastPaymentIntent: Stripe.Response<Stripe.PaymentIntent>
 
 export const mockStripePaymentIntentsCreate = () => {
   const _createPaymentIntent = sinon
@@ -8,23 +10,30 @@ export const mockStripePaymentIntentsCreate = () => {
     .callsFake(
       async (data: Stripe.PaymentIntentCreateParams) => {
         const { amount, metadata } = data
-        return new Promise(resolve => resolve(
-          {
-            ...mockedCreatedPaymentIntent,
-            amount,
-            // @ts-expect-error we know we pass metadata, at least with orderId, it is tested
-            metadata
-          }
-        ))
+        const paymentIntent = mockedCreatedPaymentIntent(amount, { orderId: metadata!.orderId!.toString() })
+        lastPaymentIntent = paymentIntent
+        return new Promise(resolve => resolve(paymentIntent))
       }
     )
   return _createPaymentIntent
 }
 
-export const mockedCreatedPaymentIntent = {
+export const mockStripePaymentIntentsGet= () => {
+  const _getPaymentIntent = sinon
+    .stub(PaymentIntentsService.prototype, '_get')
+    .callsFake(
+      async () => {
+        return new Promise(resolve => resolve(lastPaymentIntent))
+      }
+    )
+  return _getPaymentIntent
+}
+
+
+export const mockedCreatedPaymentIntent = (amount: number, metadata: { orderId: string }) => ({
   id: 'pi_3MyTySFRObIGk3ha16KN4k0f',
   object: 'payment_intent' as const,
-  amount: 300,
+  amount,
   amount_capturable: 0,
   amount_details: { tip: {} },
   amount_received: 0,
@@ -50,7 +59,7 @@ export const mockedCreatedPaymentIntent = {
     apiVersion: '',
   },
   livemode: false,
-  metadata: { orderId: '54' },
+  metadata,
   next_action: null,
   on_behalf_of: null,
   payment_method: null,
@@ -75,4 +84,4 @@ export const mockedCreatedPaymentIntent = {
   status: 'requires_payment_method' as const,
   transfer_data: null,
   transfer_group: null
-}
+})
