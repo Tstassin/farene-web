@@ -8,10 +8,10 @@ export const ExportPage = () => {
   const ordersExportMutation = useOrdersExport()
   const downloadButtonRef = useRef<HTMLAnchorElement>(null)
   const { data: orderDates } = useOrderDates()
-  const { thisWeek } = orderDates ?? {}
+  const thisWeek = orderDates?.weeks?.thisWeek
 
-  const allPayedOrdersQuery = useOrders({paymentSuccess: 1, 'createdAt': { $gte: thisWeek }, $limit: 250}, Boolean(thisWeek))
-  const allOrderItemsQuery = useOrderItems({ 'createdAt': { $gte: thisWeek }, orderId: {$in: allPayedOrdersQuery.data?.data?.map(o => o.id)}, $limit: 250 }, Boolean(thisWeek && allPayedOrdersQuery.isSuccess && allPayedOrdersQuery.data.total > 0))
+  const allPayedOrdersQuery = useOrders({ paymentSuccess: 1, 'createdAt': { $gte: thisWeek }, $limit: 250 }, Boolean(thisWeek))
+  const allOrderItemsQuery = useOrderItems({ 'createdAt': { $gte: thisWeek }, orderId: { $in: allPayedOrdersQuery.data?.data?.map(o => o.id) }, $limit: 250 }, Boolean(thisWeek && allPayedOrdersQuery.isSuccess && allPayedOrdersQuery.data.total > 0))
 
   const productsAmountsOrdered =
     allOrderItemsQuery?.data?.data?.reduce((acc: Record<OrderItem['product']['sku'], number>, curr) => {
