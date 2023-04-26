@@ -1,6 +1,6 @@
 import { useMutation, useQuery, UseQueryOptions } from "@tanstack/react-query"
 import { queryClient } from ".."
-import { Order, OrderData, OrderPayWithCode, OrderQuery } from "../../../backend/src/services/orders/orders.schema"
+import { Order, OrderData, OrderPatch, OrderPayWithCode, OrderQuery } from "../../../backend/src/services/orders/orders.schema"
 import { client } from "../../api/api"
 
 export const useOrders = (query?: OrderQuery, enabled = true) => {
@@ -10,12 +10,16 @@ export const useOrders = (query?: OrderQuery, enabled = true) => {
     enabled
   })
 }
-
-export const useOrder = (id: Order['id'], enabled: Required<UseQueryOptions['enabled']>) => {
+const fetchOrder = (id?: Order['id']) => {
+  return typeof id === 'undefined'
+  ? Promise.reject(new Error('Invalid id'))
+  :client.service('orders').get(id)
+}
+export const useOrder = (id?: Order['id']) => {
   return useQuery({
     queryKey: ['orders', id],
-    queryFn: () => client.service('orders').get(id),
-    enabled
+    queryFn: () => fetchOrder(id),
+    enabled: Boolean(id)
   })
 }
 
@@ -47,6 +51,17 @@ export const useOrderPayWithCodeMutation = () => {
   return useMutation({
     mutationFn: (data: OrderPayWithCode) => {
       return client.service('orders').payWithCode(data, {})
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['orders'])
+    }
+  })
+}
+
+export const useOrderDeliveryDateMutation = () => {
+  return useMutation({
+    mutationFn: ({id, data}: {id: Order['id'], data: Omit<OrderPatch, 'paymentSuccess' | 'paymentIntent'>}) => {
+      return client.service('orders').patch(id, data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['orders'])
