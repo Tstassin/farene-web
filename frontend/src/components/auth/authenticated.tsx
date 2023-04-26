@@ -1,5 +1,5 @@
 import React from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
 import { isAdmin, isAuthenticated } from '../../utils/authentication'
 import { NotFound } from '@feathersjs/errors/lib'
 
@@ -28,5 +28,9 @@ export const Protected: React.FC<{children: React.ReactElement}> = ({children}) 
 
 export const AdminProtected: React.FC<{children: React.ReactElement}> = ({children}) => {
   if (isAdmin()) return children
+  throw new NotFound()
+}
+export const AdminProtectedOutlet: React.FC<{children?: React.ReactElement}> = ({children}) => {
+  if (isAdmin()) return <Outlet />
   throw new NotFound()
 }

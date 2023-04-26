@@ -14,7 +14,7 @@ import { CategoriesPage } from './pages/categories';
 import { OrderDetailsPage } from './pages/order-details';
 import ErrorPage from './pages/error-page';
 import { client } from '../api/api';
-import { AdminProtected, Protected } from './components/auth/authenticated';
+import { AdminProtected, AdminProtectedOutlet, Protected } from './components/auth/authenticated';
 import { Layout } from './components/layout';
 import { ResetPassword } from './components/auth/reset-password';
 import { ExportPage } from './pages/export';
@@ -56,32 +56,38 @@ export const router = createBrowserRouter([
         element: <Protected><Order /></Protected>,
       },
       {
-        path: "/orders",
-        element: <AdminProtected><Orders /></AdminProtected>,
-      },
-      {
         path: "/order/:orderId",
         element: <Protected><OrderDetailsPage /></Protected>
       },
       {
-        path: "/products",
-        element: <AdminProtected><Products /></AdminProtected>,
-      },
-      {
-        path: "/categories",
-        element: <AdminProtected><CategoriesPage /></AdminProtected>,
-      },
-      {
-        path: "/export",
-        element: <AdminProtected><ExportPage /></AdminProtected>,
-      },
-      {
-        path: "/promote",
-        element: <AdminProtected><PromoteUserPage /></AdminProtected>,
-      },
-      {
         path: "/admin",
-        element: <AdminProtected><AdminPage /></AdminProtected>,
+        element: <AdminProtectedOutlet />,
+        children: [
+          {
+            path: '/admin/',
+            element: <AdminPage />
+          },
+          {
+            path: "/admin/products",
+            element: <AdminProtected><Products /></AdminProtected>,
+          },
+          {
+            path: "/admin/categories",
+            element: <AdminProtected><CategoriesPage /></AdminProtected>,
+          },
+          {
+            path: "/admin/export",
+            element: <AdminProtected><ExportPage /></AdminProtected>,
+          },
+          {
+            path: "/admin/promote",
+            element: <AdminProtected><PromoteUserPage /></AdminProtected>,
+          },
+          {
+            path: "orders",
+            element: <AdminProtected><Orders /></AdminProtected>,
+          },
+        ]
       },
     ]
   }
