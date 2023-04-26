@@ -1,20 +1,22 @@
-import { Box, Button, Heading, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Button, Heading, Select, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import fr from 'dayjs/locale/fr';
 import timezone from 'dayjs/plugin/timezone';
 import { useState } from "react";
 import { Order } from "../../../backend/src/services/orders/orders.schema";
 import { OrderEditModal } from "../components/orders/order-edit-modal";
-import { useOrders } from "../queries/orders";
+import { useOrderDates, useOrders } from "../queries/orders";
 dayjs.extend(timezone)
 
 type TableKeys = keyof Order | 'edit'
 
 export const Orders = () => {
-  const ordersQuery = useOrders({ paymentSuccess: 1 })
+  const [week, setWeek] = useState<'thisWeek' | 'previousWeek' | 'nextWeek'>('thisWeek')
+  const orderDatesQuery = useOrderDates()
+  const weekDate = orderDatesQuery.data?.weeks?.[week]
+  const ordersQuery = useOrders({ paymentSuccess: 1, delivery: { $gte: weekDate, $lte: dayjs(weekDate).add(1, 'week').format('YYYY-MM-DD') } }, Boolean(weekDate))
   const [currentOrderToEdit, setCurrentOrderToEdit] = useState<Order['id'] | undefined>(undefined)
-
-  const tableKeys: Array<TableKeys> = ['id', 'userId', 'createdAt', 'delivery', 'paymentIntent', 'price', 'edit']
+  const tableKeys: Array<TableKeys> = ['id', 'userId', 'delivery', 'paymentIntent', 'price', 'edit']
   const getValue = (order: Order, key: TableKeys) => {
     switch (key) {
       case 'id':
@@ -30,7 +32,7 @@ export const Orders = () => {
       case 'edit':
         return <Button size='sm' onClick={() => setCurrentOrderToEdit(order['id'])}>modifier</Button>
       case 'userId':
-        return order.user.email
+        return order[key]
       default:
         return order[key].toString()
     }
@@ -40,6 +42,17 @@ export const Orders = () => {
     <>
       <Box mb={10}>
         <Heading>Historique des commandes</Heading>
+      </Box>
+      <Box mb={10}>
+        <Select onChange={(e) => setWeek(
+          // @ts-expect-error
+          e.target.value
+        )} value={week}>
+          {orderDatesQuery.data?.weeks && Object.keys(orderDatesQuery.data.weeks).map(week => <option value={week}>Semaine du {
+            //@ts-expect-error
+            orderDatesQuery.data?.weeks?.[week]
+          }</option>)}
+        </Select>
       </Box>
       <Box>
         <TableContainer>

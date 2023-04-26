@@ -20,7 +20,7 @@ export const orderSchema = Type.Intersect([
       id: Type.Number(),
       delivery: Type.String(),
       userId: Type.Number(),
-      user: userSchema,
+      //user: userSchema,
       orderItems: Type.Array(orderItemSchema),
       price: Type.Number(),
       paymentIntent: Type.Optional(Type.String()),

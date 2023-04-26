@@ -113,20 +113,20 @@ export const order = (app: Application) => {
     },
     after: {
       find: [
-        populate({schema: {include: {
+        /* populate({schema: {include: {
           service: 'users',
           nameAs: 'user',
           parentField: 'userId',
           childField: 'id'
-        }}})
+        }}}) */
       ],
       get: [
-        populate({schema: {include: {
+        /* populate({schema: {include: {
           service: 'users',
           nameAs: 'user',
           parentField: 'userId',
           childField: 'id'
-        }}})
+        }}}) */
       ]
     },
     error: {},

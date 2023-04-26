@@ -4,8 +4,9 @@ import { Order, OrderData, OrderPatch, OrderPayWithCode, OrderQuery } from "../.
 import { client } from "../../api/api"
 
 export const useOrders = (query?: OrderQuery, enabled = true) => {
+  console.log(query)
   return useQuery({
-    queryKey: ['orders'],
+    queryKey: ['orders', query],
     queryFn: () => client.service('orders').find({ query }),
     enabled
   })

@@ -315,9 +315,10 @@ describe("orders service", () => {
         email: 'user2@example.com',
         password: 'a'
       }));
-      const orderFromUser1 = await app.service("orders").create(orderData, { user: user1 });
-      const orderFromUser2 = await app.service("orders").create(orderData, { user: user2 });
+      const { id } = await app.service("orders").create(orderData, { user: user1 });
+      await app.service("orders").create(orderData, { user: user2 });
       const orders = await app.service('orders').find({ user: user1 })
+      const orderFromUser1 = await app.service('orders').get(id)
       assert.equal(orders.data.length, 1)
       assert.deepEqual(orders.data[0], orderFromUser1)
     })
