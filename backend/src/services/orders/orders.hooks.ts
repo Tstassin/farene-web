@@ -46,10 +46,10 @@ export const checkDeliveryDate = async (
     throw new BadRequest("Invalid delivery date or format :" + deliveryDate);
   }
 
-  const { nextDeliveryDates } = await context.app
+  const { deliveryDates: { nextWeek } } = await context.app
     .service("orders")
-    .getNextDeliveryDates();
-  if (!nextDeliveryDates.some((date) => date === deliveryDate)) {
+    .getDeliveryDates();
+  if (!nextWeek.some((date) => date === deliveryDate)) {
     throw new BadRequest("No delivery on " + deliveryDate);
   }
   await next()
@@ -59,7 +59,7 @@ export const checkDeliveryDate = async (
 export const noPaymentOnOutdatedOrder = async (
   context: HookContext<Application, OrderService<OrderParams>>
 ) => {
-  const {paymentSuccess, paymentIntent} = context.data || {}
+  const { paymentSuccess, paymentIntent } = context.data || {}
   // We don't allow payments for outdated orders
   if (!paymentIntent && !paymentSuccess) return context
   const noOrderIdError = 'No order id in context to check if order is outdated'

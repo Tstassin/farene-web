@@ -1,5 +1,5 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.class.html#database-services
-import type { Id, NullableId, Params } from "@feathersjs/feathers";
+import type { Params } from "@feathersjs/feathers";
 import { KnexService } from "@feathersjs/knex";
 import type { KnexAdapterParams, KnexAdapterOptions } from "@feathersjs/knex";
 
@@ -15,6 +15,7 @@ import { PaymentError } from "@feathersjs/errors/lib";
 //@ts-expect-error no types for json2csv
 import { Parser } from '@json2csv/plainjs';
 import { sendPaymentSuccess } from "../../hooks/send-payment-success";
+import { belgianNow, isoDateFormat } from "../../utils/dates";
 
 dayjs.extend(utc);
 dayjs.extend(isoWeek);
@@ -31,20 +32,23 @@ export class OrderService<
   ServiceParams extends Params = OrderParams
 > extends KnexService<Order, OrderData, OrderParams, OrderPatch | OrderPayWithCode> {
 
-  async getNextDeliveryDates() {
-    const now = dayjs().utc();
-    const nextOrderWeek = now.endOf("isoWeek").add(1, "day");
-    const thisWeek = nextOrderWeek.subtract(7, "days")
-    const nextAllowedDeliveryDates = allowedWeekDays.map((allowedWeekDay) =>
-      nextOrderWeek.isoWeekday(allowedWeekDay)
-    );
+  async getDeliveryDates() {
+    const now = belgianNow();
+    const nextWeek = now.endOf("isoWeek").add(1, "day");
+    const thisWeek = nextWeek.subtract(1, 'week')
+    const previousWeek = nextWeek.subtract(2, 'week')
     return {    
-      thisWeek: thisWeek.format("YYYY-MM-DD"),
-      nextWeek: nextOrderWeek.format("YYYY-MM-DD"),
-      nextDeliveryDates: nextAllowedDeliveryDates.map((d) =>
-        d.format("YYYY-MM-DD")
-      ),
-    };
+      weeks: {
+        previousWeek: previousWeek.format(isoDateFormat),
+        thisWeek: thisWeek.format(isoDateFormat),
+        nextWeek: nextWeek.format(isoDateFormat),
+      },
+      deliveryDates: {
+        previousWeek: allowedWeekDays.map((wd) => previousWeek.isoWeekday(wd).format(isoDateFormat)),
+        thisWeek: allowedWeekDays.map((wd) => thisWeek.isoWeekday(wd).format(isoDateFormat)),
+        nextWeek: allowedWeekDays.map((wd) => nextWeek.isoWeekday(wd).format(isoDateFormat)),
+      }
+    } as const;
   }
 
   async payWithCode(data: OrderPayWithCode, params: OrderParams): Promise<Order> {

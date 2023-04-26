@@ -7,8 +7,8 @@ export const getOrderMock = async (
   data?: Partial<OrderData>
 ): Promise<OrderData> => {
   const baseOrderMock = {
-    delivery: (await app.service("orders").getNextDeliveryDates())
-      .nextDeliveryDates[0],
+    delivery: (await app.service("orders").getDeliveryDates())
+      .deliveryDates.nextWeek[0],
     orderItems: [
       {
         productId: productId,

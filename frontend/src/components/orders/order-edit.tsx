@@ -10,6 +10,8 @@ interface OrderEditComponentProps {
 export const OrderEditComponent = ({ form }: OrderEditComponentProps) => {
   const orderDatesQuery = useOrderDates()
   const { register, formState: { errors } } = form
+  const deliveryDates = orderDatesQuery.data?.deliveryDates
+  const allDeliveryDates = deliveryDates ? Object.values(deliveryDates).flatMap(d => d) : []
 
   return (
     <>
@@ -20,7 +22,7 @@ export const OrderEditComponent = ({ form }: OrderEditComponentProps) => {
             required: 'Ce champ est obligatoire',
           })}
         >
-          {orderDatesQuery.isSuccess && orderDatesQuery.data.nextDeliveryDates.map(
+          {allDeliveryDates.map(
             deliveryDate => <option value={deliveryDate}>{deliveryDate}</option>
           )}
         </Select>

@@ -108,7 +108,7 @@ describe("orders service", () => {
     describe("Only admins can update the delivery date", () => {
       useBaseOrderMocks()
       it('On PATCH', async () => {
-        const newDeliveryDate = await (await ordersService.getNextDeliveryDates()).nextDeliveryDates[1]
+        const newDeliveryDate = await (await ordersService.getDeliveryDates()).deliveryDates.nextWeek[1]
         const order = await app.service("orders").create(orderData, { user });
         const updatedDeliveryDate = await app.service('orders').patch(order.id, { delivery: newDeliveryDate }, { user: admin })
         assert.equal(newDeliveryDate, updatedDeliveryDate.delivery)
@@ -117,7 +117,7 @@ describe("orders service", () => {
     describe("Users cannot update the delivery date", () => {
       useBaseOrderMocks()
       it('On PATCH', async () => {
-        const newDeliveryDate = await (await ordersService.getNextDeliveryDates()).nextDeliveryDates[1]
+        const newDeliveryDate = await (await ordersService.getDeliveryDates()).deliveryDates.nextWeek[1]
         const order = await app.service("orders").create(orderData, { user });
         const updateDeliveryDateFn = () => app.service('orders').patch(order.id, { delivery: newDeliveryDate }, { user })
         await assertRejects(updateDeliveryDateFn, Forbidden, 'Error')
@@ -267,7 +267,7 @@ describe("orders service", () => {
       assert.equal(orderPayed.paymentSuccess, 1)
     });
     it('rejects if order is outdated', async () => {
-      const nextDeliveryDate = await (await app.service('orders').getNextDeliveryDates()).nextDeliveryDates[0]
+      const nextDeliveryDate = await (await app.service('orders').getDeliveryDates()).deliveryDates.nextWeek[0]
       const pastWeekDeliveryDate = dayjs(nextDeliveryDate).subtract(7, 'days').toISOString()
       const orderData: OrderData = {
         ...(await getOrderMock(product.id)),
@@ -287,7 +287,7 @@ describe("orders service", () => {
   describe('Payment success', () => {
     useBaseOrderMocks()
     it.skip('doesnt allow to set paymentSuccess on an order which is outdated', async () => {
-      const nextDeliveryDate = await (await app.service('orders').getNextDeliveryDates()).nextDeliveryDates[0]
+      const nextDeliveryDate = await (await app.service('orders').getDeliveryDates()).deliveryDates.nextWeek[0]
       const pastWeekDeliveryDate = dayjs(nextDeliveryDate).subtract(7, 'days').toISOString()
       const orderData: OrderData = {
         ...(await getOrderMock(product.id)),

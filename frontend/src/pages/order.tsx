@@ -19,7 +19,7 @@ export const Order = () => {
   const orderCreateMutation = useOrderCreateMutation()
   const allProductsQuery = useAllProducts({disabled: 0})
   const allCategoriesQuery = useAllCategories()
-  const { nextWeek, nextDeliveryDates } = useOrderDates().data || {}
+  const { weeks, deliveryDates } = useOrderDates().data || {}
   const methods = useForm<OrderData>();
   const { handleSubmit, register, control, watch, clearErrors, setError, formState: { errors, isDirty } } = methods;
   const fieldArray = useFieldArray({
@@ -45,8 +45,9 @@ export const Order = () => {
   };
 
   const nextWeekLabel = useMemo(() => {
-    return dayjs(nextWeek).locale(fr).format('dddd DD MMMM YYYY')
-  }, [nextWeek])
+    return dayjs(weeks?.nextWeek
+      ).locale(fr).format('dddd DD MMMM YYYY')
+  }, [weeks])
 
   if (orderCreateMutation.isSuccess) navigate(`/order/${orderCreateMutation.data.id}/`)
 
@@ -69,7 +70,7 @@ export const Order = () => {
                 </FormLabel>
                 <RadioGroup>
                   <Stack >
-                    {nextDeliveryDates?.map(
+                    {deliveryDates?.nextWeek?.map(
                       date => (
                         <Radio
                           value={date}

@@ -26,7 +26,7 @@ export const useOrder = (id?: Order['id']) => {
 export const useOrderDates = () => {
   return useQuery({
     queryKey: ['nextDeliveryDates'],
-    queryFn: () => client.service('orders').getNextDeliveryDates()
+    queryFn: () => client.service('orders').getDeliveryDates()
   })
 }
 

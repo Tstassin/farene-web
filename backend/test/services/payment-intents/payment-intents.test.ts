@@ -46,7 +46,7 @@ describe("payment-intent service", () => {
         ],
       };
       order = await app.service("orders").create(orderData, { user });
-      nextDeliveryDate = await (await app.service('orders').getNextDeliveryDates()).nextDeliveryDates[0]
+      nextDeliveryDate = await (await app.service('orders').getDeliveryDates()).deliveryDates.nextWeek[0]
       pastWeekDeliveryDate = dayjs(nextDeliveryDate).subtract(7, 'days').toISOString()
       mockedStripePaymentIntentCreate = mockStripePaymentIntentsCreate()
       mockedStripePaymentIntentGet = mockStripePaymentIntentsGet()

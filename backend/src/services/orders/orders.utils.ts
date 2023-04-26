@@ -13,7 +13,7 @@ export const calculateOrderPrice = async (_order: Order | Order['id']) => {
  */
 export const isOrderIsOutdated = async (orderId: Order['id']) => {
   const order = await app.service('orders').get(orderId)
-  const nextWeek = (await app.service('orders').getNextDeliveryDates()).nextWeek
+  const nextWeek = (await app.service('orders').getDeliveryDates()).weeks.nextWeek
   if (dayjs(order.delivery, 'YYYY-MM-DD', true).isBefore(nextWeek)) {
     return true
   }

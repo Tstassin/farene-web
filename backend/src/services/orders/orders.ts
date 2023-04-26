@@ -79,7 +79,7 @@ export const order = (app: Application) => {
         resolveExternal(orderExternalResolver),
         resolveResult(orderResolver),
       ],
-      getNextDeliveryDates: [authenticate("jwt")],
+      getDeliveryDates: [authenticate("jwt")],
       payWithCode: [
         authenticate('jwt'),
         resolveExternal(orderExternalResolver),

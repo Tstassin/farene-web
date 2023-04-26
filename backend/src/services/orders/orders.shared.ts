@@ -23,7 +23,7 @@ export const orderMethods = [
   "get",
   "create",
   "patch",
-  "getNextDeliveryDates",
+  "getDeliveryDates",
   "payWithCode",
   "exportOrders"
 ] as const;
