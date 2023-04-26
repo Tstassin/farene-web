@@ -1,6 +1,7 @@
-import { Container, Heading } from "@chakra-ui/react";
+import { Box, Container, Heading } from "@chakra-ui/react";
 import { isRouteErrorResponse, Outlet, useRouteError } from "react-router-dom";
 import { Header } from "../components/header";
+import { NavItem } from "../components/navbar/nav-item";
 
 export default function ErrorPage() {
   const error = useRouteError();
@@ -33,6 +34,9 @@ export default function ErrorPage() {
             </p>
           )}
         </div>
+        <Box mt={10}>
+          <NavItem to='/'>Retour à l'accueil</NavItem>
+        </Box>
       </Container>
     </Container>
   )
