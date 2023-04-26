@@ -12,6 +12,11 @@ export const AdminPage = () => {
         <Heading size='md' mt={10} mb={5}>Commandes</Heading>
         <HStack>
           <NavItem to='/admin/export'>Export</NavItem>
+        </HStack>
+      </Box>
+      <Box>
+        <Heading size='md' mt={10} mb={5}>Livraisons</Heading>
+        <HStack>
           <NavItem to='/admin/orders'>Liste</NavItem>
         </HStack>
       </Box>

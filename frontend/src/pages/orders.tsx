@@ -41,7 +41,7 @@ export const Orders = () => {
   return (
     <>
       <Box mb={10}>
-        <Heading>Historique des commandes</Heading>
+        <Heading>Historique des livraisons</Heading>
       </Box>
       <Box mb={10}>
         <Select onChange={(e) => setWeek(
