@@ -1,7 +1,8 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { Product, ProductData, ProductUpdate } from "../../../../backend/src/services/products/products.schema";
 import { useProduct, useProductUpdateMutation } from "../../queries/products";
+import { RequestButton } from "../elements/request-button";
 import { ProductEditComponent } from "./edit";
 
 export const UpdateProduct = ({ id }: { id: Product['id'] }) => {
@@ -21,7 +22,7 @@ export const UpdateProduct = ({ id }: { id: Product['id'] }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <ProductEditComponent form={form} />
         <Box>
-          <Button type="submit">Mettre à jour</Button>
+          <RequestButton status={productUpdateMutation.status} type="submit">Mettre à jour</RequestButton>
         </Box>
       </form>
     </>

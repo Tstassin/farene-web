@@ -1,7 +1,8 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { Order, OrderPatch } from "../../../../backend/src/services/orders/orders.schema";
 import { useOrder, useOrderDeliveryDateMutation } from "../../queries/orders";
+import { RequestButton } from "../elements/request-button";
 import { OrderEditComponent } from "./order-edit";
 
 export const UpdateOrder = ({ id }: { id: Order['id'] }) => {
@@ -21,7 +22,7 @@ export const UpdateOrder = ({ id }: { id: Order['id'] }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <OrderEditComponent form={form} />
         <Box>
-          <Button type="submit">Mettre à jour</Button>
+          <RequestButton status={orderDeliveryDateMutation.status} type="submit">Mettre à jour</RequestButton>
         </Box>
       </form>
     </>

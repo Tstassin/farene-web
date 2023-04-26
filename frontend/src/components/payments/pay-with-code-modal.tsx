@@ -1,7 +1,8 @@
-import { Button, FormControl, FormErrorMessage, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react"
+import { FormControl, FormErrorMessage, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react"
 import { useForm } from "react-hook-form";
 import { Order, OrderPayWithCode } from "../../../../backend/src/services/orders/orders.schema";
 import { useOrderPayWithCodeMutation } from "../../queries/orders";
+import { RequestButton } from "../elements/request-button";
 
 interface PayWithCodeModalProps {
   orderId: Order['id'],
@@ -44,9 +45,9 @@ export const PayWithCodeModal = ({ orderId, isOpen, closeAction }: PayWithCodeMo
                 {errors.code?.message}
               </FormErrorMessage>
             </FormControl>
-            <Button type="submit" colorScheme={"blue"}>
+            <RequestButton status={orderPayWithCodeMutation.status} type="submit" colorScheme={"blue"}>
               Payer
-            </Button>
+            </RequestButton>
           </form>
         </ModalBody>
         <ModalFooter></ModalFooter>

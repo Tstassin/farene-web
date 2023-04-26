@@ -1,7 +1,8 @@
-import { Box, Button, Container } from "@chakra-ui/react";
+import { Box, Container } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { CategoryData } from "../../../../backend/src/services/categories/categories.schema";
 import { useCategoryCreateMutation } from "../../queries/categories";
+import { RequestButton } from "../elements/request-button";
 import { CategoryEditComponent } from "./edit";
 
 export const CreateCategory = () => {
@@ -19,7 +20,7 @@ export const CreateCategory = () => {
         <>
           <CategoryEditComponent form={form} />
           <Box>
-            <Button type="submit">Ajouter</Button>
+            <RequestButton status={categoryCreateMutation.status} type="submit">Ajouter</RequestButton>
           </Box>
         </>
       </form>

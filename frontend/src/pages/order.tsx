@@ -1,4 +1,4 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, Container, Divider, FormControl, FormErrorMessage, FormLabel, Heading, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Divider, FormControl, FormErrorMessage, FormLabel, Heading, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
 import { Fragment, useMemo } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { OrderData } from '../../../backend/src/services/orders/orders.schema'
@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { ProductInput } from "../components/products/product-input";
 import { OrderInstructions } from "../components/orders/order-instructions";
 import { useAllCategories } from "../queries/categories";
+import { RequestButton } from "../components/elements/request-button";
 dayjs.extend(localeData)
 
 export const Order = () => {
@@ -133,7 +134,7 @@ export const Order = () => {
               <br />
               <br />
               <Box textAlign='right'>
-                <Button type="submit">Valider et Payer</Button>
+                <RequestButton status={orderCreateMutation.status} type="submit">Valider et Payer</RequestButton>
               </Box>
             </>
           </form>
