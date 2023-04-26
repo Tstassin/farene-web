@@ -36,7 +36,7 @@ export const Orders = () => {
       </Box>
       <Box>
         <TableContainer>
-          <Table>
+          <Table size={'sm'}>
             <Thead>
               <Tr>
                 {tableKeys.map(key => <Th>{key}</Th>)}
