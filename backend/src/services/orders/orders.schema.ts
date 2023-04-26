@@ -9,6 +9,7 @@ import { resourceSchema } from "../common/resources";
 import { orderItemSchema, orderItemDataSchema } from "../order-items/order-items.schema";
 import { calculateOrderPrice } from "./orders.utils";
 import { restrictResource } from "../users/users.utils";
+import { userSchema } from "../users/users.schema";
 
 /**
  * Main data model
@@ -19,6 +20,7 @@ export const orderSchema = Type.Intersect([
       id: Type.Number(),
       delivery: Type.String(),
       userId: Type.Number(),
+      user: userSchema,
       orderItems: Type.Array(orderItemSchema),
       price: Type.Number(),
       paymentIntent: Type.Optional(Type.String()),
@@ -32,7 +34,7 @@ export type Order = Static<typeof orderSchema>;
 export const orderValidator = getValidator(orderSchema, dataValidator);
 export const orderResolver = resolve<Order, HookContext>(
   {
-    price: virtual(async (order) => calculateOrderPrice(order))
+    price: virtual(async (order) => calculateOrderPrice(order)),
   },
   {
     converter: async (data, context) => {

@@ -9,7 +9,6 @@ import {
   orderExternalResolver,
   orderDataResolver,
   orderQueryResolver,
-  orderPayWithCodeResolver,
   orderPayWithCodeValidator,
   orderPatchValidator,
 } from "./orders.schema";
@@ -22,7 +21,7 @@ import {
   resourceSchemaCreateResolver, resourceSchemaPatchResolver,
 } from "../common/resources";
 import { checkDeliveryDate, createOrderItems, noPaymentOnOutdatedOrder } from "./orders.hooks";
-import { disallow, iff } from "feathers-hooks-common";
+import { disallow, populate } from "feathers-hooks-common";
 import { restrictToAdmin } from "../users/users.hooks";
 
 export * from "./orders.class";
@@ -112,7 +111,24 @@ export const order = (app: Application) => {
         noPaymentOnOutdatedOrder,
       ]
     },
-    after: {},
+    after: {
+      find: [
+        populate({schema: {include: {
+          service: 'users',
+          nameAs: 'user',
+          parentField: 'userId',
+          childField: 'id'
+        }}})
+      ],
+      get: [
+        populate({schema: {include: {
+          service: 'users',
+          nameAs: 'user',
+          parentField: 'userId',
+          childField: 'id'
+        }}})
+      ]
+    },
     error: {},
   });
 };

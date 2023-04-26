@@ -1,7 +1,7 @@
 import { Box, Button, Heading, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import dayjs from "dayjs";
-import fr from 'dayjs/locale/fr'
-import timezone from 'dayjs/plugin/timezone'
+import fr from 'dayjs/locale/fr';
+import timezone from 'dayjs/plugin/timezone';
 import { useState } from "react";
 import { Order } from "../../../backend/src/services/orders/orders.schema";
 import { OrderEditModal } from "../components/orders/order-edit-modal";
@@ -29,6 +29,8 @@ export const Orders = () => {
         return order[key]
       case 'edit':
         return <Button size='sm' onClick={() => setCurrentOrderToEdit(order['id'])}>modifier</Button>
+      case 'userId':
+        return order.user.email
       default:
         return order[key].toString()
     }
