@@ -10,7 +10,9 @@ export const isAuthenticated = () => {
 
 export const isAdmin = () => {
   if (!isAuthenticated()) return false
-  const { user: { admin } } = queryClient.getQueryData(['authentication']) as AuthenticationResult
-  if (admin === 1) return true
+  const auth = queryClient.getQueryData(['authentication']) as AuthenticationResult | null | undefined
+  if (auth && 'user' in auth && 'admin' in auth.user && auth.user.admin === 1) {
+    return true
+  }
   return false
 }
