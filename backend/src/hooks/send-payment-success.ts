@@ -8,6 +8,7 @@ import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { app } from "../app";
 import { logErrorToConsole } from "./log-error";
+import { allowedDeliveryPlaces, deliveryPlacesLabels } from "../config/orders";
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -38,9 +39,15 @@ export const sendPaymentSuccess = async (user: User, order: Order, receipt_url?:
         + await calculateOrderPrice(order) + ' €'
         + '<br>'
         + '<br>'
-        + 'Enlèvement :'
+        + "Date d'enlèvement :"
         + '<br>'
-        + dayjs(order.delivery, 'YYYY-MM-DD').tz('Europe/Paris').locale(fr).format('dddd DD MMMM'),
+        + dayjs(order.delivery, 'YYYY-MM-DD').tz('Europe/Paris').locale(fr).format('dddd DD MMMM')
+        + '<br>'
+        + "Lieu :"
+        + '<br>' + deliveryPlacesLabels[order.deliveryPlace]
+        + '<br>'
+        + '<br>'
+        + "Les informations pour le lieu et l'horaire d'enlèvement sont détaillées sur le site web",
       links
     })
   } catch (error: any) {

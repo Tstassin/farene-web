@@ -1,4 +1,4 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Divider, FormControl, FormErrorMessage, FormLabel, Heading, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Divider, FormControl, FormErrorMessage, FormLabel, Heading, HStack, Radio, RadioGroup, Stack, Text } from "@chakra-ui/react";
 import { Fragment, useMemo } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { OrderData } from '../../../backend/src/services/orders/orders.schema'
@@ -13,6 +13,7 @@ import { ProductInput } from "../components/products/product-input";
 import { OrderInstructions } from "../components/orders/order-instructions";
 import { useAllCategories } from "../queries/categories";
 import { RequestButton } from "../components/elements/request-button";
+import { QuestionOutlineIcon } from "@chakra-ui/icons";
 dayjs.extend(localeData)
 
 export const Order = () => {
@@ -20,7 +21,7 @@ export const Order = () => {
   const orderCreateMutation = useOrderCreateMutation()
   const allProductsQuery = useAllProducts({disabled: 0})
   const allCategoriesQuery = useAllCategories()
-  const { weeks, deliveryDates } = useOrderDates().data || {}
+  const { weeks, deliveries } = useOrderDates().data || {}
   const methods = useForm<OrderData>();
   const { handleSubmit, register, control, watch, clearErrors, setError, formState: { errors, isDirty } } = methods;
   const fieldArray = useFieldArray({
@@ -42,7 +43,13 @@ export const Order = () => {
     : 0
 
   const onSubmit = async (values: OrderData) => {
-    orderCreateMutation.mutate(values)
+    const {delivery: deliveryIndex, orderItems} = values
+    const data: OrderData = {
+      delivery: deliveries![parseInt(deliveryIndex)].weekDay,
+      orderItems,
+      deliveryPlace: deliveries![parseInt(deliveryIndex)].deliveryPlace
+    }
+    orderCreateMutation.mutate(data)
   };
 
   const nextWeekLabel = useMemo(() => {
@@ -70,20 +77,20 @@ export const Order = () => {
                   <Heading size={'md'} mb={3} display='inline'>Enlèvement</Heading>
                 </FormLabel>
                 <RadioGroup>
-                  <Stack >
-                    {deliveryDates?.nextWeek?.map(
-                      date => (
+                  <Stack spacing={3}>
+                    {deliveries?.map(
+                      ({weekDay, deliveryPlaceLabel}, index) => (
                         <Radio
-                          value={date}
-                          key={date}
+                          value={index + ''}
+                          key={index}
                           {...register(
                             "delivery",
                             {
-                              required: "Veuillez choisir une date d'enlèvement",
+                              required: "Veuillez choisir une date et un lieu d'enlèvement",
                             }
                           )}
                         >
-                          {dayjs(date).locale(fr).format('dddd DD MMMM YYYY')}
+                          {dayjs(weekDay).locale(fr).format('dddd DD MMMM YYYY')}  <span>&#8212;</span>  {deliveryPlaceLabel}
                         </Radio>
                       )
                     )}
@@ -96,12 +103,15 @@ export const Order = () => {
                   <h2>
                     <AccordionButton>
                       <Box as="span" flex='1' textAlign='left'>
-                        Informations de commande et enlèvement
+                        <HStack>
+
+                        <QuestionOutlineIcon /> <Text>Informations de commande et enlèvement</Text>
+                        </HStack>
                       </Box>
                       <AccordionIcon />
                     </AccordionButton>
                   </h2>
-                  <AccordionPanel pb={4}><OrderInstructions /></AccordionPanel>
+                  <AccordionPanel pb={4} mb={0}><OrderInstructions /></AccordionPanel>
                 </AccordionItem>
               </Accordion>
               <FormControl isRequired mt={10} isInvalid={Boolean(errors.orderItems?.root?.type === 'required')}>
@@ -112,7 +122,7 @@ export const Order = () => {
                 {
                   allProductsByCategory?.map(category => {
                     return <>
-                      {category.products?.length > 0 && (
+                      {(category.products?.length ?? 0) > 0 && (
                         <Fragment key={category.id}>
                           <Heading size='md' mt={5}>{category.name}</Heading>
                           <Divider my={3} />

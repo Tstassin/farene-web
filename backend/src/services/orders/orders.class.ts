@@ -5,7 +5,7 @@ import type { KnexAdapterParams, KnexAdapterOptions } from "@feathersjs/knex";
 
 import type { Application } from "../../declarations";
 import type { Order, OrderData, OrderPatch, OrderPayWithCode, OrderQuery } from "./orders.schema";
-import { allowedWeekDays } from "../../config/orders";
+import { allowedDeliveries, allowedDeliveryPlaces, allowedWeekDays, deliveryPlacesLabels } from "../../config/orders";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -37,7 +37,7 @@ export class OrderService<
     const nextWeek = now.endOf("isoWeek").add(1, "day");
     const thisWeek = nextWeek.subtract(1, 'week')
     const previousWeek = nextWeek.subtract(2, 'week')
-    return {    
+    return {
       weeks: {
         previousWeek: previousWeek.format(isoDateFormat),
         thisWeek: thisWeek.format(isoDateFormat),
@@ -47,7 +47,21 @@ export class OrderService<
         previousWeek: allowedWeekDays.map((wd) => previousWeek.isoWeekday(wd).format(isoDateFormat)),
         thisWeek: allowedWeekDays.map((wd) => thisWeek.isoWeekday(wd).format(isoDateFormat)),
         nextWeek: allowedWeekDays.map((wd) => nextWeek.isoWeekday(wd).format(isoDateFormat)),
-      }
+      },
+      deliveries: allowedDeliveries.map(
+        delivery => ({
+          weekDay: nextWeek.isoWeekday(delivery.weekDay).format(isoDateFormat),
+          deliveryPlace: delivery.deliveryPlace,
+          deliveryPlaceLabel: deliveryPlacesLabels[delivery.deliveryPlace]
+        })
+      ),
+      deliveryPlaces: allowedDeliveryPlaces.reduce(
+        (all: Record<string, string>, deliveryPlace) => {
+          all[deliveryPlace] = deliveryPlacesLabels[deliveryPlace]
+          return all
+        }
+        ,
+        {})
     } as const;
   }
 

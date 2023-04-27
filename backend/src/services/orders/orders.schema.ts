@@ -10,6 +10,7 @@ import { orderItemSchema, orderItemDataSchema } from "../order-items/order-items
 import { calculateOrderPrice } from "./orders.utils";
 import { restrictResource } from "../users/users.utils";
 import { userSchema } from "../users/users.schema";
+import { AllowedDeliveryPlaces } from "../../config/orders";
 
 /**
  * Main data model
@@ -20,7 +21,7 @@ export const orderSchema = Type.Intersect([
       id: Type.Number(),
       delivery: Type.String(),
       userId: Type.Number(),
-      //user: userSchema,
+      deliveryPlace: Type.Enum(AllowedDeliveryPlaces),
       orderItems: Type.Array(orderItemSchema),
       price: Type.Number(),
       paymentIntent: Type.Optional(Type.String()),
@@ -54,7 +55,7 @@ export const orderExternalResolver = resolve<Order, HookContext>({});
 // Schema for creating new entries
 export const orderDataSchema = Type.Intersect(
   [
-    Type.Pick(orderSchema, ["delivery"], { $id: undefined }),
+    Type.Pick(orderSchema, ["delivery", "deliveryPlace"], { $id: undefined }),
     Type.Object({
       orderItems: Type.Array(
         Type.Pick(orderItemDataSchema, ["amount", "productId"], {

@@ -4,7 +4,7 @@ import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { useParams, useSearchParams } from "react-router-dom";
 import CheckoutForm from "../components/payments/checkout-form";
 import { QueryStatus } from "../components/queries/query-status";
-import { useOrder } from "../queries/orders";
+import { useOrder, useOrderDates } from "../queries/orders";
 import { usePaymentIntentCreateMutation, usePaymentIntentQuery } from "../queries/payment-intents";
 import fr from 'dayjs/locale/fr'
 import dayjs from "dayjs";
@@ -24,7 +24,9 @@ export const OrderDetailsPage = () => {
   const [showB2BPayment, setShowB2BPayment] = useState(false)
   const params = useParams()
   const [searchParams] = useSearchParams()
-  const orderQuery = useOrder(parseInt(params.orderId!), Boolean(params.orderId))
+  const orderId = params.orderId ? parseInt(params.orderId) : undefined
+  const orderQuery = useOrder(orderId)
+  const orderDates = useOrderDates()
   const paymentIntentCreateMutation = usePaymentIntentCreateMutation()
   const paymentIntentQuery = usePaymentIntentQuery(orderQuery.data?.paymentIntent)
   const paymentIntent = paymentIntentQuery.data ?? paymentIntentCreateMutation.data
@@ -42,9 +44,10 @@ export const OrderDetailsPage = () => {
     <>
 
       <QueryStatus query={orderQuery}>
-        <Heading>Commande numéro {orderQuery.data?.id}</Heading>
+        <Heading mb={5}>Commande numéro {orderQuery.data?.id}</Heading>
         <Text fontSize={'xl'} mb={10}>
-          Pour livraison le {dayjs(orderQuery.data?.delivery, 'YYYY-MM-DD').locale(fr).format('dddd DD MMMM')} <br />
+          Date : le {dayjs(orderQuery.data?.delivery, 'YYYY-MM-DD').locale(fr).format('dddd DD MMMM')}<br /> 
+          Lieu : {orderQuery.data?.deliveryPlace ? orderDates.data?.deliveryPlaces[orderQuery.data.deliveryPlace] : ''} <br />
         </Text>
         <Text fontSize={'xl'} mb={5}>
           <ul>
