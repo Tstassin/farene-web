@@ -29,7 +29,7 @@ export const Orders = () => {
       case 'paymentIntent':
         return order[key] ? 'stripe' : 'code'
       case 'price':
-        return order[key]
+        return eur(order[key])
       case 'deliveryPlace':
         return order[key]
       case 'edit':
