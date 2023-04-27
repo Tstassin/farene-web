@@ -32,7 +32,7 @@ export const Orders = () => {
       case 'edit':
         return <Button size='sm' onClick={() => setCurrentOrderToEdit(order['id'])}>modifier</Button>
       case 'userId':
-        return order[key]
+        return order['user'].email
       default:
         return order[key].toString()
     }

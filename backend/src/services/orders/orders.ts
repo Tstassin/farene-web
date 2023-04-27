@@ -111,24 +111,7 @@ export const order = (app: Application) => {
         noPaymentOnOutdatedOrder,
       ]
     },
-    after: {
-      find: [
-        /* populate({schema: {include: {
-          service: 'users',
-          nameAs: 'user',
-          parentField: 'userId',
-          childField: 'id'
-        }}}) */
-      ],
-      get: [
-        /* populate({schema: {include: {
-          service: 'users',
-          nameAs: 'user',
-          parentField: 'userId',
-          childField: 'id'
-        }}}) */
-      ]
-    },
+    after: {},
     error: {},
   });
 };

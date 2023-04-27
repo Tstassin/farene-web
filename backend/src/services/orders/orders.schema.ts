@@ -21,6 +21,7 @@ export const orderSchema = Type.Intersect([
       id: Type.Number(),
       delivery: Type.String(),
       userId: Type.Number(),
+      user: userSchema,
       deliveryPlace: Type.Enum(AllowedDeliveryPlaces),
       orderItems: Type.Array(orderItemSchema),
       price: Type.Number(),
@@ -36,6 +37,7 @@ export const orderValidator = getValidator(orderSchema, dataValidator);
 export const orderResolver = resolve<Order, HookContext>(
   {
     price: virtual(async (order) => calculateOrderPrice(order)),
+    user: async (value, order, context) => await context.app.service('users').get(order.userId)
   },
   {
     converter: async (data, context) => {
