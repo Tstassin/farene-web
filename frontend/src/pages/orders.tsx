@@ -1,4 +1,5 @@
-import { Box, Button, Heading, Select, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+import { Box, Button, Heading, ListIcon, ListItem, Select, Table, TableContainer, Tbody, Td, Th, Thead, Tr, UnorderedList } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import fr from 'dayjs/locale/fr';
 import timezone from 'dayjs/plugin/timezone';
@@ -16,7 +17,7 @@ export const Orders = () => {
   const weekDate = orderDatesQuery.data?.weeks?.[week]
   const ordersQuery = useOrders({ paymentSuccess: 1, delivery: { $gte: weekDate, $lte: dayjs(weekDate).add(1, 'week').format('YYYY-MM-DD') } }, Boolean(weekDate))
   const [currentOrderToEdit, setCurrentOrderToEdit] = useState<Order['id'] | undefined>(undefined)
-  const tableKeys: Array<TableKeys> = ['id', 'userId', 'delivery', 'deliveryPlace', 'paymentIntent', 'price', 'edit']
+  const tableKeys: Array<TableKeys> = ['id', 'userId', 'delivery', 'deliveryPlace', 'orderItems', 'paymentIntent', 'price', 'edit']
   const getValue = (order: Order, key: TableKeys) => {
     switch (key) {
       case 'id':
@@ -35,6 +36,8 @@ export const Orders = () => {
         return <Button size='sm' onClick={() => setCurrentOrderToEdit(order['id'])}>modifier</Button>
       case 'userId':
         return order['user'].email
+      case 'orderItems':
+        return <UnorderedList styleType={'none'}>{order[key].map(oI => <ListItem>{oI.amount + ' x ' + oI.product.name + ' (' + oI.product.price +'€) = ' + oI.amount*oI.product.price+'€'}</ListItem>)}</UnorderedList>
       default:
         return order[key].toString()
     }
