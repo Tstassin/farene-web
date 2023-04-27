@@ -16,7 +16,7 @@ export const Orders = () => {
   const weekDate = orderDatesQuery.data?.weeks?.[week]
   const ordersQuery = useOrders({ paymentSuccess: 1, delivery: { $gte: weekDate, $lte: dayjs(weekDate).add(1, 'week').format('YYYY-MM-DD') } }, Boolean(weekDate))
   const [currentOrderToEdit, setCurrentOrderToEdit] = useState<Order['id'] | undefined>(undefined)
-  const tableKeys: Array<TableKeys> = ['id', 'userId', 'delivery', 'paymentIntent', 'price', 'edit']
+  const tableKeys: Array<TableKeys> = ['id', 'userId', 'delivery', 'deliveryPlace', 'paymentIntent', 'price', 'edit']
   const getValue = (order: Order, key: TableKeys) => {
     switch (key) {
       case 'id':
@@ -28,6 +28,8 @@ export const Orders = () => {
       case 'paymentIntent':
         return order[key] ? 'stripe' : 'code'
       case 'price':
+        return order[key]
+      case 'deliveryPlace':
         return order[key]
       case 'edit':
         return <Button size='sm' onClick={() => setCurrentOrderToEdit(order['id'])}>modifier</Button>
