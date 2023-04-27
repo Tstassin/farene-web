@@ -1,8 +1,8 @@
 import { Box, Button, Collapse, Divider, Input, InputGroup, InputRightAddon, Slide, Text, useDisclosure } from "@chakra-ui/react"
-import { useState } from "react"
-import { useFieldArray, UseFieldArrayAppend, UseFieldArrayRemove, UseFieldArrayReturn, useFormContext, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form"
+import { UseFieldArrayAppend, UseFieldArrayRemove, UseFieldArrayReturn, useFormContext, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form"
 import { OrderData } from "../../../../backend/src/services/orders/orders.schema"
 import { Product } from "../../../../backend/src/services/products/products.schema"
+import { eur, mult, price } from "../../../../shared/prices"
 
 interface OrderInputProps {
   product: Product
@@ -16,7 +16,7 @@ export const ProductInput = ({ product, fieldArray }: OrderInputProps) => {
   const isProductSelected = fields.some(field => field.productId === product.id)
   const fieldArrayIndex = fields.findIndex(field => field.productId === product.id)
   const amount = watch(`orderItems.${fieldArrayIndex}.amount`)
-  const total = Math.round(Math.round(product.price * 100) / 100 * (isNaN(amount) ? 0 : amount) * 100) / 100
+  const total = mult(product.price, amount)
 
   return (
     <Box mb={3}>
@@ -51,7 +51,7 @@ export const ProductInput = ({ product, fieldArray }: OrderInputProps) => {
             {
               isProductSelected && (
                 <Box ml={3} display='flex'>
-                  <Text as='b' fontSize={'xl'}>{total}€</Text>
+                  <Text as='b' fontSize={'xl'}>{eur(total)}</Text>
                 </Box>
               )
             }
@@ -80,7 +80,7 @@ const ProductInputDetails = ({ product, onToggle }: ProductInputDetailsProps) =>
         {product.name}
       </Text>
       <Text>Poid: {product.weight}g</Text>
-      <Text>Prix: {Math.round(product.price * 100)/100}€</Text>
+      <Text>Prix: {eur(product.price)}</Text>
       <Box my={3}>
         <Button variant='outline' onClick={onToggle} size='xs' mr={1} flexGrow={0}>Détails</Button>
       </Box>

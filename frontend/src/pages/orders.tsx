@@ -1,10 +1,10 @@
-import { AddIcon } from "@chakra-ui/icons";
-import { Box, Button, Heading, ListIcon, ListItem, Select, Table, TableContainer, Tbody, Td, Th, Thead, Tr, UnorderedList } from "@chakra-ui/react";
+import { Box, Button, Heading, ListItem, Select, Table, TableContainer, Tbody, Td, Th, Thead, Tr, UnorderedList } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import fr from 'dayjs/locale/fr';
 import timezone from 'dayjs/plugin/timezone';
 import { useState } from "react";
 import { Order } from "../../../backend/src/services/orders/orders.schema";
+import { mult, eur } from "../../../shared/prices";
 import { OrderEditModal } from "../components/orders/order-edit-modal";
 import { useOrderDates, useOrders } from "../queries/orders";
 dayjs.extend(timezone)
@@ -37,7 +37,7 @@ export const Orders = () => {
       case 'userId':
         return order['user'].email
       case 'orderItems':
-        return <UnorderedList styleType={'none'}>{order[key].map(oI => <ListItem>{oI.amount + ' x ' + oI.product.name + ' (' + oI.product.price +'€) = ' + oI.amount*oI.product.price+'€'}</ListItem>)}</UnorderedList>
+        return <UnorderedList styleType={'none'}>{order[key].map(oI => <ListItem>{oI.amount + ' x ' + oI.product.name + ' (' + eur(oI.product.price) + ') = ' + eur(mult(oI.amount, oI.product.price))}</ListItem>)}</UnorderedList>
       default:
         return order[key].toString()
     }

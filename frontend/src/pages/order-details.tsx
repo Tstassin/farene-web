@@ -12,6 +12,7 @@ import { PaymentStatus } from "../components/payments/payment-status";
 import { useState } from "react";
 import { PayWithCodeModal } from "../components/payments/pay-with-code-modal";
 import { FeathersError } from "@feathersjs/errors/lib";
+import { eur, mult } from "../../../shared/prices";
 
 let stripePromise: Promise<Stripe | null>
 if (process.env.NODE_ENV === 'development') {
@@ -58,7 +59,7 @@ export const OrderDetailsPage = () => {
                   <li key={orderItem.id}>
                     {orderItem.product.name}
                     <Text textAlign='right'>
-                      {orderItem.amount} x {Math.round(orderItem.product.price * 100) / 100}€ = {orderItem.amount * Math.round(orderItem.product.price * 100) / 100}€
+                      {orderItem.amount} x {eur(orderItem.product.price)} = {eur(mult(orderItem.amount,orderItem.product.price))}
                     </Text>
                     <Divider mt={5} />
                   </li>
@@ -74,7 +75,7 @@ export const OrderDetailsPage = () => {
           {
             orderQuery.data?.price !== undefined &&
             <Text as='span' float={'right'}>
-              {Math.round(orderQuery.data.price * 100) / 100}€
+              {eur(orderQuery.data.price)}
             </Text>
           }
         </Heading>

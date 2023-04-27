@@ -14,12 +14,13 @@ import { OrderInstructions } from "../components/orders/order-instructions";
 import { useAllCategories } from "../queries/categories";
 import { RequestButton } from "../components/elements/request-button";
 import { QuestionOutlineIcon } from "@chakra-ui/icons";
+import { eur, mult } from "../../../shared/prices";
 dayjs.extend(localeData)
 
 export const Order = () => {
   const navigate = useNavigate()
   const orderCreateMutation = useOrderCreateMutation()
-  const allProductsQuery = useAllProducts({disabled: 0})
+  const allProductsQuery = useAllProducts({ disabled: 0 })
   const allCategoriesQuery = useAllCategories()
   const { weeks, deliveries } = useOrderDates().data || {}
   const methods = useForm<OrderData>();
@@ -39,11 +40,11 @@ export const Order = () => {
     ?
     allProductsSelected
       .map(productSelected => ({ ...productSelected, price: allProductsQuery.data.find(product => productSelected.productId === product.id)?.price ?? 0 }))
-      .reduce((acc, curr) => acc + (isNaN(curr.amount) ? 0 : curr.amount) * Math.round(curr.price * 100) / 100, 0)
+      .reduce((acc, curr) => acc + mult(curr.amount, curr.price), 0)
     : 0
 
   const onSubmit = async (values: OrderData) => {
-    const {delivery: deliveryIndex, orderItems} = values
+    const { delivery: deliveryIndex, orderItems } = values
     const data: OrderData = {
       delivery: deliveries![parseInt(deliveryIndex)].weekDay,
       orderItems,
@@ -54,7 +55,7 @@ export const Order = () => {
 
   const nextWeekLabel = useMemo(() => {
     return dayjs(weeks?.nextWeek
-      ).locale(fr).format('dddd DD MMMM YYYY')
+    ).locale(fr).format('dddd DD MMMM YYYY')
   }, [weeks])
 
   if (orderCreateMutation.isSuccess) navigate(`/order/${orderCreateMutation.data.id}/`)
@@ -79,7 +80,7 @@ export const Order = () => {
                 <RadioGroup>
                   <Stack spacing={3}>
                     {deliveries?.map(
-                      ({weekDay, deliveryPlaceLabel}, index) => (
+                      ({ weekDay, deliveryPlaceLabel }, index) => (
                         <Radio
                           value={index + ''}
                           key={index}
@@ -105,7 +106,7 @@ export const Order = () => {
                       <Box as="span" flex='1' textAlign='left'>
                         <HStack>
 
-                        <QuestionOutlineIcon /> <Text>Informations de commande et enlèvement</Text>
+                          <QuestionOutlineIcon /> <Text>Informations de commande et enlèvement</Text>
                         </HStack>
                       </Box>
                       <AccordionIcon />
@@ -139,7 +140,7 @@ export const Order = () => {
               </FormControl>
               <Box display='flex' justifyContent='space-between' mt={6}>
                 <Heading size={'lg'} mb={3}>Total</Heading>
-                <Heading size={'lg'} mb={3}>{total}€</Heading>
+                <Heading size={'lg'} mb={3}>{eur(total)}</Heading>
               </Box>
               <br />
               <br />
