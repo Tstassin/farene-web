@@ -84,6 +84,7 @@ export class OrderService<
       {
         commande: order.id,
         date: dayjs(order.delivery, 'YYYY-MM-DD').tz('Europe/Paris').locale(fr).format('dddd DD MMMM'),
+        deliveryPlace: order.deliveryPlace,
         email: (await app.service('users').get(order.userId)).email,
         orderItems: order.orderItems
       }
