@@ -25,7 +25,7 @@ export type { Order, OrderData, OrderPatch, OrderQuery };
 export interface OrderParams extends KnexAdapterParams<OrderQuery> { }
 
 // TODO : fix this asap, no future-proof at all
-const exportsProductOrder = [5, 4, 9, 8, 2, 3, 6, 7, 10, 11, 12, 24, 25, 26, 16, 17, 13, 15, 18, 19, 20, 21, 22, 23]
+const exportsProductOrder = [5, 4, 9, 8, 2, 3, 6, 7, 10, 11, 12, 24, 25, 26, 16, 17, 13, 15, 18, 19, 20, 27, 21, 22, 23]
 
 // By default calls the standard Knex adapter service methods but can be customized with your own functionality.
 export class OrderService<
