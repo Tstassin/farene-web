@@ -32,7 +32,7 @@ export const Header = () => {
             <Admin>
               <NavItem to={'/admin'}>Admin</NavItem>
             </Admin>
-            <NavItem to={'/order'}>Commander</NavItem>
+            {/* <NavItem to={'/order'}>Commander</NavItem> */}
             {/* <NavItem to={'/products'}>Produits</NavItem>
             <NavItem to={'/categories'}>Catégories</NavItem> */}
             <Link as='button' onClick={() => { logoutQuery.mutate() }} textDecoration='underline'>
