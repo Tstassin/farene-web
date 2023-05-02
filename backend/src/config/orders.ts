@@ -7,9 +7,14 @@ export const allowedWeekDays: AllowedWeekDays[] = [2, 4];
 export enum AllowedDeliveryPlaces {
   farene = 'farene',
   terredumilieu = 'terredumilieu',
-  offbar = 'offbar'
+  offbar = 'offbar',
+  inbw = 'inbw'
 }
-export const allowedDeliveryPlaces = [AllowedDeliveryPlaces.farene, AllowedDeliveryPlaces.terredumilieu, AllowedDeliveryPlaces.offbar] as const
+export const allowedDeliveryPlaces = [
+  AllowedDeliveryPlaces.farene,
+  AllowedDeliveryPlaces.terredumilieu,
+  AllowedDeliveryPlaces.offbar,
+  AllowedDeliveryPlaces.inbw] as const
 export const allowedDeliveries: readonly {
   weekDay: AllowedWeekDays,
   deliveryPlace: AllowedDeliveryPlaces
@@ -34,5 +39,6 @@ export const allowedDeliveries: readonly {
 export const deliveryPlacesLabels: Record<AllowedDeliveryPlaces, string> = {
   farene: 'Farène + point dépôt Chastre',
   terredumilieu: 'Terre du Milieu',
-  offbar: 'OFFBar de Mont-Saint-Guibert'
+  offbar: 'OFFBar de Mont-Saint-Guibert',
+  inbw: 'Einstein Busines Center (INBW)'
 }

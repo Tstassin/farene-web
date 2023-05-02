@@ -38,11 +38,23 @@ export const OrderInstructions = () => {
         Le Mardi
         <UnorderedList mb={5}>
           <ListItem mb={3}>
-            de <b>11h à 19h00</b><br />
+            de <b>11h à 19h</b><br />
             <Text>
               Au "OFFBar"<br />
               Bâtiment du Creative Spark<br />
               Rue Emile Franqui 6<br />
+              1435 Mont-Saint-Guibert
+            </Text>
+          </ListItem>
+        </UnorderedList>
+        <b>{deliveryPlaces?.['inbw']}</b><br />
+        Le Mardi
+        <UnorderedList mb={5}>
+          <ListItem mb={3}>
+            de <b>11h à 19h</b><br />
+            <Text>
+              Einstein Business center<br />
+              Rue du Bosquet 15a<br />
               1435 Mont-Saint-Guibert
             </Text>
           </ListItem>
