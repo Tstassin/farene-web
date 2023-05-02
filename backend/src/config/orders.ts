@@ -28,6 +28,10 @@ export const allowedDeliveries: readonly {
     deliveryPlace: AllowedDeliveryPlaces.offbar
   },
   {
+    weekDay: 2,
+    deliveryPlace: AllowedDeliveryPlaces.inbw
+  },
+  {
     weekDay: 4,
     deliveryPlace: AllowedDeliveryPlaces.farene
   },
