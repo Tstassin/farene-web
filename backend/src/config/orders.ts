@@ -37,7 +37,7 @@ export const allowedDeliveries: readonly {
   },
 ] as const
 export const deliveryPlacesLabels: Record<AllowedDeliveryPlaces, string> = {
-  farene: 'Farène + point dépôt Chastre',
+  farene: 'Farène + Point Dépôt',
   terredumilieu: 'Terre du Milieu',
   offbar: 'OFFBar de Mont-Saint-Guibert',
   inbw: 'Einstein Busines Center (INBW)'

@@ -19,7 +19,7 @@ export const OrderInstructions = () => {
         Le Mardi et le Jeudi
         <UnorderedList mb={5}>
           <ListItem>
-            de <b>12h à 13h30</b> chez Farène : <br />
+            D'abord de <b>12h à 13h30</b> chez Farène : <br />
             <Text>
               Gare de Chastre, quai n°2<br />
               Rue Gaston Delvaux, 1A<br />
@@ -27,7 +27,7 @@ export const OrderInstructions = () => {
             </Text>
           </ListItem>
           <ListItem mb={3}>
-            de <b>14h à 20h</b> en point dépot libre accès :<br />
+            Ensuite de <b>14h à 20h</b> en point dépot libre accès :<br />
             <Text>
               Rue des Trois Ruisseaux, 9<br />
               1450 Chastre
