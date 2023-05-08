@@ -51,14 +51,14 @@ export const router = createBrowserRouter([
         path: "/login",
         element: <Login />,
       },
-      /* {
+      {
         path: "/order",
         element: <Protected><Order /></Protected>,
       },
       {
         path: "/order/:orderId",
         element: <Protected><OrderDetailsPage /></Protected>
-      }, */
+      },
       {
         path: "/admin",
         element: <AdminProtectedOutlet />,

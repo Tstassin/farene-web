@@ -1,4 +1,4 @@
-import { Heading, Text, Link, Box, Alert, AlertIcon } from "@chakra-ui/react";
+import { Heading, Text, Link, Box } from "@chakra-ui/react";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { Authenticated, NotAuthenticated } from "./components/auth/authenticated";
@@ -10,14 +10,9 @@ export const Home: React.FC = () => {
     <>
       <Heading mb={5}>Bienvenue dans l'eshop de Farène</Heading>
       <Box mb={10}>
-        <Alert status="warning" mb={5}>
-          <AlertIcon></AlertIcon>
-          Farène est en congés toute la semaine prochaine.<br />
-          Reprise des commandes le Lundi 8 Mai.
-        </Alert>
         <Authenticated>
           <Text fontSize={'xl'}>
-            {/*<Link as={NavLink} to='/order'><u>Commandez</u></Link> du pain pour la semaine prochaine.*/}
+            <Link as={NavLink} to='/order'><u>Commandez</u></Link> du pain pour la semaine prochaine.
           </Text>
         </Authenticated>
         <NotAuthenticated>
