@@ -16,7 +16,7 @@ export const OrderInstructions = () => {
       {/* <Heading size={'sm'} mb={3}>Enlèvement le MARDI</Heading> */}
       <Text mb={6}>
         <b>{deliveryPlaces?.['farene']}</b><br />
-        Le Mardi et le Jeudi
+        Le Mardi{/*  et le Jeudi */}
         <UnorderedList mb={5}>
           <ListItem>
             D'abord de <b>12h à 13h30</b> chez Farène : <br />
@@ -59,7 +59,7 @@ export const OrderInstructions = () => {
             </Text>
           </ListItem>
         </UnorderedList>
-        <b>{deliveryPlaces?.['terredumilieu']}</b><br />
+        {/* <b>{deliveryPlaces?.['terredumilieu']}</b><br />
         Le Jeudi
         <UnorderedList mb={5}>
           <ListItem mb={3}>
@@ -71,7 +71,7 @@ export const OrderInstructions = () => {
               1450 Chastre
             </Text>
           </ListItem>
-        </UnorderedList>
+        </UnorderedList> */}
       </Text>
 
     </Box>
