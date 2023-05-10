@@ -1,4 +1,4 @@
-import { Box, Button, Heading, ListItem, Select, Table, TableContainer, Tbody, Td, Th, Thead, Tr, UnorderedList } from "@chakra-ui/react";
+import { Box, Button, Heading, ListItem, Select, Table, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, UnorderedList } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import fr from 'dayjs/locale/fr';
 import timezone from 'dayjs/plugin/timezone';
@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Order } from "../../../backend/src/services/orders/orders.schema";
 import { mult, eur } from "../../../shared/prices";
 import { OrderEditModal } from "../components/orders/order-edit-modal";
-import { useOrderDates, useOrders } from "../queries/orders";
+import { useOrderDates, useOrders, useOrdersSummary } from "../queries/orders";
 dayjs.extend(timezone)
 
 type TableKeys = keyof Order | 'edit'
@@ -15,7 +15,9 @@ export const Orders = () => {
   const [week, setWeek] = useState<'thisWeek' | 'previousWeek' | 'nextWeek'>('thisWeek')
   const orderDatesQuery = useOrderDates()
   const weekDate = orderDatesQuery.data?.weeks?.[week]
-  const ordersQuery = useOrders({ paymentSuccess: 1, delivery: { $gte: weekDate, $lte: dayjs(weekDate).add(1, 'week').format('YYYY-MM-DD') } }, Boolean(weekDate))
+  const ordersQueryPayload = { paymentSuccess: 1, delivery: { $gte: weekDate, $lte: dayjs(weekDate).add(1, 'week').format('YYYY-MM-DD') } }
+  const ordersQuery = useOrders(ordersQueryPayload, Boolean(weekDate))
+  const orderSummaryQuery = useOrdersSummary(ordersQueryPayload, Boolean(weekDate))
   const [currentOrderToEdit, setCurrentOrderToEdit] = useState<Order['id'] | undefined>(undefined)
   const tableKeys: Array<TableKeys> = ['id', 'userId', 'delivery', 'deliveryPlace', 'orderItems', 'paymentIntent', 'price', 'edit']
   const getValue = (order: Order, key: TableKeys) => {
@@ -58,6 +60,45 @@ export const Orders = () => {
             orderDatesQuery.data?.weeks?.[week]
           }</option>)}
         </Select>
+      </Box>
+      <Box mb={10}>
+        {
+          orderSummaryQuery.data && (
+            <TableContainer>
+              <Table size='sm'>
+                <Thead>
+                  <Tr>
+                    <Th>Nom</Th>
+                    <Th>Quantité</Th>
+                    <Th>Prix</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {
+                    orderSummaryQuery.data.orderItems?.map(item => <Tr>
+                      <Td>
+                        [{item.product.sku}] - {item.product.name}
+                      </Td>
+                      <Td>
+                        {item.amount}
+                      </Td>
+                      <Td>
+                        {eur(item.price)}
+                      </Td>
+                    </Tr>)
+                  }
+                </Tbody>
+                <Tfoot>
+                  <Tr>
+                    <Th></Th>
+                    <Th>{orderSummaryQuery.data?.amount} (total)</Th>
+                    <Th>{eur(orderSummaryQuery.data?.price)} (total)</Th>
+                  </Tr>
+                </Tfoot>
+              </Table>
+            </TableContainer>
+          )
+        }
       </Box>
       <Box>
         <TableContainer>

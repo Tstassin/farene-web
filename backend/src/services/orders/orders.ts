@@ -79,6 +79,7 @@ export const order = (app: Application) => {
         resolveResult(orderResolver),
       ],
       getDeliveryDates: [authenticate("jwt")],
+      getOrdersSummary: [authenticate("jwt")],
       payWithCode: [
         authenticate('jwt'),
         resolveExternal(orderExternalResolver),
@@ -109,6 +110,11 @@ export const order = (app: Application) => {
       payWithCode: [
         validateData(orderPayWithCodeValidator),
         noPaymentOnOutdatedOrder,
+      ],
+      getOrdersSummary: [
+        restrictToAdmin,
+        validateQuery(orderQueryValidator),
+        resolveQuery(orderQueryResolver)
       ]
     },
     after: {},

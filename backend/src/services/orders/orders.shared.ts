@@ -25,7 +25,8 @@ export const orderMethods = [
   "patch",
   "getDeliveryDates",
   "payWithCode",
-  "exportOrders"
+  "exportOrders",
+  "getOrdersSummary"
 ] as const;
 
 export const orderClient = (client: ClientApplication) => {

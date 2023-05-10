@@ -16,6 +16,7 @@ import { PaymentError } from "@feathersjs/errors/lib";
 import { Parser } from '@json2csv/plainjs';
 import { sendPaymentSuccess } from "../../hooks/send-payment-success";
 import { belgianNow, isoDateFormat } from "../../utils/dates";
+import { Product } from "../products/products.schema";
 
 dayjs.extend(utc);
 dayjs.extend(isoWeek);
@@ -131,6 +132,36 @@ export class OrderService<
       console.error(err);
     }
   }
+
+  async getOrdersSummary(query: OrderQuery, params: OrderParams): Promise<OrdersSummary> {
+    const orders = await app.service('orders').find({ query })
+    const price = orders.data.reduce((total: number, { price }) => total + price, 0)
+    let amount = 0
+    const orderItems = orders.data.reduce(
+      (all: OrdersSummary['orderItems'], { orderItems: oI }) => {
+        oI.forEach(oI => {
+          const existsIndex = all.findIndex(entry => entry.product.id === oI.product.id)
+          amount += oI.amount
+          if (existsIndex > -1) {
+            all[existsIndex].amount += oI.amount
+            all[existsIndex].price += oI.amount * oI.product.price
+          }
+          else {
+            all.push({
+              product: oI.product,
+              amount: oI.amount,
+              price: oI.amount * oI.product.price
+            })
+          }
+        })
+        return all
+      }, [])
+    return ({
+      price,
+      amount,
+      orderItems
+    })
+  }
 }
 
 export const getOptions = (app: Application): KnexAdapterOptions => {
@@ -142,3 +173,8 @@ export const getOptions = (app: Application): KnexAdapterOptions => {
   };
 };
 
+type OrdersSummary = {
+  price: number,
+  amount: number,
+  orderItems: Array<{ product: Product, amount: number, price: number }>
+}

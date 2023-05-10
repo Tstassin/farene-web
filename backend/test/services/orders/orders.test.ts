@@ -7,7 +7,7 @@ import { Order, OrderData } from "../../../src/services/orders/orders.schema";
 import dayjs from "dayjs";
 import { getProductMock } from "../products/products.mocks";
 import { getCategoryMock } from "../categories/categories.mocks";
-import { getUserMock } from "../users/users.mocks";
+import { baseUserMock, getUserMock } from "../users/users.mocks";
 import { getOrderMock } from "./orders.mocks";
 import { cleanAll } from "../../utils/clean-all";
 import { BadRequest, FeathersError, PaymentError, NotFound, GeneralError, Forbidden } from "@feathersjs/errors/lib";
@@ -108,7 +108,8 @@ describe("orders service", () => {
     describe("Only admins can update the delivery date", () => {
       useBaseOrderMocks()
       it('On PATCH', async () => {
-        const newDeliveryDate = await (await ordersService.getDeliveryDates()).deliveryDates.nextWeek[1]
+        const newDeliveryDate = await (await ordersService.getDeliveryDates()).deliveryDates.nextWeek[0]
+        console.log(await ordersService.getDeliveryDates())
         const order = await app.service("orders").create(orderData, { user });
         const updatedDeliveryDate = await app.service('orders').patch(order.id, { delivery: newDeliveryDate }, { user: admin })
         assert.equal(newDeliveryDate, updatedDeliveryDate.delivery)
@@ -117,7 +118,7 @@ describe("orders service", () => {
     describe("Users cannot update the delivery date", () => {
       useBaseOrderMocks()
       it('On PATCH', async () => {
-        const newDeliveryDate = await (await ordersService.getDeliveryDates()).deliveryDates.nextWeek[1]
+        const newDeliveryDate = await (await ordersService.getDeliveryDates()).deliveryDates.nextWeek[0]
         const order = await app.service("orders").create(orderData, { user });
         const updateDeliveryDateFn = () => app.service('orders').patch(order.id, { delivery: newDeliveryDate }, { user })
         await assertRejects(updateDeliveryDateFn, Forbidden, 'Error')
@@ -281,6 +282,35 @@ describe("orders service", () => {
         return true;
       });
     })
+  })
+
+  describe('Summary', () => {
+    useBaseOrderMocks()
+    it("is restricted to admins", async () => {
+      const getOrdersSummaryFn = () => app.service('orders').getOrdersSummary({}, { user })
+
+      await assert.rejects(getOrdersSummaryFn, (error: PaymentError) => {
+        assert.equal(error.className, 'forbidden');
+        assert.equal(error.code, 403);
+        return true;
+      });
+    })
+    it("returns nothing if no orders", async () => {
+
+      //const order = await app.service("orders").create(orderData, { user });
+      const ordersSummary = await app.service("orders").getOrdersSummary({}, {});
+      assert.equal(ordersSummary.amount, 0)
+      assert.equal(ordersSummary.price, 0)
+      assert.equal(ordersSummary.orderItems.length, 0)
+    });
+    it("returns a summary", async () => {
+      const order = await app.service("orders").create(orderData, { user });
+      const ordersSummary = await app.service("orders").getOrdersSummary({}, {});
+
+      assert.equal(ordersSummary.amount, orderData.orderItems[0].amount)
+      assert.equal(ordersSummary.price, order.price)
+      assert.equal(ordersSummary.orderItems.length, 1)
+    });
   })
 
   // TODO : wrong implementation, should be handled on the payment intent side

@@ -4,17 +4,25 @@ import { Order, OrderData, OrderPatch, OrderPayWithCode, OrderQuery } from "../.
 import { client } from "../../api/api"
 
 export const useOrders = (query?: OrderQuery, enabled = true) => {
-  console.log(query)
   return useQuery({
     queryKey: ['orders', query],
     queryFn: () => client.service('orders').find({ query }),
     enabled
   })
 }
+
+export const useOrdersSummary = (query?: OrderQuery, enabled = true) => {
+  return useQuery({
+    queryKey: ['orders-summary', query],
+    queryFn: () => client.service('orders').getOrdersSummary(query ?? {}, {}),
+    enabled
+  })
+}
+
 const fetchOrder = (id?: Order['id']) => {
   return typeof id === 'undefined'
-  ? Promise.reject(new Error('Invalid id'))
-  :client.service('orders').get(id)
+    ? Promise.reject(new Error('Invalid id'))
+    : client.service('orders').get(id)
 }
 export const useOrder = (id?: Order['id']) => {
   return useQuery({
@@ -61,7 +69,7 @@ export const useOrderPayWithCodeMutation = () => {
 
 export const useOrderDeliveryDateMutation = () => {
   return useMutation({
-    mutationFn: ({id, data}: {id: Order['id'], data: Omit<OrderPatch, 'paymentSuccess' | 'paymentIntent'>}) => {
+    mutationFn: ({ id, data }: { id: Order['id'], data: Omit<OrderPatch, 'paymentSuccess' | 'paymentIntent'> }) => {
       return client.service('orders').patch(id, data)
     },
     onSuccess: () => {
