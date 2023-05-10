@@ -1,4 +1,4 @@
-import { Box, Button, Heading, ListItem, Select, Table, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, UnorderedList } from "@chakra-ui/react";
+import { Box, Button, FormControl, FormLabel, Heading, ListItem, Select, Table, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, UnorderedList } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import fr from 'dayjs/locale/fr';
 import timezone from 'dayjs/plugin/timezone';
@@ -51,6 +51,7 @@ export const Orders = () => {
         <Heading>Historique des livraisons</Heading>
       </Box>
       <Box mb={10}>
+        <Heading fontSize={'lg'} mb={5}>Semaine</Heading>
         <Select onChange={(e) => setWeek(
           // @ts-expect-error
           e.target.value
@@ -62,6 +63,7 @@ export const Orders = () => {
         </Select>
       </Box>
       <Box mb={10}>
+        <Heading fontSize={'lg'} mb={5}>Résumé</Heading>
         {
           orderSummaryQuery.data && (
             <TableContainer>
@@ -101,6 +103,7 @@ export const Orders = () => {
         }
       </Box>
       <Box>
+        <Heading fontSize={'lg'} mb={5}>Détail</Heading>
         <TableContainer>
           <Table size={'sm'}>
             <Thead>
