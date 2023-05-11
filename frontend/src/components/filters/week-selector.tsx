@@ -1,5 +1,6 @@
 import { Select } from "@chakra-ui/react"
 import { useState } from "react"
+import { dayLabel } from "../../../../backend/src/utils/dates"
 import { useOrderDates } from "../../queries/orders"
 
 interface WeekSelectorProps {
@@ -11,10 +12,19 @@ export const WeekSelector = ({ onChange, value }: WeekSelectorProps) => {
 
   return (
     <Select onChange={onChange} value={value}>
-      {orderDatesQuery.data?.weeks && Object.keys(orderDatesQuery.data.weeks).map(week => <option value={week}>Semaine du {
-        //@ts-expect-error, map function narrowed week to string
-        orderDatesQuery.data?.weeks?.[week]
-      }</option>)}
+      {
+        orderDatesQuery.data?.weeks && Object.keys(orderDatesQuery.data.weeks).map(
+          (week) => {
+            const weekDate =
+              //@ts-expect-error, map function narrowed week to string
+              orderDatesQuery.data?.weeks?.[week]
+            const weekDateLabel = dayLabel(weekDate)
+            return (
+              <option value={week}>Semaine du {weekDateLabel}</option>
+            )
+          }
+        )
+      }
     </Select>
 
   )

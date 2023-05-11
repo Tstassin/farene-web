@@ -4,6 +4,7 @@ import fr from 'dayjs/locale/fr';
 import timezone from 'dayjs/plugin/timezone';
 import { useState } from "react";
 import { Order } from "../../../backend/src/services/orders/orders.schema";
+import { dayLabel } from "../../../backend/src/utils/dates";
 import { mult, eur } from "../../../shared/prices";
 import { useWeekSelector, WeekSelector } from "../components/filters/week-selector";
 import { OrderEditModal } from "../components/orders/order-edit-modal";
@@ -16,6 +17,7 @@ export const Orders = () => {
   const [week, onChange] = useWeekSelector()
   const orderDatesQuery = useOrderDates()
   const weekDate = orderDatesQuery.data?.weeks?.[week]
+  const weekDateLabel = weekDate ? dayLabel(weekDate) : ''
   const ordersQueryPayload = { paymentSuccess: 1, delivery: { $gte: weekDate, $lte: dayjs(weekDate).add(1, 'week').format('YYYY-MM-DD') } }
   const ordersQuery = useOrders(ordersQueryPayload, Boolean(weekDate))
   const orderSummaryQuery = useOrdersSummary(ordersQueryPayload, Boolean(weekDate))
@@ -52,11 +54,13 @@ export const Orders = () => {
         <Heading>Historique des livraisons</Heading>
       </Box>
       <Box mb={10}>
-        <Heading fontSize={'lg'} mb={5}>Semaine</Heading>
-        <WeekSelector value={week} onChange={onChange} />
+        <FormControl>
+          <FormLabel>Choisir le semaine de livraison</FormLabel>
+          <WeekSelector value={week} onChange={onChange} />
+        </FormControl>
       </Box>
       <Box mb={10}>
-        <Heading fontSize={'lg'} mb={5}>Résumé des produits à livrer pour la semaine du {weekDate}</Heading>
+        <Heading fontSize={'lg'} mb={5}>Résumé des produits à livrer pour la semaine du {weekDateLabel}</Heading>
         {
           orderSummaryQuery.data && (
             <TableContainer>
@@ -96,7 +100,7 @@ export const Orders = () => {
         }
       </Box>
       <Box>
-        <Heading fontSize={'lg'} mb={5}>Détail des produits à livrer pour la semaine du {weekDate}</Heading>
+        <Heading fontSize={'lg'} mb={5}>Détail des produits à livrer pour la semaine du {weekDateLabel}</Heading>
         <TableContainer>
           <Table size={'sm'}>
             <Thead>
