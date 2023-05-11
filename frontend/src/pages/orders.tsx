@@ -5,6 +5,7 @@ import timezone from 'dayjs/plugin/timezone';
 import { useState } from "react";
 import { Order } from "../../../backend/src/services/orders/orders.schema";
 import { mult, eur } from "../../../shared/prices";
+import { useWeekSelector, WeekSelector } from "../components/filters/week-selector";
 import { OrderEditModal } from "../components/orders/order-edit-modal";
 import { useOrderDates, useOrders, useOrdersSummary } from "../queries/orders";
 dayjs.extend(timezone)
@@ -12,7 +13,7 @@ dayjs.extend(timezone)
 type TableKeys = keyof Order | 'edit'
 
 export const Orders = () => {
-  const [week, setWeek] = useState<'thisWeek' | 'previousWeek' | 'nextWeek'>('thisWeek')
+  const [week, onChange] = useWeekSelector()
   const orderDatesQuery = useOrderDates()
   const weekDate = orderDatesQuery.data?.weeks?.[week]
   const ordersQueryPayload = { paymentSuccess: 1, delivery: { $gte: weekDate, $lte: dayjs(weekDate).add(1, 'week').format('YYYY-MM-DD') } }
@@ -52,15 +53,7 @@ export const Orders = () => {
       </Box>
       <Box mb={10}>
         <Heading fontSize={'lg'} mb={5}>Semaine</Heading>
-        <Select onChange={(e) => setWeek(
-          // @ts-expect-error
-          e.target.value
-        )} value={week}>
-          {orderDatesQuery.data?.weeks && Object.keys(orderDatesQuery.data.weeks).map(week => <option value={week}>Semaine du {
-            //@ts-expect-error
-            orderDatesQuery.data?.weeks?.[week]
-          }</option>)}
-        </Select>
+        <WeekSelector value={week} onChange={onChange} />
       </Box>
       <Box mb={10}>
         <Heading fontSize={'lg'} mb={5}>Résumé</Heading>
