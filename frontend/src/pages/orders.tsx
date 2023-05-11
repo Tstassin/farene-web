@@ -56,7 +56,7 @@ export const Orders = () => {
         <WeekSelector value={week} onChange={onChange} />
       </Box>
       <Box mb={10}>
-        <Heading fontSize={'lg'} mb={5}>Résumé</Heading>
+        <Heading fontSize={'lg'} mb={5}>Résumé des produits à livrer pour la semaine du {weekDate}</Heading>
         {
           orderSummaryQuery.data && (
             <TableContainer>
@@ -96,7 +96,7 @@ export const Orders = () => {
         }
       </Box>
       <Box>
-        <Heading fontSize={'lg'} mb={5}>Détail</Heading>
+        <Heading fontSize={'lg'} mb={5}>Détail des produits à livrer pour la semaine du {weekDate}</Heading>
         <TableContainer>
           <Table size={'sm'}>
             <Thead>
