@@ -173,7 +173,7 @@ export const getOptions = (app: Application): KnexAdapterOptions => {
   };
 };
 
-type OrdersSummary = {
+export type OrdersSummary = {
   price: number,
   amount: number,
   orderItems: Array<{ product: Product, amount: number, price: number }>

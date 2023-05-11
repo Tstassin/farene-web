@@ -7,9 +7,10 @@ import type {
   OrderPatch,
   OrderQuery,
   OrderService,
+  OrdersSummary
 } from "./orders.class";
 
-export type { Order, OrderData, OrderPatch, OrderQuery };
+export type { Order, OrderData, OrderPatch, OrderQuery, OrdersSummary };
 
 export type OrderClientService = Pick<
   OrderService<Params<OrderQuery>>,

@@ -8,6 +8,7 @@ import { dayLabel } from "../../../backend/src/utils/dates";
 import { mult, eur } from "../../../shared/prices";
 import { useWeekSelector, WeekSelector } from "../components/filters/week-selector";
 import { OrderEditModal } from "../components/orders/order-edit-modal";
+import { OrdersSummaryTable } from "../components/orders/orders-summary";
 import { useOrderDates, useOrders, useOrdersSummary } from "../queries/orders";
 dayjs.extend(timezone)
 
@@ -63,39 +64,7 @@ export const Orders = () => {
         <Heading fontSize={'lg'} mb={5}>Résumé des produits à livrer pour la semaine du {weekDateLabel}</Heading>
         {
           orderSummaryQuery.data && (
-            <TableContainer>
-              <Table size='sm'>
-                <Thead>
-                  <Tr>
-                    <Th>Nom</Th>
-                    <Th>Quantité</Th>
-                    <Th>Prix</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {
-                    orderSummaryQuery.data.orderItems?.map(item => <Tr>
-                      <Td>
-                        [{item.product.sku}] - {item.product.name}
-                      </Td>
-                      <Td>
-                        {item.amount}
-                      </Td>
-                      <Td>
-                        {eur(item.price)}
-                      </Td>
-                    </Tr>)
-                  }
-                </Tbody>
-                <Tfoot>
-                  <Tr>
-                    <Th></Th>
-                    <Th>{orderSummaryQuery.data?.amount} (total)</Th>
-                    <Th>{eur(orderSummaryQuery.data?.price)} (total)</Th>
-                  </Tr>
-                </Tfoot>
-              </Table>
-            </TableContainer>
+            <OrdersSummaryTable ordersSummary={orderSummaryQuery.data} />
           )
         }
       </Box>
