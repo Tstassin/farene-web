@@ -4,6 +4,9 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { placeClient } from './services/places/places.shared'
+export type { Place, PlaceData, PlaceQuery, PlacePatch } from './services/places/places.shared'
+
 import { stripeWebhooksClient } from './services/stripe-webhooks/stripe-webhooks.shared'
 export type {
   StripeWebhooks,
@@ -32,7 +35,7 @@ export interface Configuration {
   connection: TransportConnection<ServiceTypes>
 }
 
-export interface ServiceTypes { }
+export interface ServiceTypes {}
 
 export type ClientApplication = Application<ServiceTypes, Configuration>
 
@@ -60,5 +63,6 @@ export const createClient = <Configuration = any>(
   client.configure(notificationClient)
   client.configure(userClient)
   client.configure(stripeWebhooksClient)
+  client.configure(placeClient)
   return client
 }

@@ -8,4 +8,6 @@ export const cleanAll = async () => {
   await app.service("orders")._remove(null);
   await app.service("users")._remove(null);
   await app.service("categories")._remove(null);
+
+  await app.service('places')._remove(null)
 };
