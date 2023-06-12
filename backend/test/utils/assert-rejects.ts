@@ -8,7 +8,6 @@ export const assertRejects = async (fn: () => Promise<any>, ErrorType: typeof Fe
     } else {
       assert.match(err.message, errMessage);
     }
-    console.log(err instanceof ErrorType)
     assert.ok(err instanceof ErrorType);
     if (data) assert.deepEqual(err.data, data)
     return true;

@@ -5,16 +5,24 @@ import type { Static } from '@feathersjs/typebox'
 
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
+import { resourceSchema } from '../common/resources'
 
 // Main data model schema
-export const placeSchema = Type.Object(
-  {
-    id: Type.Number(),
-    name: Type.String(),
-    description: Type.String()
-  },
-  { $id: 'Place', additionalProperties: false }
-)
+export const placeSchema =
+  Type.Intersect(
+    [
+      Type.Object(
+        {
+          id: Type.Number(),
+          name: Type.String(),
+          description: Type.String()
+        }
+      ),
+      resourceSchema
+    ],
+    { $id: 'Place', additionalProperties: false }
+  )
+
 export type Place = Static<typeof placeSchema>
 export const placeValidator = getValidator(placeSchema, dataValidator)
 export const placeResolver = resolve<Place, HookContext>({})

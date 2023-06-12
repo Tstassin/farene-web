@@ -8,7 +8,7 @@ import { cleanAll } from '../../utils/clean-all'
 
 const placeMock = { name: 'OFFBar', description: 'Rue Emile Franqui 6, 1435 Mont-Saint-Guibert' }
 
-describe.only('places service', () => {
+describe('places service', () => {
   it('registered the service', () => {
     const service = app.service('places')
 

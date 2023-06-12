@@ -4,6 +4,14 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { deliveryOptionClient } from './services/delivery-options/delivery-options.shared'
+export type {
+  DeliveryOption,
+  DeliveryOptionData,
+  DeliveryOptionQuery,
+  DeliveryOptionPatch
+} from './services/delivery-options/delivery-options.shared'
+
 import { placeClient } from './services/places/places.shared'
 export type { Place, PlaceData, PlaceQuery, PlacePatch } from './services/places/places.shared'
 
@@ -64,5 +72,6 @@ export const createClient = <Configuration = any>(
   client.configure(userClient)
   client.configure(stripeWebhooksClient)
   client.configure(placeClient)
+  client.configure(deliveryOptionClient)
   return client
 }
