@@ -1,7 +1,7 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.test.html
 import assert from 'assert'
 import { app } from '../../../src/app'
-import { StripeWebhooksData } from '../../../src/client'
+import { DeliveryOption, StripeWebhooksData } from '../../../src/client'
 import { Order, OrderData } from '../../../src/services/orders/orders.schema'
 import { cleanAll } from '../../utils/clean-all'
 import { getCategoryMock } from '../categories/categories.mocks'
@@ -15,11 +15,13 @@ import { mockStripePaymentIntentsCreate } from '../payment-intents/payment-inten
 import { User } from '../../../src/services/users/users.schema'
 import { Category } from '../../../src/services/categories/categories.schema'
 import { Product } from '../../../src/services/products/products.schema'
+import { getDeliveryOptionMock } from '../delivery-options/delivery-options.mocks'
 
 let user: User
 let category: Category
 let product: Product
 let order: Order
+let deliveryOption: DeliveryOption
 let mockedStripePaymentIntentCreate: Sinon.SinonStub<[data: Stripe.PaymentIntentCreateParams], Promise<Stripe.Response<Stripe.PaymentIntent>>>
 
 describe('stripe-webhooks service', () => {
@@ -28,11 +30,12 @@ describe('stripe-webhooks service', () => {
 
     user = await app.service("users").create(getUserMock());
     category = await app.service("categories").create(getCategoryMock());
+    deliveryOption = await app.service('delivery-options').create(await getDeliveryOptionMock())
     const product = await app
       .service("products")
       .create(getProductMock(category.id));
     const orderData: OrderData = {
-      ...(await getOrderMock(product.id)),
+      ...(await getOrderMock(product.id, deliveryOption.id)),
       orderItems: [
         {
           productId: product.id,

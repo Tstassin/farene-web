@@ -6,17 +6,16 @@ import { cleanAll } from '../../utils/clean-all'
 import { Place } from '../../../src/services/places/places.schema'
 import { getPlaceMock } from '../places/places.mocks'
 import dayjs from 'dayjs'
-import { isoDateFormat } from '../../../src/utils/dates'
+import { isoDateFormat, today } from '../../../src/utils/dates'
 import { DeliveryOption } from '../../../src/client'
 import { DeliveryOptionService } from '../../../src/services/delivery-options/delivery-options.class'
 import { assertRejects } from '../../utils/assert-rejects'
 import { BadRequest } from '@feathersjs/errors/lib'
 
-describe.only('delivery-options service', () => {
+describe('delivery-options service', () => {
 
   const service = app.service('delivery-options')
   let place: Place
-  const today = dayjs().format(isoDateFormat)
 
   const useBaseDeliveryOptionsMocks = () => {
     beforeEach(async () => {

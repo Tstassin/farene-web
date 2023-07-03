@@ -11,6 +11,9 @@ import { calculateOrderPrice } from "./orders.utils";
 import { restrictResource } from "../users/users.utils";
 import { userSchema } from "../users/users.schema";
 import { AllowedDeliveryPlaces } from "../../config/orders";
+import { isoDateFormat, today } from "../../utils/dates";
+import dayjs from "dayjs";
+import { BadRequest } from "@feathersjs/errors/lib";
 
 /**
  * Main data model
@@ -19,11 +22,13 @@ export const orderSchema = Type.Intersect([
   Type.Object(
     {
       id: Type.Number(),
+      // ISO Date YYYY-MM-DD
       delivery: Type.String(),
       userId: Type.Number(),
       user: userSchema,
       deliveryPlace: Type.Enum(AllowedDeliveryPlaces),
       orderItems: Type.Array(orderItemSchema),
+      deliveryOptionId: Type.Number(),
       price: Type.Number(),
       paymentIntent: Type.Optional(Type.String()),
       paymentSuccess: Type.Integer({ default: 0, minimum: 0, maximum: 1 })
@@ -57,7 +62,7 @@ export const orderExternalResolver = resolve<Order, HookContext>({});
 // Schema for creating new entries
 export const orderDataSchema = Type.Intersect(
   [
-    Type.Pick(orderSchema, ["delivery", "deliveryPlace"], { $id: undefined }),
+    Type.Pick(orderSchema, ["deliveryOptionId"], { $id: undefined }),
     Type.Object({
       orderItems: Type.Array(
         Type.Pick(orderItemDataSchema, ["amount", "productId"], {
@@ -79,17 +84,25 @@ export const orderDataResolver = resolve<Order, HookContext>(
 
       return value;
     },
-    paymentSuccess: async () => 0
+    orderItems: async () => undefined,
+    paymentSuccess: async () => 0,
   },
   {
-    converter: async (data) => {
+    converter: async (data, context) => {
+      const deliveryOption = await context.app.service('delivery-options').get(data.deliveryOptionId)
+      const deliveryOptionDate = dayjs(deliveryOption.day, isoDateFormat, true)
+      if (deliveryOptionDate.isBefore(today)) {
+        throw new BadRequest("No delivery in the past : " + deliveryOption.day);
+      }
       return {
         ...data,
-        orderItems: undefined,
+        delivery: deliveryOption.day,
+        deliveryPlace: deliveryOption.place.name
       };
     },
   }
 );
+
 
 // Schema for patching existing entries
 // Only paymentSuccess and paymentIntent allowed atm
@@ -100,7 +113,7 @@ export const orderPatchSchema =
       [
         Type.Pick(
           orderSchema,
-          ['paymentSuccess', 'delivery'],
+          ['paymentSuccess', 'deliveryOptionId'],
         ),
         Type.Required(
           Type.Pick(

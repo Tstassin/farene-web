@@ -11,6 +11,7 @@ import {
   orderQueryResolver,
   orderPayWithCodeValidator,
   orderPatchValidator,
+  orderPatchResolver,
 } from "./orders.schema";
 
 import type { Application } from "../../declarations";
@@ -55,7 +56,6 @@ export const order = (app: Application) => {
         authenticate("jwt"),
         resolveExternal(orderExternalResolver),
         resolveResult(orderResolver),
-        checkDeliveryDate,
         validateData(orderDataValidator),
         createOrderItems,
         resolveData(
@@ -103,7 +103,10 @@ export const order = (app: Application) => {
         restrictToAdmin,
         validateData(orderPatchValidator),
         noPaymentOnOutdatedOrder,
-        resolveData(resourceSchemaPatchResolver)
+        resolveData(
+          orderPatchResolver,
+          resourceSchemaPatchResolver
+        )
       ],
       update: [disallow()],
       remove: [disallow()],

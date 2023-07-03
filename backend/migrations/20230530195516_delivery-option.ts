@@ -10,8 +10,14 @@ export async function up(knex: Knex): Promise<void> {
     table.time('to').notNullable()
     table.string('description').notNullable().defaultTo('')
   })
+  await knex.schema.alterTable('orders', (table) => {
+    table.integer('deliveryOptionId').references('id').inTable('delivery-options').notNullable()
+  })
 }
 
 export async function down(knex: Knex): Promise<void> {
   await knex.schema.dropTable('delivery-options')
+  await knex.schema.alterTable('orders', (table) => {
+    table.dropColumn('deliveryOptionId')
+  })
 }

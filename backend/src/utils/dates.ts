@@ -16,3 +16,5 @@ export const dayLabel = (day: string) => {
   return dayjs(day, isoDateFormat, true
     ).locale(fr).format('dddd DD MMMM YYYY')
 }
+
+export const today = dayjs().format(isoDateFormat)

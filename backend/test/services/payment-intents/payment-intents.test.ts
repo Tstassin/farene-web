@@ -17,6 +17,8 @@ import { mockedCreatedPaymentIntent, mockStripePaymentIntentsCreate, mockStripeP
 import Sinon, * as sinon from "sinon";
 import Stripe from "stripe";
 import { calculateOrderPrice } from "../../../src/services/orders/orders.utils";
+import { DeliveryOption } from "../../../src/client";
+import { getDeliveryOptionMock } from "../delivery-options/delivery-options.mocks";
 
 let user: User
 let category: Category
@@ -24,6 +26,7 @@ let product: Product
 let order: Order
 let nextDeliveryDate: string
 let pastWeekDeliveryDate: string
+let deliveryOption: DeliveryOption
 let mockedStripePaymentIntentCreate: Sinon.SinonStub<[data: Stripe.PaymentIntentCreateParams], Promise<Stripe.Response<Stripe.PaymentIntent>>>
 let mockedStripePaymentIntentGet: Sinon.SinonStub<[paymentIntentId: string], Promise<Stripe.Response<Stripe.PaymentIntent>>>
 
@@ -33,11 +36,12 @@ describe("payment-intent service", () => {
       await cleanAll()
       user = await app.service("users").create(getUserMock());
       category = await app.service("categories").create(getCategoryMock());
+      deliveryOption = await app.service('delivery-options').create(await getDeliveryOptionMock())
       product = await app
         .service("products")
         .create(getProductMock(category.id));
       const orderData: OrderData = {
-        ...(await getOrderMock(product.id)),
+        ...(await getOrderMock(product.id, deliveryOption.id)),
         orderItems: [
           {
             productId: product.id,
