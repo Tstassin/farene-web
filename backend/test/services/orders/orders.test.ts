@@ -17,7 +17,7 @@ import { Place } from "../../../src/services/places/places.schema";
 import { DeliveryOption } from "../../../src/client";
 import { getPlaceMock } from "../places/places.mocks";
 import { getDeliveryOptionMock } from "../delivery-options/delivery-options.mocks";
-import { isoDateFormat } from "../../../src/utils/dates";
+import { isoDateFormat, today } from "../../../src/utils/dates";
 
 const userTemplate: UserData = { email: "user1@test.com", password: "a" };
 
@@ -261,8 +261,7 @@ describe("orders service", () => {
       assert.equal(orderPayed.paymentSuccess, 1)
     });
     it('rejects if order is outdated', async () => {
-      const nextDeliveryDate = await (await app.service('orders').getDeliveryDates()).deliveryDates.nextWeek[0]
-      const pastWeekDeliveryDate = dayjs(nextDeliveryDate).subtract(7, 'days').toISOString()
+      const pastWeekDeliveryDate = dayjs(today, isoDateFormat, true).subtract(7, 'days').toISOString()
       const order = await app.service("orders").create(orderData, { user });
       await app.service('orders').Model.table('orders').where({ id: order.id }).update({ delivery: pastWeekDeliveryDate })
       const orderPayWithCodeFn = () => app.service('orders').payWithCode({ id: order.id, code: app.get('payments').b2b.code }, {})
@@ -307,8 +306,7 @@ describe("orders service", () => {
   describe('Payment success', () => {
     useBaseOrderMocks()
     it.skip('doesnt allow to set paymentSuccess on an order which is outdated', async () => {
-      const nextDeliveryDate = await (await app.service('orders').getDeliveryDates()).deliveryDates.nextWeek[0]
-      const pastWeekDeliveryDate = dayjs(nextDeliveryDate).subtract(7, 'days').toISOString()
+      const pastWeekDeliveryDate = dayjs(today, isoDateFormat, true).subtract(7, 'days').toISOString()
       const order = await app.service("orders").create(orderData, { user });
       await app.service('orders').Model.table('orders').where({ id: order.id }).update({ delivery: pastWeekDeliveryDate })
       const orderUpdateFn = () => app.service('orders').patch(order.id, { paymentSuccess: 0 })

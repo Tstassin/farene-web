@@ -5,7 +5,6 @@ import type { KnexAdapterParams, KnexAdapterOptions } from "@feathersjs/knex";
 
 import type { Application } from "../../declarations";
 import type { Order, OrderData, OrderPatch, OrderPayWithCode, OrderQuery } from "./orders.schema";
-import { allowedDeliveries, allowedDeliveryPlaces, allowedWeekDays, deliveryPlacesLabels } from "../../config/orders";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -32,39 +31,6 @@ const exportsProductOrder = [5, 4, 9, 8, 2, 3, 6, 7, 10, 11, 12, 24, 25, 26, 16,
 export class OrderService<
   ServiceParams extends Params = OrderParams
 > extends KnexService<Order, OrderData, OrderParams, OrderPatch | OrderPayWithCode> {
-
-  async getDeliveryDates() {
-    const now = belgianNow();
-    const nextWeek = now.endOf("isoWeek").add(1, "day");
-    const thisWeek = nextWeek.subtract(1, 'week')
-    const previousWeek = nextWeek.subtract(2, 'week')
-    return {
-      weeks: {
-        previousWeek: previousWeek.format(isoDateFormat),
-        thisWeek: thisWeek.format(isoDateFormat),
-        nextWeek: nextWeek.format(isoDateFormat),
-      },
-      deliveryDates: {
-        previousWeek: allowedWeekDays.map((wd) => previousWeek.isoWeekday(wd).format(isoDateFormat)),
-        thisWeek: allowedWeekDays.map((wd) => thisWeek.isoWeekday(wd).format(isoDateFormat)),
-        nextWeek: allowedWeekDays.map((wd) => nextWeek.isoWeekday(wd).format(isoDateFormat)),
-      },
-      deliveries: allowedDeliveries.map(
-        delivery => ({
-          weekDay: nextWeek.isoWeekday(delivery.weekDay).format(isoDateFormat),
-          deliveryPlace: delivery.deliveryPlace,
-          deliveryPlaceLabel: deliveryPlacesLabels[delivery.deliveryPlace]
-        })
-      ),
-      deliveryPlaces: allowedDeliveryPlaces.reduce(
-        (all: Record<string, string>, deliveryPlace) => {
-          all[deliveryPlace] = deliveryPlacesLabels[deliveryPlace]
-          return all
-        }
-        ,
-        {})
-    } as const;
-  }
 
   async payWithCode(data: OrderPayWithCode, params: OrderParams): Promise<Order> {
     const { id, code } = data

@@ -1,4 +1,4 @@
-export type IsoWeekDay = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+/* export type IsoWeekDay = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type IsoWeekDays = readonly IsoWeekDay[];
 export type AllowedWeekDays = 2 | 4
 export const weekDays = [1, 2, 3, 4, 5, 6, 7] as const;
@@ -45,4 +45,4 @@ export const deliveryPlacesLabels: Record<AllowedDeliveryPlaces, string> = {
   terredumilieu: 'Terre du Milieu',
   offbar: 'OFFBar de Mont-Saint-Guibert',
   inbw: 'Einstein Busines Center (INBW)'
-}
+} */

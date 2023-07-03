@@ -19,6 +19,7 @@ import Stripe from "stripe";
 import { calculateOrderPrice } from "../../../src/services/orders/orders.utils";
 import { DeliveryOption } from "../../../src/client";
 import { getDeliveryOptionMock } from "../delivery-options/delivery-options.mocks";
+import { isoDateFormat, today } from "../../../src/utils/dates";
 
 let user: User
 let category: Category
@@ -50,8 +51,7 @@ describe("payment-intent service", () => {
         ],
       };
       order = await app.service("orders").create(orderData, { user });
-      nextDeliveryDate = await (await app.service('orders').getDeliveryDates()).deliveryDates.nextWeek[0]
-      pastWeekDeliveryDate = dayjs(nextDeliveryDate).subtract(7, 'days').toISOString()
+      pastWeekDeliveryDate = dayjs(today, isoDateFormat, true).subtract(7, 'days').toISOString()
       mockedStripePaymentIntentCreate = mockStripePaymentIntentsCreate()
       mockedStripePaymentIntentGet = mockStripePaymentIntentsGet()
     })

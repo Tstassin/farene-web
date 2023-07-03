@@ -10,7 +10,6 @@ import { orderItemSchema, orderItemDataSchema } from "../order-items/order-items
 import { calculateOrderPrice } from "./orders.utils";
 import { restrictResource } from "../users/users.utils";
 import { userSchema } from "../users/users.schema";
-import { AllowedDeliveryPlaces } from "../../config/orders";
 import { isoDateFormat, today } from "../../utils/dates";
 import dayjs from "dayjs";
 import { BadRequest } from "@feathersjs/errors/lib";
@@ -26,7 +25,7 @@ export const orderSchema = Type.Intersect([
       delivery: Type.String(),
       userId: Type.Number(),
       user: userSchema,
-      deliveryPlace: Type.Enum(AllowedDeliveryPlaces),
+      deliveryPlace: Type.String(),
       orderItems: Type.Array(orderItemSchema),
       deliveryOptionId: Type.Number(),
       price: Type.Number(),

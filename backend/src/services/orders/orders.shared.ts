@@ -24,7 +24,6 @@ export const orderMethods = [
   "get",
   "create",
   "patch",
-  "getDeliveryDates",
   "payWithCode",
   "exportOrders",
   "getOrdersSummary"

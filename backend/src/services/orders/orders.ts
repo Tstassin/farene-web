@@ -21,7 +21,7 @@ import { authenticate } from "@feathersjs/authentication/";
 import {
   resourceSchemaCreateResolver, resourceSchemaPatchResolver,
 } from "../common/resources";
-import { checkDeliveryDate, createOrderItems, noPaymentOnOutdatedOrder } from "./orders.hooks";
+import { createOrderItems, noPaymentOnOutdatedOrder } from "./orders.hooks";
 import { disallow, populate } from "feathers-hooks-common";
 import { restrictToAdmin } from "../users/users.hooks";
 
@@ -78,7 +78,6 @@ export const order = (app: Application) => {
         resolveExternal(orderExternalResolver),
         resolveResult(orderResolver),
       ],
-      getDeliveryDates: [authenticate("jwt")],
       getOrdersSummary: [authenticate("jwt")],
       payWithCode: [
         authenticate('jwt'),

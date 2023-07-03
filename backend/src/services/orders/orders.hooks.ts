@@ -31,31 +31,6 @@ export const createOrderItems = async (
   }
 };
 
-export const checkDeliveryDate = async (
-  context: HookContext<Application, OrderService<OrderParams>>,
-  next: NextFunction
-) => {
-  if (Array.isArray(context.data)) {
-    throw new BadRequest("Please create one order at a time");
-  }
-  if (!context.data) throw new BadRequest('No data provided to checkDeliveryDate method')
-  if (!('delivery' in context.data)) throw new BadRequest('No delivery date provided to checkDelviveryDate method')
-
-  const deliveryDate = context.data.delivery;
-  if (!dayjs(deliveryDate, "YYYY-MM-DD", true).isValid()) {
-    throw new BadRequest("Invalid delivery date or format :" + deliveryDate);
-  }
-
-  const { deliveryDates: { nextWeek } } = await context.app
-    .service("orders")
-    .getDeliveryDates();
-  if (!nextWeek.some((date) => date === deliveryDate)) {
-    throw new BadRequest("No delivery on " + deliveryDate);
-  }
-  await next()
-};
-
-
 export const noPaymentOnOutdatedOrder = async (
   context: HookContext<Application, OrderService<OrderParams>>
 ) => {
