@@ -21,7 +21,7 @@ export class PlaceService<ServiceParams extends Params = PlaceParams> extends Kn
 
 export const getOptions = (app: Application): KnexAdapterOptions => {
   return {
-    paginate: app.get('paginate'),
+    paginate: false,
     Model: app.get('sqliteClient'),
     name: 'places',
     multi: ['remove']
