@@ -1,10 +1,11 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons"
 import { Box, Heading, ListItem, Text, UnorderedList } from "@chakra-ui/react"
-import { useOrderDates } from "../../queries/orders"
+import { dayLabel } from "../../../../backend/src/utils/dates"
+import { useAllDeliveryOptions, useNextWeekDeliveryOptions } from "../../queries/delivery-options"
 
 export const OrderInstructions = () => {
-  const orderDatesQuery = useOrderDates()
-  const { deliveryPlaces } = orderDatesQuery.data ?? {}
+  const allDeliveryOptions = useNextWeekDeliveryOptions()
+  console.log(allDeliveryOptions)
   return (
     <Box>
       <Heading size={'sm'} mb={3}>Commandes et enlèvement chaque semaine</Heading>
@@ -13,67 +14,28 @@ export const OrderInstructions = () => {
         Les commandes se clôturent tous les dimanches à minuit.<br />
         Les commandes peuvent être retirées en points dépôts :
       </Text>
+      <Heading size={'sm'} mb={3}>Points dépôts ouverts la semaine prochaine</Heading>
       {/* <Heading size={'sm'} mb={3}>Enlèvement le MARDI</Heading> */}
       <Text mb={6}>
-        <b>{deliveryPlaces?.['farene']}</b><br />
-        Le Mardi et le Jeudi 
-        <UnorderedList mb={5}>
-          <ListItem>
-            D'abord de <b>12h à 13h30</b> chez Farène : <br />
-            <Text>
-              Gare de Chastre, quai n°2<br />
-              Rue Gaston Delvaux, 1A<br />
-              1450 Chastre
-            </Text>
-          </ListItem>
-          <ListItem mb={3}>
-            Ensuite de <b>14h à 20h</b> en point dépot libre accès :<br />
-            <Text>
-              Rue des Trois Ruisseaux, 9<br />
-              1450 Chastre
-            </Text>
-          </ListItem>
-        </UnorderedList>
-        <b>{deliveryPlaces?.['offbar']}</b><br />
-        Le Mardi
-        <UnorderedList mb={5}>
-          <ListItem mb={3}>
-            de <b>11h à 19h</b><br />
-            <Text>
-              Au "OFFBar"<br />
-              Bâtiment du Creative Spark<br />
-              Rue Emile Franqui 6<br />
-              1435 Mont-Saint-Guibert
-            </Text>
-          </ListItem>
-        </UnorderedList>
-        <b>{deliveryPlaces?.['inbw']}</b><br />
-        Le Mardi
-        <UnorderedList mb={5}>
-          <ListItem mb={3}>
-            de <b>11h à 19h</b><br />
-            <Text>
-              Einstein Business center<br />
-              Rue du Bosquet 15a<br />
-              1435 Mont-Saint-Guibert
-            </Text>
-          </ListItem>
-        </UnorderedList>
-        <b>{deliveryPlaces?.['terredumilieu']}</b><br />
-        Le Jeudi
-        <UnorderedList mb={5}>
-          <ListItem mb={3}>
-            de <b>15h à 20h00</b><br />
-            <Text>
-              Point dépot "Paniers de légumes"<br />
-              À la Terre du Milieu<br />
-              Ruelle Fanfan 1<br />
-              1450 Chastre
-            </Text>
-          </ListItem>
-        </UnorderedList> 
+        {allDeliveryOptions.data?.map(dO => {
+
+          return (
+            <>
+              {dayLabel(dO.day)}
+              <UnorderedList mb={5}>
+                <ListItem>
+                  De <b>{dO.from} à {dO.to}</b> chez {dO.place.name} : <br />
+                  <Text>
+                    {dO.place.description}
+                  </Text>
+                </ListItem>
+                
+              </UnorderedList>
+            </>
+          )
+        })}
       </Text>
 
-    </Box>
+    </Box >
   )
 }

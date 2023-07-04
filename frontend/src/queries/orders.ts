@@ -32,13 +32,6 @@ export const useOrder = (id?: Order['id']) => {
   })
 }
 
-export const useOrderDates = () => {
-  return useQuery({
-    queryKey: ['nextDeliveryDates'],
-    queryFn: () => client.service('orders').getDeliveryDates()
-  })
-}
-
 export const useOrdersExport = () => {
   return useMutation({
     mutationFn: () => client.service('orders').exportOrders(),

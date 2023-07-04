@@ -25,7 +25,7 @@ export class DeliveryOptionService<ServiceParams extends Params = DeliveryOption
 
 export const getOptions = (app: Application): KnexAdapterOptions => {
   return {
-    paginate: app.get('paginate'),
+    paginate: false,
     Model: app.get('sqliteClient'),
     name: 'delivery-options',
     multi: ['remove']
