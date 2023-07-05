@@ -13,6 +13,7 @@ import { userSchema } from "../users/users.schema";
 import { isoDateFormat, today } from "../../utils/dates";
 import dayjs from "dayjs";
 import { BadRequest } from "@feathersjs/errors/lib";
+import { deliveryOptionSchema } from "../delivery-options/delivery-options.schema";
 
 /**
  * Main data model
@@ -28,6 +29,7 @@ export const orderSchema = Type.Intersect([
       deliveryPlace: Type.String(),
       orderItems: Type.Array(orderItemSchema),
       deliveryOptionId: Type.Number(),
+      deliveryOption: Type.Ref(deliveryOptionSchema),
       price: Type.Number(),
       paymentIntent: Type.Optional(Type.String()),
       paymentSuccess: Type.Integer({ default: 0, minimum: 0, maximum: 1 })
@@ -51,6 +53,9 @@ export const orderResolver = resolve<Order, HookContext>(
         orderItems: await context.app
           .service("order-items")
           .find({ query: { orderId: data.id }, paginate: false }),
+        deliveryOption: await context.app
+          .service('delivery-options')
+          .get(data.deliveryOptionId)
       };
     },
   }
@@ -153,7 +158,6 @@ export const orderPayWithCodeResolver = resolve<Order, HookContext>({});
 
 // Schema for allowed query properties
 export const orderQueryProperties = Type.Pick(orderSchema, [
-  "delivery",
   "userId",
   "paymentSuccess",
   "createdAt"
