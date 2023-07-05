@@ -3,7 +3,7 @@ import { Fragment, useMemo } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { OrderData } from '../../../backend/src/services/orders/orders.schema'
 import dayjs from 'dayjs'
-import { useOrderCreateMutation, useOrderDates } from "../queries/orders";
+import { useOrderCreateMutation } from "../queries/orders";
 import { useAllProducts } from "../queries/products";
 import localeData from 'dayjs/plugin/localeData'
 import fr from 'dayjs/locale/fr'
@@ -15,6 +15,8 @@ import { useAllCategories } from "../queries/categories";
 import { RequestButton } from "../components/elements/request-button";
 import { QuestionOutlineIcon } from "@chakra-ui/icons";
 import { eur, mult } from "../../../shared/prices";
+import { useNextWeekDeliveryOptions } from "../queries/delivery-options";
+import { getNextWeekStart } from "../../../backend/src/utils/dates";
 dayjs.extend(localeData)
 
 export const Order = () => {
@@ -22,7 +24,7 @@ export const Order = () => {
   const orderCreateMutation = useOrderCreateMutation()
   const allProductsQuery = useAllProducts({ disabled: 0 })
   const allCategoriesQuery = useAllCategories()
-  const { weeks, deliveries } = useOrderDates().data || {}
+  const nextWeekDeliveryOptions = useNextWeekDeliveryOptions().data || []
   const methods = useForm<OrderData>();
   const { handleSubmit, register, control, watch, clearErrors, setError, formState: { errors, isDirty } } = methods;
   const fieldArray = useFieldArray({
@@ -44,19 +46,16 @@ export const Order = () => {
     : 0
 
   const onSubmit = async (values: OrderData) => {
-    const { delivery: deliveryIndex, orderItems } = values
+    const { deliveryOptionId, orderItems } = values
     const data: OrderData = {
-      delivery: deliveries![parseInt(deliveryIndex)].weekDay,
       orderItems,
-      deliveryPlace: deliveries![parseInt(deliveryIndex)].deliveryPlace
+      deliveryOptionId: parseInt(deliveryOptionId)
     }
     orderCreateMutation.mutate(data)
   };
 
-  const nextWeekLabel = useMemo(() => {
-    return dayjs(weeks?.nextWeek
-    ).locale(fr).format('dddd DD MMMM YYYY')
-  }, [weeks])
+  const nextWeekLabel = getNextWeekStart()
+    .locale(fr).format('dddd DD MMMM YYYY')
 
   if (orderCreateMutation.isSuccess) navigate(`/order/${orderCreateMutation.data.id}/`)
 
@@ -73,31 +72,31 @@ export const Order = () => {
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <>
-              <FormControl mb={5} isInvalid={Boolean(errors.delivery)} isRequired>
+              <FormControl mb={5} isInvalid={Boolean(errors.deliveryOptionId)} isRequired>
                 <FormLabel>
                   <Heading size={'md'} mb={3} display='inline'>Enlèvement</Heading>
                 </FormLabel>
                 <RadioGroup>
                   <Stack spacing={3}>
-                    {deliveries?.map(
-                      ({ weekDay, deliveryPlaceLabel }, index) => (
+                    {nextWeekDeliveryOptions?.map(
+                      ({ day, place: { name } }, index) => (
                         <Radio
                           value={index + ''}
                           key={index}
                           {...register(
-                            "delivery",
+                            "deliveryOptionId",
                             {
                               required: "Veuillez choisir une date et un lieu d'enlèvement",
                             }
                           )}
                         >
-                          {dayjs(weekDay).locale(fr).format('dddd DD MMMM YYYY')}  <span>&#8212;</span>  {deliveryPlaceLabel}
+                          {dayjs(day).locale(fr).format('dddd DD MMMM YYYY')}  <span>&#8212;</span>  {name}
                         </Radio>
                       )
                     )}
                   </Stack>
                 </RadioGroup>
-                <FormErrorMessage>{errors.delivery?.message?.toString()}</FormErrorMessage>
+                <FormErrorMessage>{errors.deliveryOptionId?.message?.toString()}</FormErrorMessage>
               </FormControl>
               <Accordion mt={5} allowToggle mb={10}>
                 <AccordionItem>
