@@ -17,7 +17,8 @@ export const deliveryOptionSchema =
       Type.Object(
         {
           id: Type.Number(),
-          place: Type.Object(placeSchema.properties),
+          placeId: Type.Number(),
+          place: Type.Object(placeSchema.properties),//populated
           day: Type.String({ format: 'date' }),
           from: Type.Number({ minimum: 0, maximum: 24 }),
           to: Type.Number({ minimum: 0, maximum: 24, }),
