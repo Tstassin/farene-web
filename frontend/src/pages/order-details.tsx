@@ -4,7 +4,7 @@ import { loadStripe, Stripe } from "@stripe/stripe-js";
 import { useParams, useSearchParams } from "react-router-dom";
 import CheckoutForm from "../components/payments/checkout-form";
 import { QueryStatus } from "../components/queries/query-status";
-import { useOrder, useOrderDates } from "../queries/orders";
+import { useOrder } from "../queries/orders";
 import { usePaymentIntentCreateMutation, usePaymentIntentQuery } from "../queries/payment-intents";
 import fr from 'dayjs/locale/fr'
 import dayjs from "dayjs";
@@ -13,6 +13,7 @@ import { useState } from "react";
 import { PayWithCodeModal } from "../components/payments/pay-with-code-modal";
 import { FeathersError } from "@feathersjs/errors/lib";
 import { eur, mult } from "../../../shared/prices";
+import { DeliveryOptionName } from "../components/delivery-options/delivery-option-name";
 
 let stripePromise: Promise<Stripe | null>
 if (process.env.NODE_ENV === 'development') {
@@ -27,7 +28,6 @@ export const OrderDetailsPage = () => {
   const [searchParams] = useSearchParams()
   const orderId = params.orderId ? parseInt(params.orderId) : undefined
   const orderQuery = useOrder(orderId)
-  const orderDates = useOrderDates()
   const paymentIntentCreateMutation = usePaymentIntentCreateMutation()
   const paymentIntentQuery = usePaymentIntentQuery(orderQuery.data?.paymentIntent)
   const paymentIntent = paymentIntentQuery.data ?? paymentIntentCreateMutation.data
@@ -47,9 +47,10 @@ export const OrderDetailsPage = () => {
       <QueryStatus query={orderQuery}>
         <Heading mb={5}>Commande numéro {orderQuery.data?.id}</Heading>
         <Text fontSize={'xl'} mb={10}>
-          Date : le {dayjs(orderQuery.data?.delivery, 'YYYY-MM-DD').locale(fr).format('dddd DD MMMM')}<br /> 
-          Lieu : {orderQuery.data?.deliveryPlace ? orderDates.data?.deliveryPlaces[orderQuery.data.deliveryPlace] : ''} <br />
+
+        {orderQuery.data?.deliveryOption && <DeliveryOptionName deliveryOption={orderQuery.data?.deliveryOption} />}
         </Text>
+
         <Text fontSize={'xl'} mb={5}>
           <ul>
             {orderQuery.data?.orderItems.map(orderItem => {
