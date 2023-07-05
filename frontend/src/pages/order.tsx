@@ -49,8 +49,9 @@ export const Order = () => {
     const { deliveryOptionId, orderItems } = values
     const data: OrderData = {
       orderItems,
-      deliveryOptionId: parseInt(deliveryOptionId)
+      deliveryOptionId: parseInt(deliveryOptionId.toString())
     }
+    console.log(orderCreateMutation)
     orderCreateMutation.mutate(data)
   };
 
@@ -79,10 +80,10 @@ export const Order = () => {
                 <RadioGroup>
                   <Stack spacing={3}>
                     {nextWeekDeliveryOptions?.map(
-                      ({ day, place: { name } }, index) => (
+                      ({ day, place: { name }, id }) => (
                         <Radio
-                          value={index + ''}
-                          key={index}
+                          value={id + ''}
+                          key={id}
                           {...register(
                             "deliveryOptionId",
                             {
