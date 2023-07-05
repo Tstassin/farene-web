@@ -6,6 +6,7 @@ import fr from 'dayjs/locale/fr'
 import localeData from 'dayjs/plugin/localeData'
 
 dayjs.extend(localeData)
+dayjs.locale('fr')
 
 export const isoDateFormat = "YYYY-MM-DD"
 export const isoDate = (date: Dayjs) => dayjs(date).format(isoDateFormat)
@@ -26,7 +27,9 @@ export const getToday = () => {
 export const getTodayIso = () => isoDate(getToday())
 export const getTodayLabel = () => dayLabel(getTodayIso())
 export const getNextWeekStart = () => {
-  return dayjs().endOf('week').add(1, 'day')
+  const nextWeekStart = dayjs().endOf('week').add(1, 'day')
+  console.log(nextWeekStart)
+  return nextWeekStart
 }
 export const getNextWeekEnd = () => {
   return dayjs().endOf('week').add(1, 'day').endOf('week')

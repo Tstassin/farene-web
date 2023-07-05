@@ -38,6 +38,12 @@ export const AdminPage = () => {
           <NavItem to='/admin/places'>Liste</NavItem>
         </HStack>
       </Box>
+      <Box>
+        <Heading size='md' mt={10} mb={5}>Options de livraison</Heading>
+        <HStack>
+          <NavItem to='/admin/delivery-options'>Liste</NavItem>
+        </HStack>
+      </Box>
     </>
   )
 }

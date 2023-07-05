@@ -23,6 +23,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools/build/lib/dev
 import { AdminPage } from './pages/admin-page';
 import { Orders } from './pages/orders';
 import { PlacesPage } from './pages/places';
+import { DeliveryOptionsPage } from './pages/delivery-options';
 
 export const queryClient = new QueryClient()
 
@@ -79,6 +80,10 @@ export const router = createBrowserRouter([
           {
             path: "/admin/places",
             element: <AdminProtected><PlacesPage /></AdminProtected>,
+          },
+          {
+            path: "/admin/delivery-options",
+            element: <AdminProtected><DeliveryOptionsPage /></AdminProtected>,
           },
           {
             path: "/admin/export",

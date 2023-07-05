@@ -34,9 +34,9 @@ export const deliveryOptionResolver = resolve<Omit<DeliveryOption, 'place'>, Hoo
   {},
   {
     converter: async (data, context) => {
-      const { placeId, ...rest } = data
+      const { placeId } = data
       const place = await context.app.service('places').get(placeId)
-      return ({ place, ...rest })
+      return ({ place, ...data })
     }
   })
 
@@ -69,9 +69,7 @@ export const deliveryOptionDataResolver = resolve<DeliveryOption, HookContext>({
 })
 
 // Schema for updating existing entries
-export const deliveryOptionPatchSchema = Type.Partial(deliveryOptionSchema, {
-  $id: 'DeliveryOptionPatch'
-})
+export const deliveryOptionPatchSchema = Type.Partial(deliveryOptionDataSchema, {$id: 'DeliveryOptionPatch'})
 export type DeliveryOptionPatch = Static<typeof deliveryOptionPatchSchema>
 export const deliveryOptionPatchValidator = getValidator(deliveryOptionPatchSchema, dataValidator)
 export const deliveryOptionPatchResolver = resolve<DeliveryOption, HookContext>({
@@ -91,6 +89,7 @@ export const deliveryOptionPatchResolver = resolve<DeliveryOption, HookContext>(
     }
     return value
   },
+  place: async () => undefined
 })
 
 // Schema for allowed query properties
