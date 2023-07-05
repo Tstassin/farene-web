@@ -2,12 +2,14 @@ import { DeliveryOption } from "../../../../backend/src/client"
 import { dayLabel, decimalTimeLabel } from "../../../../backend/src/utils/dates"
 
 export const DeliveryOptionName = ({ deliveryOption }: { deliveryOption: DeliveryOption }) => {
-  const {day, place, from, to} = deliveryOption
+  const dO = deliveryOption
   return (
     <>
-      {dayLabel(deliveryOption.day)} <br />
-      {place.name} <br />
-      de {decimalTimeLabel(from)} à {decimalTimeLabel(to)}
+      <b>{dayLabel(dO.day)}</b><br />
+      <b>{dO.place.name}</b> <br />
+      de {decimalTimeLabel(dO.from)} à {decimalTimeLabel(dO.to)} <br />
+      <i>{dO.place.description}</i> <br />
+      {dO.description}
     </>
   )
 }
