@@ -15,10 +15,9 @@ export const DeliveryOptionsList = () => {
     <QueryStatus query={allDeliveryOptionsQuery}>
       <ul>
         {allDeliveryOptionsQuery.data?.map(dO => <li key={dO.id}>
+          <Button ml={5} size={'xs'} onClick={() => setShowUpdateModalValue(dO.id)}>Modifier</Button><br />
           <DeliveryOptionName deliveryOption={dO} />
           {/* <Button ml={5} size={'xs'} onClick={() => placeRemoveMutation.mutate(place.id)}>Supprimer</Button> */}
-          <Button ml={5} size={'xs'} onClick={() => setShowUpdateModalValue(dO.id)}>Modifier</Button><br />
-          <i>{dO.description}</i>
         </li>)}
       </ul>
       <Modal isOpen={Boolean(showUpdateModalValue)} onClose={() => setShowUpdateModalValue(undefined)}>
