@@ -1,20 +1,18 @@
 import { Box, FormControl, FormLabel, Heading } from "@chakra-ui/react";
 import dayjs from "dayjs";
-import { dayLabel, isoDateFormat } from "../../../backend/src/utils/dates";
+import { dayLabel, getNextWeekStart, isoDate, isoDateFormat } from "../../../backend/src/utils/dates";
 import { useWeekSelector, WeekSelector } from "../components/filters/week-selector";
 import { OrdersList } from "../components/orders/orders-list";
 import { OrdersSummaryTable } from "../components/orders/orders-summary";
-import { useOrderDates, useOrders, useOrdersSummary } from "../queries/orders";
+import { useOrders, useOrdersSummary } from "../queries/orders";
 
 
 export const Orders = () => {
   const [week, onChange] = useWeekSelector()
-  const orderDatesQuery = useOrderDates()
-  const weekDate = orderDatesQuery.data?.weeks?.[week]
-  const weekDateLabel = weekDate ? dayLabel(weekDate) : ''
-  const ordersQueryPayload = { paymentSuccess: 1, delivery: { $gte: weekDate, $lte: dayjs(weekDate).add(1, 'week').format(isoDateFormat) } }
-  const ordersQuery = useOrders(ordersQueryPayload, Boolean(weekDate))
-  const orderSummaryQuery = useOrdersSummary(ordersQueryPayload, Boolean(weekDate))
+  const weekDateLabel = week ? dayLabel(week) : ''
+  const ordersQueryPayload = { paymentSuccess: 1, delivery: { $gte: week, $lte: dayjs(week).add(1, 'week').format(isoDateFormat) } }
+  const ordersQuery = useOrders(ordersQueryPayload, Boolean(week))
+  const orderSummaryQuery = useOrdersSummary(ordersQueryPayload, Boolean(week))
 
   return (
     <>

@@ -1,17 +1,18 @@
 import { Alert, AlertIcon, Box, Button, Heading, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 import { useRef } from 'react'
 import { OrderItem } from '../../../backend/src/services/order-items/order-items.schema'
+import { getWeekStart, isoDate } from '../../../backend/src/utils/dates'
 import { useOrderItems } from '../queries/order-items'
-import { useOrderDates, useOrders, useOrdersExport } from '../queries/orders'
+import {  useOrders, useOrdersExport } from '../queries/orders'
 
 export const ExportPage = () => {
   const ordersExportMutation = useOrdersExport()
   const downloadButtonRef = useRef<HTMLAnchorElement>(null)
-  const { data: orderDates } = useOrderDates()
-  const thisWeek = orderDates?.weeks?.thisWeek
+  const thisWeek = getWeekStart()
+  const thisWeekIso = isoDate(thisWeek)
 
-  const allPayedOrdersQuery = useOrders({ paymentSuccess: 1, 'createdAt': { $gte: thisWeek }, $limit: 250 }, Boolean(thisWeek))
-  const allOrderItemsQuery = useOrderItems({ 'createdAt': { $gte: thisWeek }, orderId: { $in: allPayedOrdersQuery.data?.data?.map(o => o.id) }, $limit: 250 }, Boolean(thisWeek && allPayedOrdersQuery.isSuccess && allPayedOrdersQuery.data.total > 0))
+  const allPayedOrdersQuery = useOrders({ paymentSuccess: 1, 'createdAt': { $gte: thisWeekIso }, $limit: 250 }, Boolean(thisWeekIso))
+  const allOrderItemsQuery = useOrderItems({ 'createdAt': { $gte: thisWeekIso }, orderId: { $in: allPayedOrdersQuery.data?.data?.map(o => o.id) }, $limit: 250 }, Boolean(thisWeekIso && allPayedOrdersQuery.isSuccess && allPayedOrdersQuery.data.total > 0))
 
   const productsAmountsOrdered =
     allOrderItemsQuery?.data?.data?.reduce((acc: Record<OrderItem['product']['sku'], number>, curr) => {
@@ -34,12 +35,14 @@ export const ExportPage = () => {
         <Heading>Commandes cette semaine</Heading>
       </Box>
       {
-        allOrderItemsQuery?.data?.total > allOrderItemsQuery?.data?.limit && (
-          <Alert status='warning'>
-            <AlertIcon />
-            Attention ! Il y a plus de 250 produits commandés cette semaine !<br />
-            Ils ne sont pas tous affichés
-          </Alert>
+        allOrderItemsQuery.data && (
+          allOrderItemsQuery?.data?.total > allOrderItemsQuery?.data?.limit && (
+            <Alert status='warning'>
+              <AlertIcon />
+              Attention ! Il y a plus de 250 produits commandés cette semaine !<br />
+              Ils ne sont pas tous affichés
+            </Alert>
+          )
         )
       }
       <Box my={5}>

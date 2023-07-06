@@ -1,29 +1,27 @@
 import { FormControl, FormLabel, Select } from "@chakra-ui/react";
 import { UseFormReturn } from "react-hook-form";
 import { OrderPatch } from "../../../../backend/src/services/orders/orders.schema";
-import { useOrderDates } from "../../queries/orders";
+import { useAllDeliveryOptions } from "../../queries/delivery-options";
 
 interface OrderEditComponentProps {
   form: UseFormReturn<OrderPatch>
 }
 
 export const OrderEditComponent = ({ form }: OrderEditComponentProps) => {
-  const orderDatesQuery = useOrderDates()
   const { register, formState: { errors } } = form
-  const deliveryDates = orderDatesQuery.data?.deliveryDates
-  const allDeliveryDates = deliveryDates ? Object.values(deliveryDates).flatMap(d => d) : []
+  const allDeliveryOptionsQuery = useAllDeliveryOptions()
 
   return (
     <>
-      <FormControl mb={5} isInvalid={Boolean(errors.delivery)}>
+      <FormControl mb={5} isInvalid={Boolean(errors.deliveryOptionId)}>
         <FormLabel>Date d'enlèvement</FormLabel>
         <Select
-          {...register('delivery', {
+          {...register('deliveryOptionId', {
             required: 'Ce champ est obligatoire',
           })}
         >
-          {allDeliveryDates.map(
-            deliveryDate => <option value={deliveryDate}>{deliveryDate}</option>
+          {allDeliveryOptionsQuery.data?.map(
+            dO => <option value={dO.id}>{dO.place.name} - {dO.day}</option>
           )}
         </Select>
       </FormControl>

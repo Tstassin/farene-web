@@ -60,7 +60,7 @@ export const useOrderPayWithCodeMutation = () => {
   })
 }
 
-export const useOrderDeliveryDateMutation = () => {
+export const useOrderDeliveryOptionIdMutation = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: Order['id'], data: Omit<OrderPatch, 'paymentSuccess' | 'paymentIntent'> }) => {
       return client.service('orders').patch(id, data)
