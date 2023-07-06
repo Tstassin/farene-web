@@ -5,17 +5,21 @@ import { DeliveryOption, DeliveryOptionData, DeliveryOptionPatch, DeliveryOption
 import { getNextWeekEnd, getNextWeekStart, isoDate, isoDateFormat } from "../../../backend/src/utils/dates"
 import { client } from "../../api/api"
 
+const defaultDeliveryOptionsQuery: DeliveryOptionQuery = {
+  $sort: { day: 1 }
+}
+
 export const useAllDeliveryOptions = () => {
   return useQuery({
     queryKey: ['deliveryOptions'],
-    queryFn: () => client.service('delivery-options').find({ paginate: false })
+    queryFn: () => client.service('delivery-options').find({ paginate: false, query: defaultDeliveryOptionsQuery })
   })
 }
 
 export const useDeliveryOptions = (query?: DeliveryOptionQuery, enabled = true) => {
   return useQuery({
     queryKey: ['deliveryOptions', query],
-    queryFn: () => client.service('delivery-options').find({ paginate: false, query }),
+    queryFn: () => client.service('delivery-options').find({ paginate: false, query: { ...defaultDeliveryOptionsQuery, ...query } }),
     enabled
   })
 }
