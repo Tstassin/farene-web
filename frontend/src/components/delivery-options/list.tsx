@@ -1,14 +1,15 @@
 import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react"
 import { useState } from "react"
 import { DeliveryOption } from "../../../../backend/src/services/delivery-options/delivery-options.schema"
-import { useAllDeliveryOptions, useDeliveryOption, useDeliveryOptionRemoveMutation } from "../../queries/delivery-options"
+import { getWeekStart, isoDate } from "../../../../backend/src/utils/dates"
+import { useAllDeliveryOptions, useDeliveryOption, useDeliveryOptionRemoveMutation, useDeliveryOptions } from "../../queries/delivery-options"
 import { QueryStatus } from "../queries/query-status"
 import { CreateDeliveryOption } from "./create"
 import { DeliveryOptionName } from "./delivery-option-name"
 import { UpdateDeliveryOption } from "./update"
 
 export const DeliveryOptionsList = () => {
-  const allDeliveryOptionsQuery = useAllDeliveryOptions()
+  const allDeliveryOptionsQuery = useDeliveryOptions({day: {$gte: isoDate(getWeekStart())}})
   const [showUpdateModalValue, setShowUpdateModalValue] = useState<DeliveryOption['id']>()
   const currentDeliveryOptionQuery = useDeliveryOption(showUpdateModalValue)
   return (
