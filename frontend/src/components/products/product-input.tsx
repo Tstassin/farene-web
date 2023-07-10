@@ -26,19 +26,20 @@ export const ProductInput = ({ product, fieldArray }: OrderInputProps) => {
             <ProductInputDetails product={product} onToggle={onToggle} />
           </Box>
           <Box display={'flex'} height='fit-content'>
-            <Box>
-              {
-                isProductSelected &&
-                <ProductInputRemoveButton product={product} remove={remove} fieldArrayIndex={fieldArrayIndex} />
-              }
-            </Box>
+
             <Box ml={3}>
               {
                 isProductSelected &&
-                <Box>
-                  <InputGroup size='sm'>
+                <Box display={'flex'} flexDirection='column' alignItems={'center'}>
+                  <InputGroup>
                     <ProductQuantityInput register={register} fieldArrayIndex={fieldArrayIndex} getValues={getValues} setValue={setValue} />
                   </InputGroup>
+                  <Box mt={3}>
+                    {
+                      isProductSelected &&
+                      <ProductInputRemoveButton product={product} remove={remove} fieldArrayIndex={fieldArrayIndex} />
+                    }
+                  </Box>
                 </Box>
               }
             </Box>
@@ -143,14 +144,14 @@ const ProductQuantityInput = ({ fieldArrayIndex, register, setValue, getValues }
   return (
     <>
       <Button
-        size={'sm'}
+        size={'md'}
         isDisabled={isMin}
         onClick={() => setValue(fieldName, currentValue - 1)}
       >
         -
       </Button>
       <Input
-        size='sm'
+        size='md'
         textAlign='center'
         fontWeight='bold'
         type='number'
@@ -167,7 +168,7 @@ const ProductQuantityInput = ({ fieldArrayIndex, register, setValue, getValues }
         )}
       />
       <Button
-        size={'sm'}
+        size={'md'}
         disabled={isMax}
         onClick={() => setValue(fieldName, currentValue + 1)}
       >
