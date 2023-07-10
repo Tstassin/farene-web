@@ -51,7 +51,7 @@ export const ProductInput = ({ product, fieldArray }: OrderInputProps) => {
             </Box>
             {
               isProductSelected && (
-                <Box ml={3} display='flex'>
+                <Box ml={3} minWidth={'8ch'} textAlign='right'>
                   <Text as='b' fontSize={'xl'}>{eur(total)}</Text>
                 </Box>
               )
@@ -155,8 +155,8 @@ const ProductQuantityInput = ({ fieldArrayIndex, register, setValue, getValues }
         textAlign='center'
         fontWeight='bold'
         type='number'
-        maxW={'50px'}
-        minW={'50px'}
+        maxW={'6ch'}
+        minW={'6ch'}
         min={min}
         max={max}
         defaultValue={1}
