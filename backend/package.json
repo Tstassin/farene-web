@@ -44,6 +44,7 @@
     "test:watch": "npm run test -- -- --require ts-node/register --watch --watch-files src, **/*.test.ts",
     "bundle:client": "npm run compile && npm pack --pack-destination ./public",
     "migrate": "knex migrate:latest",
+    "migrate:down": "knex migrate:down",
     "migrate:make": "knex migrate:make"
   },
   "dependencies": {
