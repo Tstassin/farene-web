@@ -11,7 +11,7 @@ export const OrderEditModal = ({ showOrder, setShowOrder }: { showOrder?: number
       <ModalOverlay />
       <ModalContent>
         <QueryStatus query={orderQuery}>
-          <ModalHeader>Modifier la commande</ModalHeader>
+          <ModalHeader>Modifier Commande {orderQuery.data?.id}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             {orderQuery.isSuccess && <UpdateOrder id={orderQuery.data.id} />}

@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import dayjs from "dayjs"
 import { queryClient } from ".."
 import { DeliveryOption, DeliveryOptionData, DeliveryOptionPatch, DeliveryOptionQuery } from "../../../backend/src/services/delivery-options/delivery-options.schema"
-import { getNextWeekEnd, getNextWeekStart, isoDate, isoDateFormat } from "../../../backend/src/utils/dates"
+import { getNextWeekEnd, getNextWeekStart, getToday, isoDate, isoDateFormat } from "../../../backend/src/utils/dates"
 import { client } from "../../api/api"
 
 const defaultDeliveryOptionsQuery: DeliveryOptionQuery = {
@@ -22,6 +22,10 @@ export const useDeliveryOptions = (query?: DeliveryOptionQuery, enabled = true) 
     queryFn: () => client.service('delivery-options').find({ paginate: false, query: { ...defaultDeliveryOptionsQuery, ...query } }),
     enabled
   })
+}
+
+export const useNextDeliveryOptions = () => {
+  return useDeliveryOptions({ day: { $gte: isoDate(getToday()) } })
 }
 
 export const useNextWeekDeliveryOptions = () => {
