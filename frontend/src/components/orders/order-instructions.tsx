@@ -15,7 +15,7 @@ export const OrderInstructions = () => {
         Les commandes se clôturent tous les dimanches à minuit.<br />
         Les commandes peuvent être retirées en points dépôts :
       </Text>
-      <Heading size={'md'} mb={3} mt={6}>Points dépôts ouverts la semaine prochaine</Heading>
+      <Heading size={'md'} mb={3} mt={6}>Collectes en point dépôt la semaine prochaine</Heading>
       {/* <Heading size={'sm'} mb={3}>Enlèvement le MARDI</Heading> */}
         {allDeliveryOptions.data?.map(dO => {
 
@@ -26,6 +26,9 @@ export const OrderInstructions = () => {
             </Box>
           )
         })}
+        {allDeliveryOptions.data?.length === 0 && (
+          <>Il n'y a pas de livraisons prévues la semaine prochaine</>
+        )}
 
     </Box >
   )
