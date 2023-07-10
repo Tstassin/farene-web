@@ -1,4 +1,4 @@
-import { FormControl, FormLabel, Input } from "@chakra-ui/react"
+import { FormControl, FormLabel, Input, Textarea } from "@chakra-ui/react"
 import { FieldValues, Path, UseFormReturn } from "react-hook-form"
 import { Place, PlaceData } from "../../../../backend/src/services/places/places.schema"
 
@@ -18,9 +18,8 @@ export const PlaceEditComponent = ({ form }: PlaceEditComponentProps) => {
             required: 'Ce champ est obligatoire'
           })}
         />
-        <FormLabel>Description</FormLabel>
-        <Input
-          type='text'
+        <FormLabel>Adresse</FormLabel>
+        <Textarea
           {...register('description', {
             required: 'Ce champ est obligatoire'
           })}

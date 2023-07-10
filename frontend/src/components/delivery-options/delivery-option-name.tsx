@@ -9,7 +9,7 @@ export const DeliveryOptionName = ({ deliveryOption }: { deliveryOption: Deliver
       <b>{dO.place.name}</b> <br />
       <>{dayLabel(dO.day)}</><br />
       <Text fontSize={'sm'}>de {decimalTimeLabel(dO.from)} à {decimalTimeLabel(dO.to)}</Text> 
-      <Text fontSize={'sm'}><i>{dO.place.description}</i></Text>
+      <Text fontSize={'sm'} whiteSpace={'pre-wrap'}><i>{dO.place.description}</i></Text>
       {dO.description && <>{dO.description}<br /></>}
     </Box>
   )
