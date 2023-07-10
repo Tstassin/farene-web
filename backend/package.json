@@ -45,7 +45,11 @@
     "bundle:client": "npm run compile && npm pack --pack-destination ./public",
     "migrate": "knex migrate:latest",
     "migrate:down": "knex migrate:down",
-    "migrate:make": "knex migrate:make"
+    "migrate:make": "knex migrate:make",
+    "migrate:status": "knex migrate:status",
+    "migrate:latest": "knex migrate:latest",
+    "migrate:rollback": "knex migrate:rollback",
+    "like-prod": "./scripts/like-prod.sh"
   },
   "dependencies": {
     "@feathersjs/adapter-commons": "^5.0.0",
