@@ -13,8 +13,9 @@ export const UpdateOrder = ({ id }: { id: Order['id'] }) => {
   const { handleSubmit } = form
 
   const onSubmit = async (data: Omit<OrderPatch, 'paymentSuccess' | 'paymentIntent'>) => {
-    console.log(data)
-    orderDeliveryDateMutation.mutate({ data, id })
+    const { deliveryOptionId: _deliveryOptionId, ...rest } = data
+    const deliveryOptionId = _deliveryOptionId ? parseInt(_deliveryOptionId.toString()) : undefined
+    orderDeliveryDateMutation.mutate({ id, data: {...rest, deliveryOptionId} })
   };
 
   return (
