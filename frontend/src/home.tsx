@@ -10,14 +10,14 @@ export const Home: React.FC = () => {
     <>
       <Heading mb={5}>Bienvenue dans l'eshop de Farène</Heading>
       <Box mb={10}>
-        <Alert status="info" mb={5}>
+        {/* <Alert status="info" mb={5}>
           <AlertIcon></AlertIcon>
-          Farène est en congés.<br />
-          Reprise des commandes à partir du lundi 7 Août 2023
-        </Alert>
+          Farène est partiellement en congés.<br />
+          Vous pouvez commander cette semaine pour le Mardi 16 Mai.
+        </Alert> */}
         <Authenticated>
           <Text fontSize={'xl'}>
-            {/* <Link as={NavLink} to='/order'><u>Commandez</u></Link> du pain pour la semaine prochaine. */}
+            <Link as={NavLink} to='/order'><u>Commandez</u></Link> du pain pour la semaine prochaine.
           </Text>
         </Authenticated>
         <NotAuthenticated>
