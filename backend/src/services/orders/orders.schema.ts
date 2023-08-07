@@ -136,20 +136,7 @@ export const orderPatchValidator = getValidator(
   orderPatchSchema,
   dataValidator
 );
-export const orderPatchResolver = resolve<Order, HookContext>({}, {
-  converter: async (data, context) => {
-    const deliveryOption = await context.app.service('delivery-options').get(data.deliveryOptionId)
-    const deliveryOptionDate = dayjs(deliveryOption.day, isoDateFormat, true)
-    if (deliveryOptionDate.isBefore(today)) {
-      throw new BadRequest("No delivery in the past : " + deliveryOption.day);
-    }
-    return {
-      ...data,
-      delivery: deliveryOption.day,
-      deliveryPlace: deliveryOption.place.name
-    };
-  },
-});
+export const orderPatchResolver = resolve<Order, HookContext>({}, {});
 
 // Schema for code payment
 export const orderPayWithCodeSchema =
