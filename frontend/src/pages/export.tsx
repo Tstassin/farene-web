@@ -26,7 +26,7 @@ export const ExportPage = () => {
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8,' })
     const objUrl = URL.createObjectURL(blob)
     downloadButtonRef.current.href = objUrl
-    downloadButtonRef.current.download = `farene-export-${new Date()}.csv`
+    downloadButtonRef.current.download = `eshop-export-${new Date()}.csv`
   }
 
   return (

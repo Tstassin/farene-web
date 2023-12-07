@@ -8,11 +8,11 @@ export const Home: React.FC = () => {
 
   return (
     <>
-      <Heading mb={5}>Bienvenue dans l'eshop de Farène</Heading>
+      <Heading mb={5}>Bienvenue dans l'eshop de 250°</Heading>
       <Box mb={10}>
         {/* <Alert status="info" mb={5}>
           <AlertIcon></AlertIcon>
-          Farène est partiellement en congés.<br />
+          250° est partiellement en congés.<br />
           Vous pouvez commander cette semaine pour le Mardi 16 Mai.
         </Alert> */}
         <Authenticated>

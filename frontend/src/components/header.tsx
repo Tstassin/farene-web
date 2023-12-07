@@ -17,7 +17,7 @@ export const Header = () => {
     >
       <Box>
         <NavItem to='/' fontSize="lg" fontWeight="bold" noDecorate>
-          Farène
+          250°
         </NavItem>
       </Box>
       <Stack
