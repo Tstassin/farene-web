@@ -42,7 +42,6 @@ export const getWeekEnd = (weekDay = getToday()) => {
 }
 export const getNextWeekStart = () => {
   const nextWeekStart = getToday().endOf('week').add(1, 'day')
-  console.log(nextWeekStart)
   return nextWeekStart
 }
 export const getNextWeekEnd = () => {
