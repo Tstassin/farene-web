@@ -4,7 +4,7 @@
   "public": "./public/",
   "origins": [
     "http://localhost:3030",
-    "https://commande.farene.be"
+    "https://commande.250degres.be"
   ],
   "paginate": {
     "default": 50,
@@ -47,7 +47,7 @@
   "notifications": {
     "postmark": {
       "sender": {
-        "email": "mail@farene.be"
+        "email": "250degres@gmail.com"
       },
       "key": null
     }

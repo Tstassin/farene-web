@@ -53,7 +53,7 @@ export class NotificationService<ServiceParams extends NotificationParams = Noti
         htmlBody += `<br /><p><a href="${link.url}">${link.text}</a></p>`
       }
     }
-    htmlBody += `<br /><p><a href="https://commande.farene.be">Farène microboulangerie</a></p>`
+    htmlBody += `<br /><p><a href="https://commande.250degres.be">250°</a></p>`
 
     return await this._sendEmail({
       'From': from,

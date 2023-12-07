@@ -8,7 +8,7 @@ export const Home: React.FC = () => {
 
   return (
     <>
-      <Heading mb={5}>Bienvenue dans l'eshop de 250°</Heading>
+      <Heading mb={5}>Bienvenue<br />Eshop de votre boulangerie 250°</Heading>
       <Box mb={10}>
         {/* <Alert status="info" mb={5}>
           <AlertIcon></AlertIcon>
