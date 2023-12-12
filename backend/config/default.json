@@ -47,7 +47,7 @@
   "notifications": {
     "postmark": {
       "sender": {
-        "email": "250degres@gmail.com"
+        "email": "info@250degres.be"
       },
       "key": null
     }
