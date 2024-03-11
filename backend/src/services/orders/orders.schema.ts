@@ -136,7 +136,20 @@ export const orderPatchValidator = getValidator(
   orderPatchSchema,
   dataValidator
 );
-export const orderPatchResolver = resolve<Order, HookContext>({}, {});
+export const orderPatchResolver = resolve<Order, HookContext>({}, {
+  converter: async (data, context) => {
+    // populate delivery and deliveryPlace if updating deliveryOption as admin
+    if (data.deliveryOptionId) {
+      const deliveryOption = await context.app.service('delivery-options').get(data.deliveryOptionId)
+      return {
+        ...data,
+        delivery: deliveryOption.day,
+        deliveryPlace: deliveryOption.place.name
+      };
+    }
+    else return data
+  }
+});
 
 // Schema for code payment
 export const orderPayWithCodeSchema =
