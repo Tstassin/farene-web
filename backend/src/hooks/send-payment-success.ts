@@ -24,7 +24,7 @@ export const sendPaymentSuccess = async (user: User, order: Order, receipt_url?:
     await app.service('notifications').create({
       from: app.get('notifications').postmark.sender.email,
       to: user.email,
-      subject: 'Farène - Votre commande',
+      subject: '250° - Votre commande',
       body: 'Votre commande a bien été reçue'
         + '<br>'
         + '<br>'

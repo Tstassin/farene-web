@@ -11,7 +11,7 @@ export const sendNewAccountEmail = async (user: User) => {
     await app.service('notifications').create({
       from: app.get('notifications').postmark.sender.email,
       to: user.email,
-      subject: 'Farène - Votre compte a été créé ',
+      subject: '250° - Votre compte a été créé ',
       body: 'Vous pouvez maintenant commander du pain chaque semaine'
     })
   } catch (error: any) {

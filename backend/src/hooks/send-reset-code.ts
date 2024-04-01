@@ -8,7 +8,7 @@ export const sendResetCodeEmail = async (user: User) => {
     await app.service('notifications').create({
       from: app.get('notifications').postmark.sender.email,
       to: user.email,
-      subject: 'Farène - Réinitialisation de votre mot de passe',
+      subject: '250° - Réinitialisation de votre mot de passe',
       body: `Utilisez le code suivant pour réinitialiser votre mot de passe : ${user.resetCode}`
     })
   } catch (error: any) {
