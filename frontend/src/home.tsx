@@ -1,4 +1,4 @@
-import { Heading, Text, Link, Box, Alert, AlertIcon } from "@chakra-ui/react";
+import { Heading, Text, Link, Box, Alert, AlertIcon, Divider } from "@chakra-ui/react";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { dayLabel, getNextWeekStart } from "../../backend/src/utils/dates";
@@ -34,6 +34,29 @@ export const Home: React.FC = () => {
         </NotAuthenticated>
       </Box>
       <OrderInstructions />
+      <Divider mt={10} mb={10} />
+      <img src="https://250degres.be/IMG_6124.jpeg" />
+      <Divider mt={10} mb={10} />
+      <p>
+        <b>250 degrés</b> propose un pain au levain, cuit à point
+      </p>
+
+      <p>
+        Préparé, cuit et livré avec soin par Laurence<br />
+        BOULANGÈRE – ARTISANE - INDEPENDANTE
+      </p>
+      <br />
+      <ul>
+        <li>CHASTRE</li>
+        <li>TVA BE0734974740</li>
+        <li>250degres@gmail.com</li>
+      </ul>
+
+      <br />
+      <br />
+      <br />
+
+
     </>
   )
 }

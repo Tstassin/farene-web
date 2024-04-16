@@ -9,13 +9,14 @@ export const OrderInstructions = () => {
   console.log(allDeliveryOptions)
   return (
     <Box>
-      <Heading size={'sm'} mb={3}>Commandez chaque semaine jusque dimanche minuit</Heading>
       <Text mb={6}>
-        Votre commande sera prête pour le mardi suivant.<br />
-        Vous choisissez le point d'enlèvement.<br />
+        <ul>
+          <li>Commandez chaque semaine jusque dimanche minuit</li>
+          <li>Votre commande sera prête pour le mardi suivant</li>
+          <li>Vous choisissez le point d'enlèvement</li>
+        </ul>
       </Text>
-      <Heading size={'md'} mb={3} mt={6}>Collectes en point dépôt mardi prochain</Heading>
-      {/* <Heading size={'sm'} mb={3}>Enlèvement le MARDI</Heading> */}
+      <Heading size={'md'} mb={3} mt={6}>Collectes en point dépôt mardi prochain :</Heading>
       {allDeliveryOptions.data?.map(dO => {
 
         return (

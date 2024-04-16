@@ -24,6 +24,7 @@ import { AdminPage } from './pages/admin-page';
 import { Orders } from './pages/orders';
 import { PlacesPage } from './pages/places';
 import { DeliveryOptionsPage } from './pages/delivery-options';
+import theme from './styles/theme';
 
 export const queryClient = new QueryClient()
 
@@ -110,7 +111,7 @@ const root = createRoot(container!); // createRoot(container!) if you use TypeSc
 root.render(
   <QueryClientProvider client={queryClient}>
     {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <RouterProvider router={router} />
     </ChakraProvider>
   </QueryClientProvider>

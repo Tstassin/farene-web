@@ -55,7 +55,7 @@ export const Order = () => {
     orderCreateMutation.mutate(data)
   };
 
-  const nextWeekLabel = getNextWeekStart()
+  const nextWeekLabel = getNextWeekStart().add(1, 'day')
     .locale(fr).format('dddd DD MMMM YYYY')
 
   if (orderCreateMutation.isSuccess) navigate(`/order/${orderCreateMutation.data.id}/`)
