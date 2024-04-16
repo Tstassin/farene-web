@@ -50,6 +50,7 @@ export const Home: React.FC = () => {
         <li>CHASTRE</li>
         <li>TVA BE0734974740</li>
         <li>250degres@gmail.com</li>
+        <li><Link as={NavLink} to='https://www.facebook.com/profile.php?id=61555972030001'><u>facebook</u></Link></li>
       </ul>
 
       <br />
