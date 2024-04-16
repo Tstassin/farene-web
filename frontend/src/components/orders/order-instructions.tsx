@@ -1,5 +1,5 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons"
-import { Box, Heading, ListItem, Text, UnorderedList } from "@chakra-ui/react"
+import { Alert, AlertIcon, Box, Heading, ListItem, Text, UnorderedList } from "@chakra-ui/react"
 import { dayLabel, decimalTimeLabel } from "../../../../backend/src/utils/dates"
 import { useAllDeliveryOptions, useNextWeekDeliveryOptions } from "../../queries/delivery-options"
 import { DeliveryOptionName } from "../delivery-options/delivery-option-name"
@@ -27,7 +27,10 @@ export const OrderInstructions = () => {
         )
       })}
       {allDeliveryOptions.data?.length === 0 && (
-        <>Il n'y a pas de livraisons prévues la semaine prochaine</>
+        <Alert status="warning" mb={5}>
+          <AlertIcon></AlertIcon>
+          Pas de livraisons prévues la semaine prochaine
+        </Alert>
       )}
 
     </Box >

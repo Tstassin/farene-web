@@ -34,9 +34,13 @@ export const Home: React.FC = () => {
         </NotAuthenticated>
       </Box>
       <OrderInstructions />
-      <Divider mt={10} mb={10} />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
       <img src="https://250degres.be/IMG_6124.jpeg" />
-      <Divider mt={10} mb={10} />
+      <br />
       <p>
         <b>250 degrés</b> propose un pain au levain, cuit à point
       </p>
