@@ -1,14 +1,17 @@
 import { Heading, Text, Link, Box, Alert, AlertIcon } from "@chakra-ui/react";
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { dayLabel, getNextWeekStart } from "../../backend/src/utils/dates";
 import { Authenticated, NotAuthenticated } from "./components/auth/authenticated";
 import { OrderInstructions } from "./components/orders/order-instructions";
+
+const nextMardi = dayLabel(getNextWeekStart().add(1, 'day').toISOString())
 
 export const Home: React.FC = () => {
 
   return (
     <>
-      <Heading mb={5}>Bienvenue<br />Eshop de votre boulangerie 250°</Heading>
+      <Heading mb={5}>Boulangerie 250°</Heading>
       <Box mb={10}>
         {/* <Alert status="info" mb={5}>
           <AlertIcon></AlertIcon>
@@ -17,7 +20,7 @@ export const Home: React.FC = () => {
         </Alert> */}
         <Authenticated>
           <Text fontSize={'xl'}>
-            <Link as={NavLink} to='/order'><u>Commandez</u></Link> du pain pour la semaine prochaine.
+            <Link as={NavLink} to='/order'><u>Commandez</u></Link> du pain pour le {nextMardi}.
           </Text>
         </Authenticated>
         <NotAuthenticated>

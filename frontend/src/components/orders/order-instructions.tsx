@@ -9,26 +9,25 @@ export const OrderInstructions = () => {
   console.log(allDeliveryOptions)
   return (
     <Box>
-      <Heading size={'sm'} mb={3}>Commandes et enlèvement chaque semaine</Heading>
+      <Heading size={'sm'} mb={3}>Commandez chaque semaine jusque dimanche minuit</Heading>
       <Text mb={6}>
-        Les commandes sont ouvertes chaque semaine pour la semaine suivante.<br />
-        Les commandes se clôturent tous les dimanches à minuit.<br />
-        Les commandes peuvent être retirées en points dépôts :
+        Votre commande sera prête pour le mardi suivant.<br />
+        Vous choisissez le point d'enlèvement.<br />
       </Text>
-      <Heading size={'md'} mb={3} mt={6}>Collectes en point dépôt la semaine prochaine</Heading>
+      <Heading size={'md'} mb={3} mt={6}>Collectes en point dépôt mardi prochain</Heading>
       {/* <Heading size={'sm'} mb={3}>Enlèvement le MARDI</Heading> */}
-        {allDeliveryOptions.data?.map(dO => {
+      {allDeliveryOptions.data?.map(dO => {
 
-          return (
-            <Box mb={5}>
+        return (
+          <Box mb={5}>
 
-              <DeliveryOptionName deliveryOption={dO} />
-            </Box>
-          )
-        })}
-        {allDeliveryOptions.data?.length === 0 && (
-          <>Il n'y a pas de livraisons prévues la semaine prochaine</>
-        )}
+            <DeliveryOptionName deliveryOption={dO} />
+          </Box>
+        )
+      })}
+      {allDeliveryOptions.data?.length === 0 && (
+        <>Il n'y a pas de livraisons prévues la semaine prochaine</>
+      )}
 
     </Box >
   )
