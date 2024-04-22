@@ -6,7 +6,7 @@ import { getCategoryMock } from "../categories/categories.mocks";
 import { getProductMock } from "./products.mocks";
 import { cleanAll } from "../../utils/clean-all";
 import { getUserMock } from "../users/users.mocks";
-import { Forbidden } from "@feathersjs/errors/lib";
+import { BadRequest, Forbidden } from "@feathersjs/errors/lib";
 
 describe("products service", () => {
   beforeEach(cleanAll)
@@ -60,7 +60,6 @@ describe("products service", () => {
     const patchedPrice = await app.service('products').patch(product3.id, { price: 2000.233 })
     assert.equal(patchedPrice.price, 2000.23);
     const { createdAt, updatedAt, id, ...updateProductData } = product3
-
     const updatedPrice = await app.service('products').update(product3.id, { ...updateProductData, price: 2000.233 })
     assert.equal(updatedPrice.price, 2000.23);
 
@@ -74,7 +73,6 @@ describe("products service", () => {
       .create(getProductMock(category.id), { user });
     await assert.rejects(createProductFn, (err: Forbidden) => {
       const error = err.toJSON();
-      console.log(error)
       assert.match(err.message, /Error/);
       assert.match(err.name, /Forbidden/);
       assert.strictEqual(err.code, 403);
@@ -83,7 +81,7 @@ describe("products service", () => {
   })
   it("admins can create products", async () => {
     const user = await app.service('users').create(getUserMock())
-    const admin = await app.service('users').patch(user.id, {admin: 1})
+    const admin = await app.service('users').patch(user.id, { admin: 1 })
     const category = await app.service("categories").create(getCategoryMock());
     const productData = getProductMock(category.id);
     const product = await app
@@ -91,6 +89,115 @@ describe("products service", () => {
       .create(getProductMock(category.id), { user: admin });
     assert.ok(product)
   })
+
+  it("cannot create two products with same SKU", async () => {
+    const user = await app.service('users').create(getUserMock())
+    const admin = await app.service('users').patch(user.id, { admin: 1 })
+    const category = await app.service("categories").create(getCategoryMock());
+    const sku = 'SKU'
+    await app
+      .service("products")
+      .create(getProductMock(category.id, { sku }), { user: admin });
+    const product2CreateFn = () => app
+      .service("products")
+      .create(getProductMock(category.id, { sku }), { user: admin });
+    await assert.rejects(product2CreateFn, (err: BadRequest) => {
+      assert.match(err.message, /Error/);
+      assert.match(err.name, /BadRequest/);
+      assert.match(err.data.sku.name, /Forbidden/);
+      assert.match(err.data.sku.message, /Ce code unique de produit est déjà utilisé/);
+      assert.strictEqual(err.code, 400);
+      assert.strictEqual(err.data.sku.code, 403);
+      return true;
+    });
+  })
+
+  it("cannot update a product with an existing sku", async () => {
+    const user = await app.service('users').create(getUserMock())
+    const admin = await app.service('users').patch(user.id, { admin: 1 })
+    const category = await app.service("categories").create(getCategoryMock());
+    const product1 = await app
+      .service("products")
+      .create(getProductMock(category.id), { user: admin });
+    const product2 = await app
+      .service("products")
+      .create(getProductMock(category.id), { user: admin });
+
+    const { id, createdAt, updatedAt, ...updatePayload } = product2
+    updatePayload['sku'] = product1.sku
+
+    const productUpdateFn = () => app
+      .service("products")
+      .update(product2.id, updatePayload, { user: admin });
+
+    await assert.rejects(productUpdateFn, (err: BadRequest) => {
+      assert.match(err.message, /Error/);
+      assert.match(err.name, /BadRequest/);
+      assert.match(err.data.sku.name, /Forbidden/);
+      assert.match(err.data.sku.message, /Ce code unique de produit est déjà utilisé/);
+      assert.strictEqual(err.code, 400);
+      assert.strictEqual(err.data.sku.code, 403);
+      return true;
+    });
+  });
+
+  it("can update a product with it's existing sku", async () => {
+    const user = await app.service('users').create(getUserMock())
+    const admin = await app.service('users').patch(user.id, { admin: 1 })
+    const category = await app.service("categories").create(getCategoryMock());
+    const product = await app
+      .service("products")
+      .create(getProductMock(category.id), { user: admin });
+
+    const { id, createdAt, updatedAt, ...updatePayload } = product
+
+    const updated = await app
+      .service("products")
+      .update(product.id, updatePayload, { user: admin });
+
+    assert.equal(product.sku, updated.sku)
+  });
+
+  it("cannot patch a product with an existing sku", async () => {
+    const user = await app.service('users').create(getUserMock())
+    const admin = await app.service('users').patch(user.id, { admin: 1 })
+    const category = await app.service("categories").create(getCategoryMock());
+    const product1 = await app
+      .service("products")
+      .create(getProductMock(category.id), { user: admin });
+    const product2 = await app
+      .service("products")
+      .create(getProductMock(category.id), { user: admin });
+
+    const productUpdateFn = () => app
+      .service("products")
+      .patch(product2.id, { sku: product1.sku }, { user: admin });
+
+    await assert.rejects(productUpdateFn, (err: BadRequest) => {
+      assert.match(err.message, /Error/);
+      assert.match(err.name, /BadRequest/);
+      assert.match(err.data.sku.name, /Forbidden/);
+      assert.match(err.data.sku.message, /Ce code unique de produit est déjà utilisé/);
+      assert.strictEqual(err.code, 400);
+      assert.strictEqual(err.data.sku.code, 403);
+      return true;
+    });
+  });
+
+  it("can patch a product with it's existing sku", async () => {
+    const user = await app.service('users').create(getUserMock())
+    const admin = await app.service('users').patch(user.id, { admin: 1 })
+    const category = await app.service("categories").create(getCategoryMock());
+    const product = await app
+      .service("products")
+      .create(getProductMock(category.id), { user: admin });
+
+    const patched = await app
+      .service("products")
+      .patch(product.id, { sku: product.sku }, { user: admin });
+
+    assert.equal(product.sku, patched.sku)
+  });
 
   // TODO users cannot / admins can patch/update
 

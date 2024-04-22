@@ -6,6 +6,7 @@ import type { Static } from "@feathersjs/typebox";
 import type { HookContext } from "../../declarations";
 import { dataValidator, queryValidator } from "../../validators";
 import { resourceSchema } from "../common/resources";
+import { BadRequest, Forbidden } from "@feathersjs/errors/lib";
 
 // Main data model schema
 export const productSchema = Type.Intersect([
@@ -44,8 +45,14 @@ export const productDataValidator = getValidator(
   dataValidator
 );
 export const productDataResolver = resolve<Product, HookContext>({
-  price: async newPrice => Math.round(newPrice! * 100) / 100
+  price: async newPrice => Math.round(newPrice! * 100) / 100,
+  sku: async (newSku, data, context) => {
+    const [skuExists] = await context.app.service('products').find({ query: { sku: newSku }, paginate: false })
+    if (skuExists) throw new Forbidden('Ce code unique de produit est déjà utilisé')
+    return newSku
+  }
 });
+
 
 // Schema for patching existing entries
 export const productPatchSchema =
@@ -62,7 +69,12 @@ export const productPatchValidator = getValidator(
   dataValidator
 );
 export const productPatchResolver = resolve<Product, HookContext>({
-  price: async (newPrice, data) => newPrice ? Math.round(newPrice * 100) / 100 : data.price
+  price: async (newPrice, data) => newPrice ? Math.round(newPrice * 100) / 100 : data.price,
+  sku: async (newSku, data, context) => {
+    if (newSku === undefined) return undefined
+    const [skuExists] = await context.app.service('products').find({ query: { sku: newSku }, paginate: false })
+    if (skuExists && skuExists.id + '' !== context.id + '') throw new Forbidden('Ce code unique de produit est déjà utilisé')
+  }
 });
 
 // Schema for updating existing entries
@@ -79,7 +91,12 @@ export const productUpdateValidator = getValidator(
   dataValidator
 );
 export const productUpdateResolver = resolve<Product, HookContext>({
-  price: async newPrice =>  Math.round(newPrice! * 100) / 100 
+  price: async newPrice => Math.round(newPrice! * 100) / 100,
+  sku: async (newSku, data, context) => {
+    const [skuExists] = await context.app.service('products').find({ query: { sku: newSku }, paginate: false })
+    if (skuExists && skuExists.id + '' !== context.id + '') throw new Forbidden('Ce code unique de produit est déjà utilisé')
+    return newSku
+  }
 });
 
 // Schema for allowed query properties

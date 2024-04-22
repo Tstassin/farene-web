@@ -23,7 +23,7 @@ export const UpdateOrder = ({ id }: { id: Order['id'] }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <OrderEditComponent form={form} />
         <Box>
-          <RequestButton status={orderDeliveryDateMutation.status} type="submit">Mettre à jour</RequestButton>
+          <RequestButton query={orderDeliveryDateMutation} type="submit">Mettre à jour</RequestButton>
         </Box>
       </form>
     </>

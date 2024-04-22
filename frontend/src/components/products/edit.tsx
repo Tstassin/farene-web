@@ -26,8 +26,6 @@ export const ProductEditComponent = ({ form }: ProductEditComponentProps) => {
         <FormLabel>Code unique</FormLabel>
         <Input
           type='text'
-          // Disable frontend editing of sku, it's too tied to "uniqueness"
-          disabled={Boolean(form.formState.defaultValues?.sku)}
           {...register('sku', {
             required: 'Ce champ est obligatoire'
           })}

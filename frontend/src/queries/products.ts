@@ -1,3 +1,4 @@
+import { FeathersError } from "@feathersjs/errors/lib"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { queryClient } from ".."
 import { OrderQuery } from "../../../backend/src/services/orders/orders.schema"

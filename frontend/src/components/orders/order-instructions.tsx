@@ -6,7 +6,6 @@ import { DeliveryOptionName } from "../delivery-options/delivery-option-name"
 
 export const OrderInstructions = () => {
   const allDeliveryOptions = useNextWeekDeliveryOptions()
-  console.log(allDeliveryOptions)
   return (
     <Box>
       <Text mb={6}>

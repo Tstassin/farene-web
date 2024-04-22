@@ -12,7 +12,7 @@ export const ProductsList = () => {
   const productRemoveMutation = useProductRemoveMutation()
   const [showUpdateModalValue, setShowUpdateModalValue] = useState<Product['id']>()
   const currentProductQuery = useProduct(showUpdateModalValue)
-  
+
   return (
     <QueryStatus query={allProductsQuery}>
       <ul>
@@ -28,12 +28,12 @@ export const ProductsList = () => {
         <ModalOverlay />
         <ModalContent>
           <QueryStatus query={currentProductQuery}>
-          <ModalHeader>Produit: { currentProductQuery.data?.name}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {currentProductQuery.isSuccess && <UpdateProduct id={currentProductQuery.data.id} />}
-          </ModalBody>
-          <ModalFooter />
+            <ModalHeader>Produit: {currentProductQuery.data?.name}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              {currentProductQuery.isSuccess && <UpdateProduct id={currentProductQuery.data.id} />}
+            </ModalBody>
+            <ModalFooter />
           </QueryStatus>
         </ModalContent>
       </Modal>

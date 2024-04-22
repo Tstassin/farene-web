@@ -20,7 +20,7 @@ export const CreatePlace = () => {
         <>
           <PlaceEditComponent form={form} />
           <Box>
-            <RequestButton status={categoryCreateMutation.status} type="submit">Ajouter</RequestButton>
+            <RequestButton query={categoryCreateMutation} type="submit">Ajouter</RequestButton>
           </Box>
         </>
       </form>

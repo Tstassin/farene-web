@@ -11,7 +11,6 @@ export const PlacesList = () => {
   const placeRemoveMutation = usePlaceRemoveMutation()
   const [showUpdateModalValue, setShowUpdateModalValue] = useState<Place['id']>()
   const currentPlaceQuery = usePlace(showUpdateModalValue)
-  { console.log(allPlacesQuery) }
   return (
     <QueryStatus query={allPlacesQuery}>
       <ul>

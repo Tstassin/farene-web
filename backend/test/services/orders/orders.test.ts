@@ -101,10 +101,8 @@ describe("orders service", () => {
       useBaseOrderMocks()
       it('On PATCH', async () => {
         const newDeliveryOption = await app.service('delivery-options').create({ ...(await getDeliveryOptionMock(place)), day: dayjs().add(5, "day").format(isoDateFormat) })
-        console.log({newDeliveryOption})
         const order = await app.service("orders").create(orderData, { user });
         const updatedDeliveryOption = await app.service('orders').patch(order.id, { deliveryOptionId: newDeliveryOption.id }, { user: admin })
-        console.log({updatedDeliveryOption})
         assert.equal(newDeliveryOption.id, updatedDeliveryOption.deliveryOptionId)
       })
     })
@@ -179,7 +177,7 @@ describe("orders service", () => {
     describe('Ordered products cannot be disabled products', () => {
       useBaseOrderMocks()
       it('On create', async () => {
-        const disabledProduct = await app.service('products').create(getProductMock(category.id, { disabled: 1 }))
+        const disabledProduct = await app.service('products').create(getProductMock(category.id, {sku: 'DISABLED', disabled: 1 }))
         const orderFn = () => app.service("orders").create({
           ...orderData,
           orderItems: [

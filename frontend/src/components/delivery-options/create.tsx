@@ -14,25 +14,14 @@ export const CreateDeliveryOption = () => {
   const onSubmit = async (values: DeliveryOptionData) => {
     deliveryOptionCreateMutation.mutate(values)
   };
-
-  if (deliveryOptionCreateMutation.isError) {
-    console.log(deliveryOptionCreateMutation.error)
-    console.log((deliveryOptionCreateMutation.error as FeathersErrorJSON).className)
-    console.log((deliveryOptionCreateMutation.error as FeathersErrorJSON).code)
-    console.log((deliveryOptionCreateMutation.error as FeathersErrorJSON).data)
-    console.log((deliveryOptionCreateMutation.error as FeathersErrorJSON).data.message)
-    console.log((deliveryOptionCreateMutation.error as FeathersErrorJSON).errors)
-    console.log((deliveryOptionCreateMutation.error as FeathersErrorJSON).message)
-    console.log((deliveryOptionCreateMutation.error as FeathersErrorJSON).name)
-  }
-
+  
   return (
     <Container>
       <form onSubmit={handleSubmit(onSubmit)}>
         <>
           <DeliveryOptionEditComponent form={form} />
           <Box>
-            <RequestButton status={deliveryOptionCreateMutation.status} type="submit">Ajouter</RequestButton>
+            <RequestButton query={deliveryOptionCreateMutation} type="submit">Ajouter</RequestButton>
           </Box>
         </>
       </form>

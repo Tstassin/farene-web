@@ -51,7 +51,6 @@ export const Order = () => {
       orderItems,
       deliveryOptionId: parseInt(deliveryOptionId.toString())
     }
-    console.log(orderCreateMutation)
     orderCreateMutation.mutate(data)
   };
 
@@ -145,7 +144,7 @@ export const Order = () => {
               <br />
               <br />
               <Box textAlign='right'>
-                <RequestButton status={orderCreateMutation.status} type="submit">Valider et Payer</RequestButton>
+                <RequestButton query={orderCreateMutation} type="submit">Valider et Payer</RequestButton>
               </Box>
             </>
           </form>

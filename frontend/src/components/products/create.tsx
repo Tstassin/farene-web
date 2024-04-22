@@ -6,6 +6,7 @@ import { ProductEditComponent } from "./edit";
 
 export const CreateProduct = () => {
   const productCreateMutation = useProductCreateMutation()
+  const errors = productCreateMutation.error
   const form = useForm<ProductData>();
   const { handleSubmit } = form
 

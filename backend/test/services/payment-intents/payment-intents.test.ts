@@ -107,7 +107,6 @@ describe("payment-intent service", () => {
       const paymentIntentCreateFn = () => app.service('payment-intent').create({ orderId: order.id }, {})
       await assert.rejects(paymentIntentCreateFn, (err: BadRequest) => {
         const error = err.toJSON();
-        console.log(error)
         assert.match(err.message, /order is outdated please make a new order/);
         assert.strictEqual(err.code, 400);
         return true;
@@ -118,15 +117,8 @@ describe("payment-intent service", () => {
   describe('GET a paymentIntent', async () => {
     useMocks()
     it('doesnt return a payment intent to a user for an order which is outdated', async () => {
-      console.log(mockStripePaymentIntentsGet)
       const paymentIntent = await app.service('payment-intent').create({ orderId: order.id }, {})
       const updatedOrder = await app.service('orders').Model.table('orders').where({ id: order.id }).update({ delivery: pastWeekDeliveryDate })
-      console.log('will get')
-      console.log('will get')
-      console.log('will get')
-      console.log('will get')
-      console.log('will get')
-      console.log('will get')
       const paymentIntentGetFn = () => app.service('payment-intent').get(paymentIntent.id)
       await assert.rejects(paymentIntentGetFn, (err: BadRequest) => {
         const error = err.toJSON();

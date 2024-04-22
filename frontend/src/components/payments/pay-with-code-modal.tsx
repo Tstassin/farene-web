@@ -45,7 +45,7 @@ export const PayWithCodeModal = ({ orderId, isOpen, closeAction }: PayWithCodeMo
                 {errors.code?.message}
               </FormErrorMessage>
             </FormControl>
-            <RequestButton status={orderPayWithCodeMutation.status} type="submit" colorScheme={"blue"}>
+            <RequestButton query={orderPayWithCodeMutation} type="submit" colorScheme={"blue"}>
               Payer
             </RequestButton>
           </form>

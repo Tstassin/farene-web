@@ -21,7 +21,7 @@ export const UpdatePlace = ({ id }: { id: Place['id'] }) => {
         <>
           <PlaceEditComponent form={form} />
           <Box>
-            <RequestButton status={placeUpdateMutation.status} type="submit">Mettre à jour</RequestButton>
+            <RequestButton query={placeUpdateMutation} type="submit">Mettre à jour</RequestButton>
           </Box>
         </>
       </form>

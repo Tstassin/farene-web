@@ -22,7 +22,7 @@ export const UpdateDeliveryOption = ({ id }: { id: DeliveryOption['id'] }) => {
         <>
           <DeliveryOptionEditComponent form={form} />
           <Box>
-            <RequestButton status={deliveryOptionUpdateMutation.status} type="submit">Mettre à jour</RequestButton>
+            <RequestButton query={deliveryOptionUpdateMutation} type="submit">Mettre à jour</RequestButton>
           </Box>
         </>
       </form>

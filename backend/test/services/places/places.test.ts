@@ -37,9 +37,7 @@ describe('places service', () => {
     })
     it('Doesnt allow the same name to be duplicated', async () => {
       const service = app.service('places')
-      console.log('created')
       await service.create({ name: 'OFFBar', description: 'Rue Emile Franqui 6, 1435 Mont-Saint-Guibert' })
-      console.log('created')
       const createFn = () => service.create({...placeMock})
       await assertRejects(createFn, BadRequest, "A place with the same name already exists")
     })

@@ -21,7 +21,7 @@ export const UpdateCategory = ({ id }: { id: CategoryUpdate['id'] }) => {
         <>
           <CategoryEditComponent form={form} />
           <Box>
-            <RequestButton status={categoryUpdateMutation.status} type="submit">Mettre à jour</RequestButton>
+            <RequestButton query={categoryUpdateMutation} type="submit">Mettre à jour</RequestButton>
           </Box>
         </>
       </form>
