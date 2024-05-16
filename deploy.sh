@@ -33,7 +33,7 @@ sqlite3 backend/backend.sqlite ".backup '/home/thomas/backups/farene-web-backups
 cd backend
 npm run compile
 npm run migrate
-pm2 restart api.farene.be --update-env
+pm2 restart api.250degres.be --update-env
 cd ..
 
 # Deploy frontend

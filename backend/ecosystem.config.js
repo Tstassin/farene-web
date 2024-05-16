@@ -1,6 +1,6 @@
 module.exports = {
   apps : [{
-    name   : "api.farene.be",
+    name   : "api.250degres.be",
     script : "npm run start",
     instance_var: 'INSTANCE_ID',
     env: {
