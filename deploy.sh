@@ -34,6 +34,7 @@ cd backend
 npm run compile
 npm run migrate
 pm2 restart api.250degres.be --update-env
+pm2 save
 cd ..
 
 # Deploy frontend
