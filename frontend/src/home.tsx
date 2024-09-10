@@ -13,16 +13,11 @@ export const Home: React.FC = () => {
     <>
       <Heading mb={5}>Boulangerie 250°</Heading>
       <Box mb={10}>
-        <Alert status="info" mb={5}>
+        {/* <Alert status="info" mb={5}>
           <AlertIcon></AlertIcon>
-          Bientôt les vacances. Faites vos réserves cette semaine et commandez pour le mardi 9 juillet.<br />
-          <br />
-          🌞 Fermeture estivale du 15 juillet au 20 août inclus🌞 <br />
-          Prochaine fournée le mardi 27 août.<br />
-          (l’ouverture des commandes se fera le lundi 19 août)<br />
-          <br />
-          Bel été à toustes!
-        </Alert>
+          250° est partiellement en congés.<br />
+          Vous pouvez commander cette semaine pour le Mardi 16 Mai.
+        </Alert> */}
         <Authenticated>
           <Text fontSize={'xl'}>
             <Link as={NavLink} to='/order'><u>Commandez</u></Link> du pain pour le {nextMardi}.
