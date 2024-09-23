@@ -1,11 +1,10 @@
-import { Heading, Text, Link, Box, Alert, AlertIcon, Divider } from "@chakra-ui/react";
+import { Heading, Text, Link, Box } from "@chakra-ui/react";
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { dayLabel, getNextWeekStart } from "../../backend/src/utils/dates";
-import { Authenticated, NotAuthenticated } from "./components/auth/authenticated";
-import { OrderInstructions } from "./components/orders/order-instructions";
-
-const nextMardi = dayLabel(getNextWeekStart().add(1, 'day').toISOString())
+import { NotAuthenticated } from "./components/auth/authenticated";
+import { DeliveryOptions } from "./components/delivery-options/delivery-options";
+// @ts-expect-error
+import * as image from './images/IMG_6124.jpeg'
 
 export const Home: React.FC = () => {
 
@@ -18,28 +17,24 @@ export const Home: React.FC = () => {
           250° est partiellement en congés.<br />
           Vous pouvez commander cette semaine pour le Mardi 16 Mai.
         </Alert> */}
-        <Authenticated>
-          <Text fontSize={'xl'}>
-            <Link as={NavLink} to='/order'><u>Commandez</u></Link> du pain pour le {nextMardi}.
-          </Text>
-        </Authenticated>
+        <Text fontSize={'xl'}>Commandez votre pain jusque dimanche minuit</Text>
+        <Text fontSize={'xl'}>Récupérez le à partir de mardi</Text>
         <NotAuthenticated>
           <>
-            <Text fontSize={'xl'}>
+            <Text fontSize={'l'} mt={5}>
               <Link as={NavLink} to='/register'><u>Créez un compte</u></Link> pour commander et payer en ligne.<br />
               <Link as={NavLink} to='/login'><u>Connectez-vous</u></Link> si vous avez déjà un compte.
               <br />
             </Text>
           </>
         </NotAuthenticated>
+
+        <Heading size={'md'} mb={3} mt={6}>Points dépôt disponibles :</Heading>
+        <DeliveryOptions />
       </Box>
-      <OrderInstructions />
       <br />
+      <img src={image} />
       <br />
-      <br />
-      <br />
-      <br />
-      <img src="https://250degres.be/IMG_6124.jpeg" />
       <br />
       <p>
         <b>250 degrés</b> propose un pain au levain, cuit à point
@@ -60,7 +55,6 @@ export const Home: React.FC = () => {
       <br />
       <br />
       <br />
-
 
     </>
   )

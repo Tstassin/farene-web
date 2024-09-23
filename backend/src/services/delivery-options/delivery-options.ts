@@ -34,9 +34,24 @@ export const deliveryOption = (app: Application) => {
   app.service(deliveryOptionPath).hooks({
     around: {
       all: [
-        authenticate('jwt'),
         schemaHooks.resolveExternal(deliveryOptionExternalResolver),
         schemaHooks.resolveResult(deliveryOptionResolver)
+      ],
+      find: [],
+      get: [
+        authenticate('jwt'),
+      ],
+      create: [
+        authenticate('jwt'),
+      ],
+      patch: [
+        authenticate('jwt'),
+      ],
+      update: [
+        authenticate('jwt'),
+      ],
+      remove: [
+        authenticate('jwt'),
       ]
     },
     before: {
@@ -54,6 +69,7 @@ export const deliveryOption = (app: Application) => {
         schemaHooks.validateData(deliveryOptionPatchValidator),
         schemaHooks.resolveData(deliveryOptionPatchResolver)
       ],
+      update: [],
       remove: []
     },
     after: {

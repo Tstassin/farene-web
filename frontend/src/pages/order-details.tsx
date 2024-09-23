@@ -13,7 +13,7 @@ import { useState } from "react";
 import { PayWithCodeModal } from "../components/payments/pay-with-code-modal";
 import { FeathersError } from "@feathersjs/errors/lib";
 import { eur, mult } from "../../../shared/prices";
-import { DeliveryOptionName } from "../components/delivery-options/delivery-option-name";
+import { DeliveryOptionItem } from "../components/delivery-options/delivery-options";
 
 let stripePromise: Promise<Stripe | null>
 if (process.env.NODE_ENV === 'development') {
@@ -48,7 +48,7 @@ export const OrderDetailsPage = () => {
         <Heading mb={5}>Commande numéro {orderQuery.data?.id}</Heading>
         <Text fontSize={'xl'} mb={10}>
 
-        {orderQuery.data?.deliveryOption && <DeliveryOptionName deliveryOption={orderQuery.data?.deliveryOption} />}
+        {orderQuery.data?.deliveryOption && <DeliveryOptionItem deliveryOption={orderQuery.data?.deliveryOption} />}
         </Text>
 
         <Text fontSize={'xl'} mb={5}>

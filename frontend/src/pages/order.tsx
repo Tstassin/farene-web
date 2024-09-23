@@ -17,6 +17,7 @@ import { QuestionOutlineIcon } from "@chakra-ui/icons";
 import { eur, mult } from "../../../shared/prices";
 import { useNextWeekDeliveryOptions } from "../queries/delivery-options";
 import { getNextWeekStart } from "../../../backend/src/utils/dates";
+import { DeliveryOptions } from "../components/delivery-options/delivery-options";
 dayjs.extend(localeData)
 
 export const Order = () => {
@@ -74,9 +75,9 @@ export const Order = () => {
             <>
               <FormControl mb={5} isInvalid={Boolean(errors.deliveryOptionId)} isRequired>
                 <FormLabel>
-                  <Heading size={'md'} mb={3} display='inline'>Enlèvement</Heading>
+                  <Heading size={'md'} mb={3} display='inline'>Point dépôt pour enlèvement :</Heading>
                 </FormLabel>
-                <RadioGroup>
+                <RadioGroup mt={3}>
                   <Stack spacing={3}>
                     {nextWeekDeliveryOptions?.map(
                       ({ day, place: { name }, id }) => (
@@ -102,18 +103,21 @@ export const Order = () => {
                 <AccordionItem>
                   <h2>
                     <AccordionButton>
-                      <Box as="span" flex='1' textAlign='left'>
+                    <Box as="span" flex='1' textAlign='left'>
                         <HStack>
 
-                          <QuestionOutlineIcon /> <Text>Informations de commande et enlèvement</Text>
+                          <QuestionOutlineIcon /> <Text>Informations points dépôt</Text>
                         </HStack>
                       </Box>
                       <AccordionIcon />
                     </AccordionButton>
                   </h2>
-                  <AccordionPanel pb={4} mb={0}><OrderInstructions /></AccordionPanel>
+                  <AccordionPanel pb={4} mb={0}>
+                    <DeliveryOptions />
+                  </AccordionPanel>
                 </AccordionItem>
               </Accordion>
+
               <FormControl isRequired mt={10} isInvalid={Boolean(errors.orderItems?.root?.type === 'required')}>
                 <FormLabel>
                   <Heading size={'lg'} mb={3} display='inline'>Votre Commande</Heading>

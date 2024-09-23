@@ -1,8 +1,5 @@
-import { ArrowForwardIcon } from "@chakra-ui/icons"
-import { Alert, AlertIcon, Box, Heading, ListItem, Text, UnorderedList } from "@chakra-ui/react"
-import { dayLabel, decimalTimeLabel } from "../../../../backend/src/utils/dates"
-import { useAllDeliveryOptions, useNextWeekDeliveryOptions } from "../../queries/delivery-options"
-import { DeliveryOptionName } from "../delivery-options/delivery-option-name"
+import { Box, Text } from "@chakra-ui/react"
+import { useNextWeekDeliveryOptions } from "../../queries/delivery-options"
 
 export const OrderInstructions = () => {
   const allDeliveryOptions = useNextWeekDeliveryOptions()
@@ -10,28 +7,10 @@ export const OrderInstructions = () => {
     <Box>
       <Text mb={6}>
         <ul>
-          <li>Commandez chaque semaine jusque dimanche minuit</li>
-          <li>Votre commande sera prête pour le mardi suivant</li>
-          <li>Vous choisissez le point d'enlèvement</li>
+          <li>Commandez votre pain jusque dimanche minuit</li>
+          <li>Récupérez le à partir de mardi</li>
         </ul>
       </Text>
-      <Heading size={'md'} mb={3} mt={6}>Collectes en point dépôt mardi prochain :</Heading>
-      {allDeliveryOptions.data?.map(dO => {
-
-        return (
-          <Box mb={5}>
-
-            <DeliveryOptionName deliveryOption={dO} />
-          </Box>
-        )
-      })}
-      {allDeliveryOptions.data?.length === 0 && (
-        <Alert status="warning" mb={5}>
-          <AlertIcon></AlertIcon>
-          Pas de livraisons prévues la semaine prochaine
-        </Alert>
-      )}
-
     </Box >
   )
 }
