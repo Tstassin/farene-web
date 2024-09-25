@@ -45,6 +45,18 @@ export const useProductUpdateMutation = () => {
   })
 }
 
+export const useProductPatchMutation = () => {
+  return useMutation({
+    mutationFn: (values: { id: Product['id'] } & ProductPatch) => {
+      const { id, ...data } = values
+      return client.service('products').patch(id, data)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['products'])
+    }
+  })
+}
+
 export const useProductRemoveMutation = () => {
   return useMutation({
     mutationFn: (id: Product['id']) => {

@@ -1,4 +1,4 @@
-import { Box, Container, Heading, Text } from "@chakra-ui/react";
+import { Box,  Heading } from "@chakra-ui/react";
 import { CreateProduct } from "../components/products/create";
 import { ProductsList } from "../components/products/list";
 import { useAllProducts } from "../queries/products";

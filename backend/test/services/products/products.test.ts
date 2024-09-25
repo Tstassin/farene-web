@@ -199,6 +199,30 @@ describe("products service", () => {
     assert.equal(product.sku, patched.sku)
   });
 
+  it("returns products using sortOrder $sort by default", async () => {
+    const user = await app.service('users').create(getUserMock())
+    const admin = await app.service('users').patch(user.id, { admin: 1 })
+    const category = await app.service("categories").create(getCategoryMock());
+    const product1 = await app
+      .service("products")
+      .create(getProductMock(category.id), { user: admin });
+    await app
+      .service("products")
+      .patch(product1.id, { sortOrder: 1 }, { user: admin });
+    const product2 = await app
+      .service("products")
+      .create(getProductMock(category.id), { user: admin });
+    await app
+      .service("products")
+      .patch(product2.id, { sortOrder: 0 }, { user: admin });
+
+    const products = await app.service('products').find({ paginate: false })
+    assert.equal(products[0].id, product2.id)
+    assert.equal(products[0].sortOrder, 0)
+    assert.equal(products[1].id, product1.id)
+    assert.equal(products[1].sortOrder, 1)
+  });
+
   // TODO users cannot / admins can patch/update
 
 });

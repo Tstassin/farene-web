@@ -19,7 +19,8 @@ export const productSchema = Type.Intersect([
       weight: Type.Number(),
       categoryId: Type.Number(),
       sku: Type.String(),
-      disabled: Type.Integer({ default: 0, minimum: 0, maximum: 1 })
+      disabled: Type.Integer({ default: 0, minimum: 0, maximum: 1 }),
+      sortOrder: Type.Integer({ default: 0 })
     },
     { $id: "Product", additionalProperties: false }
   ),
@@ -57,7 +58,7 @@ export const productDataResolver = resolve<Product, HookContext>({
 // Schema for patching existing entries
 export const productPatchSchema =
   Type.Partial(
-    Type.Pick(productSchema, ['name', 'description', 'price', 'weight', 'categoryId', 'sku', 'disabled']),
+    Type.Pick(productSchema, ['name', 'description', 'price', 'weight', 'categoryId', 'sku', 'disabled', 'sortOrder']),
     {
       $id: "ProductPatch",
       additionalProperties: false
@@ -80,7 +81,7 @@ export const productPatchResolver = resolve<Product, HookContext>({
 // Schema for updating existing entries
 export const productUpdateSchema = Type.Pick(
   productSchema,
-  ['name', 'description', 'price', 'weight', 'categoryId', 'sku', 'disabled'],
+  ['name', 'description', 'price', 'weight', 'categoryId', 'sku', 'disabled', 'sortOrder'],
   {
     $id: "ProductUpdate", additionalProperties: false
   }
@@ -105,7 +106,8 @@ export const productQueryProperties = Type.Pick(productSchema, [
   "name",
   "categoryId",
   "sku",
-  "disabled"
+  "disabled",
+  "sortOrder"
 ]);
 export const productQuerySchema = Type.Intersect(
   [
@@ -120,4 +122,6 @@ export const productQueryValidator = getValidator(
   productQuerySchema,
   queryValidator
 );
-export const productQueryResolver = resolve<ProductQuery, HookContext>({});
+export const productQueryResolver = resolve<ProductQuery, HookContext>({
+  $sort: async value => value ? value : ({ sortOrder: 1 })
+});
