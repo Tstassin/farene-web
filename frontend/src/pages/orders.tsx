@@ -8,7 +8,7 @@ import { useOrders, useOrdersSummary } from "../queries/orders";
 
 
 export const Orders = () => {
-  const [week, onChange] = useWeekSelector()
+  const { week, onChange, weeksISO } = useWeekSelector()
   const weekDateLabel = week ? dayLabel(week) : ''
   const ordersQueryPayload = { paymentSuccess: 1, delivery: { $gte: week, $lte: dayjs(week).add(1, 'week').format(isoDateFormat) } }
   const ordersQuery = useOrders(ordersQueryPayload, Boolean(week))
@@ -22,7 +22,7 @@ export const Orders = () => {
       <Box mb={10}>
         <FormControl>
           <FormLabel>Choisir le semaine de livraison</FormLabel>
-          <WeekSelector value={week} onChange={onChange} />
+          <WeekSelector value={week} onChange={onChange} weeksISO={weeksISO} />
         </FormControl>
       </Box>
       <Box mb={10}>

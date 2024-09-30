@@ -32,9 +32,9 @@ export const useOrder = (id?: Order['id']) => {
   })
 }
 
-export const useOrdersExport = () => {
+export const useOrdersExport = ({ $gte, $lte }: { $gte: string, $lte: string }) => {
   return useMutation({
-    mutationFn: () => client.service('orders').exportOrders(),
+    mutationFn: () => client.service('orders').exportOrders({ $gte, $lte }),
   })
 }
 

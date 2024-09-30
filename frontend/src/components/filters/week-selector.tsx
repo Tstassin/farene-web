@@ -5,18 +5,13 @@ import { dayLabel, getNextWeekStart, isoDate } from "../../../../backend/src/uti
 interface WeekSelectorProps {
   onChange: React.ChangeEventHandler<HTMLSelectElement>
   value: string
+  weeksISO: string[]
 }
-export const WeekSelector = ({ onChange, value }: WeekSelectorProps) => {
-  const nextWeek = getNextWeekStart()
-  const weeksISO = [
-    isoDate(nextWeek.subtract(3, 'weeks')),
-    isoDate(nextWeek.subtract(2, 'weeks')),
-    isoDate(nextWeek.subtract(1, 'weeks')),
-    isoDate(nextWeek),
-  ]
+export const WeekSelector = ({ onChange, value, weeksISO }: WeekSelectorProps) => {
+  
 
   return (
-    <Select onChange={onChange} value={value} defaultValue={isoDate(nextWeek)}>
+    <Select onChange={onChange} value={value} defaultValue={value}>
       {
         weeksISO.map(
           (week) => {
@@ -33,10 +28,16 @@ export const WeekSelector = ({ onChange, value }: WeekSelectorProps) => {
 }
 
 export const useWeekSelector = () => {
-  const [week, setWeek] = useState<'thisWeek' | 'previousWeek' | 'nextWeek'>('thisWeek')
+  const nextWeek = getNextWeekStart()
+  const weeksISO = [
+    isoDate(nextWeek.subtract(3, 'weeks')),
+    isoDate(nextWeek.subtract(2, 'weeks')),
+    isoDate(nextWeek.subtract(1, 'weeks')),
+    isoDate(nextWeek),
+  ]
+  const [week, setWeek] = useState(weeksISO[weeksISO.length - 1])
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    //@ts-expect-error, e.target.value is narrowed to a string
     setWeek(e.target.value)
   }
-  return [week, onChange, setWeek] as const
+  return {week, onChange, setWeek, weeksISO} as const
 }
