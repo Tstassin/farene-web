@@ -21,9 +21,13 @@ import { sqlite } from "./sqlite";
 import { authentication } from "./authentication";
 import { services } from "./services/index";
 import { channels } from "./channels";
+import koaQs from 'koa-qs'
 
 const app: Application = koa(feathers());
-
+koaQs(app, 'extended',
+  //@ts-expect-error
+  { arrayLimit: 1000 }
+)
 // Load our app configuration (see config/ folder)
 app.configure(configuration(configurationValidator));
 
