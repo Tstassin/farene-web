@@ -6,7 +6,7 @@ import { client } from "../../../api/api";
 export const Register = () => {
   const navigate = useNavigate()
 
-  const { handleSubmit, register, formState: { errors } } = useForm();
+  const { handleSubmit, register, formState: { errors } } = useForm<{ email: string, password: string }>();
   const onSubmit = async (values: { email: string, password: string }) => {
     await client.service('users').create(values)
     await client.authenticate({

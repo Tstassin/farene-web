@@ -5,3 +5,4 @@ backend/lib/
 *.sqlite
 .env*
 !.env.example
+backend/public/assets/*

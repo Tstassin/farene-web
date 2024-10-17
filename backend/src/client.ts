@@ -4,6 +4,9 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { assetClient } from './services/assets/assets.shared'
+export type { Asset, AssetData, AssetQuery, AssetPatch } from './services/assets/assets.shared'
+
 import { deliveryOptionClient } from './services/delivery-options/delivery-options.shared'
 export type {
   DeliveryOption,
@@ -73,5 +76,6 @@ export const createClient = <Configuration = any>(
   client.configure(stripeWebhooksClient)
   client.configure(placeClient)
   client.configure(deliveryOptionClient)
+  client.configure(assetClient)
   return client
 }

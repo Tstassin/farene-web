@@ -1,4 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { queryClient } from ".."
+import { AuthenticationResult } from "../../../backend/src/client"
 import { User, UserQuery } from "../../../backend/src/services/users/users.schema"
 import { client } from "../../api/api"
 
@@ -35,4 +37,9 @@ export const useChangePasswordMutation = () => {
   return useMutation({
     mutationFn: ({ email, resetCode, password }: { email: string, resetCode: number, password: string }) => client.service('users').changePassword({ email, resetCode, password })
   })
+}
+
+export const getAuthentication = () => {
+
+  return queryClient.getQueryData<AuthenticationResult>(['authentication'])
 }

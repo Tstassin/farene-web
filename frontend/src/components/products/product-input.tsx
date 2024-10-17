@@ -1,8 +1,9 @@
-import { Box, Button, Collapse, Divider, Input, InputGroup, InputRightAddon, Slide, Text, useDisclosure } from "@chakra-ui/react"
+import { Box, Button, Center, Collapse, Divider, Flex, Input, InputGroup, InputRightAddon, Slide, Stack, Text, useDisclosure } from "@chakra-ui/react"
 import { UseFieldArrayAppend, UseFieldArrayRemove, UseFieldArrayReturn, useFormContext, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form"
 import { OrderData } from "../../../../backend/src/services/orders/orders.schema"
 import { Product } from "../../../../backend/src/services/products/products.schema"
-import { eur, mult, price } from "../../../../shared/prices"
+import { eur, mult } from "../../../../shared/prices"
+import { ProductImage } from "../image"
 
 interface OrderInputProps {
   product: Product
@@ -59,9 +60,14 @@ export const ProductInput = ({ product, fieldArray }: OrderInputProps) => {
           </Box>
         </Box>
         <Collapse in={isOpen} animateOpacity>
-          <Box pb={5}>
-            {product.description}
-          </Box>
+          <Stack mb={10} mr={3} ml={3}>
+            <Box pb={5}>
+              {product.description}
+            </Box>
+            <Center>
+              <ProductImage id={product.id} maxSize={250} />
+            </Center>
+          </Stack>
         </Collapse>
       </Box>
       <Divider />
@@ -76,16 +82,21 @@ interface ProductInputDetailsProps {
 
 const ProductInputDetails = ({ product, onToggle }: ProductInputDetailsProps) => {
   return (
-    <Box display='flex' flexDirection='column' mr={3}>
-      <Text as='b' fontSize={'md'}>
-        {product.name}
-      </Text>
-      <Text>Poid: {product.weight}g</Text>
-      <Text>Prix: {eur(product.price)}</Text>
-      <Box my={3}>
-        <Button variant='outline' onClick={onToggle} size='xs' mr={1} flexGrow={0}>Détails</Button>
+    <Flex>
+      <Box mt={1}>
+        <ProductImage id={product.id} maxSize={65} />
       </Box>
-    </Box>
+      <Box display='flex' flexDirection='column' mr={3} ml={3}>
+        <Text as='b' fontSize={'md'}>
+          {product.name}
+        </Text>
+        <Text>Poid: {product.weight}g</Text>
+        <Text>Prix: {eur(product.price)}</Text>
+        <Box my={3}>
+          <Button variant='outline' onClick={onToggle} size='xs' mr={1} flexGrow={0}>Détails</Button>
+        </Box>
+      </Box>
+    </Flex>
   )
 }
 

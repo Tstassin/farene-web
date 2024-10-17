@@ -8,13 +8,13 @@ import { ProductEditComponent } from "./edit";
 export const UpdateProduct = ({ id }: { id: Product['id'] }) => {
   const productUpdateMutation = useProductUpdateMutation()
   const currentProductQuery = useProduct(id)
-  const { createdAt, updatedAt, ...defaultValues } = currentProductQuery.data ?? {}
+  const { createdAt, updatedAt, sortOrder, ...defaultValues } = currentProductQuery.data ?? {}
 
   const form = useForm<ProductData>({ defaultValues });
   const { handleSubmit } = form
 
   const onSubmit = async (values: ProductData) => {
-    productUpdateMutation.mutate({ ...values, id })
+    productUpdateMutation.mutate({ ...values, sortOrder: sortOrder ?? 0, id })
   };
 
   return (

@@ -68,11 +68,3 @@ app.hooks({
 });
 
 export { app };
-
-/* app.service('users').find({ query: { $or: [{ admin: 1 }, { email: 'admin@farene.be' }] }, paginate: false })
-  .then(async admins => {
-    if (admins.length === 0) {
-      const defaultAdmin = await app.service('users').create({ email: 'admin@farene.be', password: 'microboulangerie' })
-      app.service('users').patch(defaultAdmin.id, { admin: 1 })
-    }
-  }) */

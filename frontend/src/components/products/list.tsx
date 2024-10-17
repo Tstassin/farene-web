@@ -1,4 +1,4 @@
-import { Button, Checkbox, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Skeleton } from "@chakra-ui/react"
+import { Box, Button, Center, Checkbox, Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Skeleton, Spacer, Stack } from "@chakra-ui/react"
 import { SortableContext, SortableData, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { useState } from "react"
 import { Product } from "../../../../backend/src/services/products/products"
@@ -8,6 +8,7 @@ import { QueryStatus } from "../queries/query-status"
 import { UpdateProduct } from "./update"
 import { CSS } from '@dnd-kit/utilities';
 import { DataRef, DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
+import { ProductImage, UpdateProductImage } from "../image"
 
 const move = (array: number[], from: number, to: number) => {
   array.splice(to, 0, array.splice(from, 1)[0]);
@@ -17,9 +18,11 @@ export const ProductsList = () => {
   const allProductsQuery = useAllProducts()
   const productRemoveMutation = useProductRemoveMutation()
   const productPatchMutation = useProductPatchMutation()
-  const [showUpdateModalValue, setShowUpdateModalValue] = useState<Product['id']>()
-  const currentProductQuery = useProduct(showUpdateModalValue)
+  const [showUpdateImageModalValue, setShowUpdateImageModalValue] = useState<Product['id']>()
+  const [showUpdateProductModalValue, setShowUpdateProductModalValue] = useState<Product['id']>()
+  const currentProductQuery = useProduct(showUpdateImageModalValue ?? showUpdateProductModalValue)
   const [isDeletionConfirmed, setIsDeletionConfirmed] = useState<Product['id']>()
+  const [updatedImageId, setUpdatedImageId] = useState<Product['id']>()
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -47,17 +50,23 @@ export const ProductsList = () => {
       <DndContext sensors={sensors} onDragEnd={hangleDragEnd}>
         <SortableContext strategy={verticalListSortingStrategy} items={allProductsQuery.data ?? []}>
           <Skeleton isLoaded={!productPatchMutation.isLoading}>
-            <ul>
+            <Stack as='ul' spacing={'3rem'}>
               {allProductsQuery.data?.map(product => (
-                <ProductItem product={product} setShowUpdateModalValue={setShowUpdateModalValue} key={product.id} />
+                <ProductItem
+                  product={product}
+                  setShowUpdateProductModalValue={setShowUpdateProductModalValue}
+                  setShowUpdateImageModalValue={setShowUpdateImageModalValue}
+                  triggerImageReload={updatedImageId}
+                  key={product.id}
+                />
               ))}
-            </ul>
+            </Stack>
           </Skeleton>
         </SortableContext>
       </DndContext>
       {
-        currentProductQuery.isSuccess &&
-        <Modal isOpen={Boolean(showUpdateModalValue)} onClose={() => setShowUpdateModalValue(undefined)}>
+        currentProductQuery.isSuccess && showUpdateProductModalValue &&
+        <Modal isOpen={Boolean(showUpdateProductModalValue)} onClose={() => setShowUpdateProductModalValue(undefined)}>
           <ModalOverlay />
           <ModalContent>
             <QueryStatus query={currentProductQuery}>
@@ -84,13 +93,33 @@ export const ProductsList = () => {
           </ModalContent>
         </Modal>
       }
+      {
+        currentProductQuery.isSuccess && showUpdateImageModalValue &&
+        <Modal isOpen={Boolean(showUpdateImageModalValue)} onClose={() => setShowUpdateImageModalValue(undefined)}>
+          <ModalOverlay />
+          <ModalContent>
+            <QueryStatus query={currentProductQuery}>
+              <ModalHeader>Produit: {currentProductQuery.data.name}</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <UpdateProductImage id={currentProductQuery.data.id} setUpdatedImageId={setUpdatedImageId} />
+              </ModalBody>
+            </QueryStatus>
+          </ModalContent>
+        </Modal>
+      }
     </QueryStatus >
   )
 }
 
 const ProductItem = (
-  { product, setShowUpdateModalValue }:
-    { product: Product, setShowUpdateModalValue: (value: React.SetStateAction<number | undefined>) => void }
+  { product, setShowUpdateProductModalValue, setShowUpdateImageModalValue, triggerImageReload }:
+    {
+      product: Product,
+      setShowUpdateProductModalValue: (value: React.SetStateAction<number | undefined>) => void,
+      setShowUpdateImageModalValue: (value: React.SetStateAction<number | undefined>) => void,
+      triggerImageReload?: Product['id']
+    }
 ) => {
   const {
     attributes,
@@ -106,13 +135,23 @@ const ProductItem = (
   };
 
   return (
-    <li ref={setNodeRef} style={style} {...attributes}>
-      <span {...listeners}>
+    <Flex as='li' ref={setNodeRef} style={style} {...attributes}>
+      <Center {...listeners}>
+        <ProductImage id={product.id} triggerReload={triggerImageReload === product.id ? Date.now().toString() : undefined} />
+      </Center>
+      <Spacer {...listeners} />
+      <Center {...listeners}>
         {product.disabled ? 'X ' : '✓ '}
         [{product.sku}]{' '}
         {product.name}
-      </span>
-      <Button ml={5} size={'xs'} onClick={(e) => { setShowUpdateModalValue(product.id) }}>Modifier</Button>
-    </li>
+      </Center>
+      <Spacer />
+      <Center>
+        <Stack>
+          <Button ml={5} size={'xs'} onClick={(e) => { setShowUpdateImageModalValue(product.id) }}>Modifier l'image</Button>
+          <Button ml={5} size={'xs'} onClick={(e) => { setShowUpdateProductModalValue(product.id) }}>Modifier le produit</Button>
+        </Stack>
+      </Center>
+    </Flex>
   )
 }

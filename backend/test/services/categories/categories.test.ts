@@ -19,7 +19,7 @@ describe("categories service", () => {
     assert.ok(category, "object returned");
     assert.ok(category.name === getCategoryMock().name, "name is set");
     assert.ok(category.createdAt !== null, "Creation date is set");
-    assert.ok(category.createdAt !== null, "Last update date is set");
+    assert.ok(category.updatedAt !== null, "Last update date is set");
     assert.ok(
       category.createdAt === category.updatedAt,
       "Creation and last update dates are equal"

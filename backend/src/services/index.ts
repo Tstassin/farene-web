@@ -1,3 +1,4 @@
+import { asset } from './assets/assets'
 import { deliveryOption } from './delivery-options/delivery-options'
 import { place } from './places/places'
 import { stripeWebhooks } from './stripe-webhooks/stripe-webhooks'
@@ -13,6 +14,7 @@ import { order } from './orders/orders'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(asset)
   app.configure(deliveryOption)
   app.configure(place)
   app.configure(stripeWebhooks)

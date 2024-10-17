@@ -103,7 +103,16 @@ export const ExportPage = () => {
       <br />
       <Box mb={10}>
         {!ordersExportMutation.isSuccess && <Button isLoading={ordersExportMutation.isLoading} onClick={() => ordersExportMutation.mutate()}>Démarrer l'export</Button>}
-        <Button visibility={ordersExportMutation.isSuccess ? 'visible' : 'hidden'} as='a' disabled={Boolean(!ordersExportMutation.isSuccess)} download ref={downloadButtonRef}>Télécharger</Button>
+        <Button
+          visibility={ordersExportMutation.isSuccess ? 'visible' : 'hidden'}
+          as='a'
+          disabled={Boolean(!ordersExportMutation.isSuccess)}
+          download 
+          // @ts-expect-error -> https://v2.chakra-ui.com/community/recipes/as-prop
+          ref={downloadButtonRef}
+        >
+          Télécharger
+        </Button>
       </Box>
       {
         ordersExportMutation.data && ordersExportMutation.data.forCsv.length > 0 && (
