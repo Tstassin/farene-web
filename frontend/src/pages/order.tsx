@@ -18,6 +18,7 @@ import { eur, mult } from "../../../shared/prices";
 import { useNextWeekDeliveryOptions } from "../queries/delivery-options";
 import { getNextWeekStart } from "../../../backend/src/utils/dates";
 import { DeliveryOptions } from "../components/delivery-options/delivery-options";
+import { InfoMessage } from "../home";
 dayjs.extend(localeData)
 
 export const Order = () => {
@@ -70,6 +71,8 @@ export const Order = () => {
             Commandes jusque dimanche minuit
           </Text>
         </Box>
+        <InfoMessage />
+        <br />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <>
