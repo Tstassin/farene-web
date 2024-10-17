@@ -10,7 +10,8 @@
     "declaration": true,
     "strict": true,
     "esModuleInterop": true,
-    "noErrorTruncation": true
+    "noErrorTruncation": true,
+    "skipLibCheck": true
   },
   "include": [
     "src"
