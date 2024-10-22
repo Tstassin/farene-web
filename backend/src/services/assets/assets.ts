@@ -34,7 +34,7 @@ const storage = SharpMulter({
   imageOptions: {
     fileFormat: 'jpg',
     quality: 80,
-    resize: { width: 500, height: 500, resizeMode: 'cover' }
+    resize: { width: 500, height: 500, resizeMode: 'contain' }
   },
   filename: (originalname: string, opts: object, req: MulterIncomingMessage) => {
     return req.body.id + '.jpg'
