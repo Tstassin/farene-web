@@ -44,7 +44,7 @@ const storage = SharpMulter({
 const upload = multer({
   storage,
   limits: {
-    fileSize: 5 * 1000 * 1000
+    fileSize: 20 * 1000 * 1000
   }
 }
 )
