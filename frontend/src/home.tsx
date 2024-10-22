@@ -1,4 +1,4 @@
-import { Heading, Text, Link, Box, Alert, AlertIcon } from "@chakra-ui/react";
+import { Heading, Text, Link, Box } from "@chakra-ui/react";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { NotAuthenticated } from "./components/auth/authenticated";
@@ -12,10 +12,13 @@ export const Home: React.FC = () => {
     <>
       <Heading mb={5}>Boulangerie 250°</Heading>
       <Box mb={10}>
+        {/* <Alert status="info" mb={5}>
+          <AlertIcon></AlertIcon>
+          250° est partiellement en congés.<br />
+          Vous pouvez commander cette semaine pour le Mardi 16 Mai.
+        </Alert> */}
         <Text fontSize={'xl'}>Commandez votre pain jusque dimanche minuit</Text>
         <Text fontSize={'xl'}>Récupérez le à partir de mardi</Text>
-        <br />
-        <InfoMessage />
         <NotAuthenticated>
           <>
             <Text fontSize={'l'} mt={5}>
@@ -54,16 +57,5 @@ export const Home: React.FC = () => {
       <br />
 
     </>
-  )
-}
-
-export const InfoMessage = () => {
-
-  return (
-    <Alert status="info" mb={5} fontWeight='bold'>
-      <AlertIcon></AlertIcon>
-      Fermeture de la boulangerie mardi prochain, le 22 octobre.
-      Vous pouvez déjà passer votre commande pour le mardi 29 octobre.
-    </Alert>
   )
 }

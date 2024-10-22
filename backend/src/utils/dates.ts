@@ -52,6 +52,3 @@ export const getNextWeekStart = () => {
 export const getNextWeekEnd = () => {
   return getToday().endOf('week').add(1, 'day').endOf('week')
 }
-export const getNextWeekEndOfNextWeek = () => {
-  return getToday().endOf('week').add(8, 'day').endOf('week')
-}
