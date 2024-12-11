@@ -31,10 +31,9 @@ export const Header = () => {
           <>
             <Admin>
               <NavItem to={'/admin'}>Admin</NavItem>
-            </Admin>
+            </Admin> 
             <NavItem to={'/order'}>Commander</NavItem>
-            {/* <NavItem to={'/products'}>Produits</NavItem>
-            <NavItem to={'/categories'}>Catégories</NavItem> */}
+            {/* <NavItem to={'/order?special=christmas'}><Text backgroundColor={'pink'} fontWeight={700} px={1}>🎄 Noël 🎄</Text></NavItem> */}
             <Link as='button' onClick={() => { logoutQuery.mutate() }} textDecoration='underline'>
               Déconnexion
             </Link>

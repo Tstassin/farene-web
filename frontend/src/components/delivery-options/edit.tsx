@@ -1,6 +1,6 @@
 import { FormControl, FormErrorMessage, FormLabel, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select } from "@chakra-ui/react"
 import { Controller, UseFormReturn } from "react-hook-form"
-import { DeliveryOptionData } from "../../../../backend/src/services/delivery-options/delivery-options.schema"
+import { DeliveryOptionData, FormType } from "../../../../backend/src/services/delivery-options/delivery-options.schema"
 import { useAllPlaces } from "../../queries/places"
 
 interface DeliveryOptionEditComponentProps {
@@ -81,6 +81,21 @@ export const DeliveryOptionEditComponent = ({ form }: DeliveryOptionEditComponen
           )}
         />
         <FormErrorMessage>{errors.to?.message}</FormErrorMessage>
+      </FormControl>
+      <FormControl mb={5} isInvalid={Boolean(errors.type)}>
+        <FormLabel>Type de Formulaire</FormLabel>
+        <Select
+          defaultValue={FormType.standard}
+          placeholder='Choisir le type de formulaire'
+          {...register('type', {
+            required: 'Ce champ est obligatoire',
+          })}
+        >
+          {Object.keys(FormType).map(
+            formType => <option value={formType}>{formType}</option>
+          )}
+        </Select>
+        <FormErrorMessage>{errors.type?.message}</FormErrorMessage>
       </FormControl>
     </>
   )

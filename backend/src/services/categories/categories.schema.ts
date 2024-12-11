@@ -6,6 +6,7 @@ import type { Static } from "@feathersjs/typebox";
 import type { HookContext } from "../../declarations";
 import { dataValidator, queryValidator } from "../../validators";
 import { resourceSchema } from "../common/resources";
+import { deliveryOptionSchema } from "../delivery-options/delivery-options.schema";
 
 // Main data model schema
 export const categorySchema = Type.Intersect([
@@ -13,6 +14,7 @@ export const categorySchema = Type.Intersect([
     {
       id: Type.Number(),
       name: Type.String(),
+      type: deliveryOptionSchema['properties']['type']
     },
     { $id: "Category", additionalProperties: false }
   ),
@@ -25,7 +27,7 @@ export const categoryResolver = resolve<Category, HookContext>({});
 export const categoryExternalResolver = resolve<Category, HookContext>({});
 
 // Schema for creating new entries
-export const categoryDataSchema = Type.Pick(categorySchema, ["name"], {
+export const categoryDataSchema = Type.Pick(categorySchema, ["name", 'type'], {
   $id: "CategoryData",
 });
 export type CategoryData = Static<typeof categoryDataSchema>;
@@ -48,7 +50,7 @@ export const categoryPatchResolver = resolve<Category, HookContext>({});
 
 
 // Schema for updating existing entries
-export const categoryUpdateSchema = Type.Pick(categorySchema, ['id', 'name'], {
+export const categoryUpdateSchema = Type.Pick(categorySchema, ['id', 'name', 'type'], {
   $id: "CategoryUpdate",
 });
 export type CategoryUpdate = Static<typeof categoryUpdateSchema>;
@@ -63,6 +65,7 @@ export const categoryUpdateResolver = resolve<Category, HookContext>({});
 export const categoryQueryProperties = Type.Pick(categorySchema, [
   "id",
   "name",
+  "type"
 ]);
 export const categoryQuerySchema = Type.Intersect(
   [

@@ -6,9 +6,13 @@ import type { Static } from '@feathersjs/typebox'
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import { BadRequest } from '@feathersjs/errors/lib'
-import { Place, placeSchema } from '../places/places.schema'
+import { placeSchema } from '../places/places.schema'
 import { resourceSchema } from '../common/resources'
-import { app } from '../../app'
+
+export enum FormType {
+  standard = 'standard',
+  special = 'special'
+}
 
 // Main data model schema
 export const deliveryOptionSchema =
@@ -22,7 +26,8 @@ export const deliveryOptionSchema =
           day: Type.String({ format: 'date' }),
           from: Type.Number({ minimum: 0, maximum: 24 }),
           to: Type.Number({ minimum: 0, maximum: 24, }),
-          description: Type.String()
+          description: Type.String(),
+          type: Type.Enum(FormType, {default: FormType.standard})
         }
       ),
       resourceSchema
@@ -45,7 +50,7 @@ export const deliveryOptionExternalResolver = resolve<DeliveryOption, HookContex
 
 // Schema for creating new entries
 export const deliveryOptionDataSchema = Type.Intersect([
-  Type.Pick(deliveryOptionSchema, ['day', 'from', 'to', 'description']),
+  Type.Pick(deliveryOptionSchema, ['day', 'from', 'to', 'description', 'type']),
   Type.Object({
     placeId: Type.Number()
   })
@@ -70,7 +75,7 @@ export const deliveryOptionDataResolver = resolve<DeliveryOption, HookContext>({
 })
 
 // Schema for updating existing entries
-export const deliveryOptionPatchSchema = Type.Partial(deliveryOptionDataSchema, {$id: 'DeliveryOptionPatch'})
+export const deliveryOptionPatchSchema = Type.Partial(deliveryOptionDataSchema, { $id: 'DeliveryOptionPatch' })
 export type DeliveryOptionPatch = Static<typeof deliveryOptionPatchSchema>
 export const deliveryOptionPatchValidator = getValidator(deliveryOptionPatchSchema, dataValidator)
 export const deliveryOptionPatchResolver = resolve<DeliveryOption, HookContext>({

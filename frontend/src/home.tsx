@@ -1,4 +1,4 @@
-import { Heading, Text, Link, Box } from "@chakra-ui/react";
+import { Heading, Text, Link, Box, Alert, AlertIcon, AlertTitle, AlertDescription } from "@chakra-ui/react";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { NotAuthenticated } from "./components/auth/authenticated";
@@ -10,6 +10,27 @@ export const Home: React.FC = () => {
 
   return (
     <>
+      {/* <Alert
+        colorScheme='pink'
+        variant='subtle'
+        flexDirection='column'
+        alignItems='center'
+        justifyContent='center'
+        textAlign='center'
+        mb={'4rem'}
+      >
+        <AlertTitle mt={4} mb={3} fontSize='xl'>
+          🎄 Spécial Noël 🎄
+        </AlertTitle>
+        <AlertDescription maxWidth='sm'>
+          <Text fontWeight={900}><Link as={NavLink} to='/order?special=christmas'><u>-&gt; Cliquez ici &lt;-</u></Link></Text> 
+          --- <br/>
+          pour commander vos bûches, frefez, fezfze, zfefze
+          <br />
+          --- <br/>
+          Commandes jusqu'au <Text fontWeight={900}>19 Décembre 2024</Text>
+        </AlertDescription>
+      </Alert> */}
       <Heading mb={5}>Boulangerie 250°</Heading>
       <Box mb={10}>
         {/* <Alert status="info" mb={5}>

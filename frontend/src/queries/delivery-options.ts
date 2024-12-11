@@ -1,19 +1,12 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import dayjs from "dayjs"
 import { queryClient } from ".."
-import { DeliveryOption, DeliveryOptionData, DeliveryOptionPatch, DeliveryOptionQuery } from "../../../backend/src/services/delivery-options/delivery-options.schema"
+import { DeliveryOption, DeliveryOptionData, DeliveryOptionPatch, DeliveryOptionQuery, FormType } from "../../../backend/src/services/delivery-options/delivery-options.schema"
 import { getNextWeekEnd, getNextWeekStart, getToday, isoDate, isoDateFormat } from "../../../backend/src/utils/dates"
 import { client } from "../../api/api"
 
 const defaultDeliveryOptionsQuery: DeliveryOptionQuery = {
   $sort: { day: 1 }
-}
-
-export const useAllDeliveryOptions = () => {
-  return useQuery({
-    queryKey: ['deliveryOptions'],
-    queryFn: () => client.service('delivery-options').find({ paginate: false, query: defaultDeliveryOptionsQuery })
-  })
 }
 
 export const useDeliveryOptions = (query?: DeliveryOptionQuery, enabled = true) => {
@@ -29,7 +22,11 @@ export const useNextDeliveryOptions = () => {
 }
 
 export const useNextWeekDeliveryOptions = () => {
-  return useDeliveryOptions({ day: { $gte: isoDate(getNextWeekStart()), $lte: isoDate(getNextWeekEnd()) } })
+  return useDeliveryOptions({ day: { $gte: isoDate(getNextWeekStart()), $lte: isoDate(getNextWeekEnd()) }, type: FormType.standard })
+}
+
+export const useSpecialDeliveryOptions = () => {
+  return useDeliveryOptions({ type: FormType.special })
 }
 
 const fetchDeliveryOption = async (id: DeliveryOption['id'] | undefined) => {

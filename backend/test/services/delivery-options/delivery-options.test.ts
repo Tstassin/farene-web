@@ -5,12 +5,12 @@ import { describe } from 'mocha'
 import { cleanAll } from '../../utils/clean-all'
 import { Place } from '../../../src/services/places/places.schema'
 import { getPlaceMock } from '../places/places.mocks'
-import dayjs from 'dayjs'
-import { isoDateFormat, today } from '../../../src/utils/dates'
+import { today } from '../../../src/utils/dates'
 import { DeliveryOption } from '../../../src/client'
 import { DeliveryOptionService } from '../../../src/services/delivery-options/delivery-options.class'
 import { assertRejects } from '../../utils/assert-rejects'
 import { BadRequest } from '@feathersjs/errors/lib'
+import { FormType } from '../../../src/services/delivery-options/delivery-options.schema'
 
 describe('delivery-options service', () => {
 
@@ -33,7 +33,7 @@ describe('delivery-options service', () => {
     useBaseDeliveryOptionsMocks()
     it('retrieves delivery options without authentication', async () => {
       const service = app.service('delivery-options')
-      const deliveryOptions = await service.find({paginate: false, provider: 'rest'})
+      const deliveryOptions = await service.find({ paginate: false, provider: 'rest' })
       assert.equal(deliveryOptions.length, 0)
     })
   })
@@ -41,7 +41,7 @@ describe('delivery-options service', () => {
     useBaseDeliveryOptionsMocks()
     it('creates a delivery option', async () => {
       const service = app.service('delivery-options')
-      const deliveryOption = await service.create({ placeId: place.id, day: today, from: 9, to: 17, description: 'test' })
+      const deliveryOption = await service.create({ placeId: place.id, day: today, from: 9, to: 17, description: 'test', type: FormType.special })
       assert.equal(deliveryOption.place.id, place.id)
     })
   })
@@ -51,7 +51,7 @@ describe('delivery-options service', () => {
     let deliveryOption: DeliveryOption
     beforeEach(async () => {
       service = app.service('delivery-options')
-      deliveryOption = await service.create({ placeId: place.id, day: today, from: 9, to: 17, description: 'test' })
+      deliveryOption = await service.create({ placeId: place.id, day: today, from: 9, to: 17, description: 'test', type: FormType.special })
     })
     it('edits description', async () => {
       const updatedDeliveryOption = await service.patch(deliveryOption.id, { description: 'edit' })

@@ -2,21 +2,22 @@ import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, 
 import { useState } from "react"
 import { DeliveryOption } from "../../../../backend/src/services/delivery-options/delivery-options.schema"
 import { getWeekStart, isoDate } from "../../../../backend/src/utils/dates"
-import { useAllDeliveryOptions, useDeliveryOption, useDeliveryOptionRemoveMutation, useDeliveryOptions } from "../../queries/delivery-options"
+import { useDeliveryOption, useDeliveryOptions } from "../../queries/delivery-options"
 import { QueryStatus } from "../queries/query-status"
 import { CreateDeliveryOption } from "./create"
 import { DeliveryOptionItem } from "./delivery-options"
 import { UpdateDeliveryOption } from "./update"
 
 export const DeliveryOptionsList = () => {
-  const allDeliveryOptionsQuery = useDeliveryOptions({day: {$gte: isoDate(getWeekStart())}})
+  const allDeliveryOptionsQuery = useDeliveryOptions({ day: { $gte: isoDate(getWeekStart()) } })
   const [showUpdateModalValue, setShowUpdateModalValue] = useState<DeliveryOption['id']>()
   const currentDeliveryOptionQuery = useDeliveryOption(showUpdateModalValue)
   return (
     <QueryStatus query={allDeliveryOptionsQuery}>
       <ul>
         {allDeliveryOptionsQuery.data?.map(dO => <li key={dO.id}>
-          <Button ml={5} size={'xs'} onClick={() => setShowUpdateModalValue(dO.id)}>Modifier</Button><br />
+          [{dO.type}] <Button ml={5} size={'xs'} onClick={() => setShowUpdateModalValue(dO.id)}>Modifier</Button><br />
+          
           <DeliveryOptionItem deliveryOption={dO} />
           {/* <Button ml={5} size={'xs'} onClick={() => placeRemoveMutation.mutate(place.id)}>Supprimer</Button> */}
         </li>)}
