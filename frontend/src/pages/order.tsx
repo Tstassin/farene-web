@@ -140,7 +140,7 @@ export const Order = () => {
                     </AccordionButton>
                   </h2>
                   <AccordionPanel pb={4} mb={0}>
-                    <DeliveryOptions />
+                    <DeliveryOptions formType={formType} />
                   </AccordionPanel>
                 </AccordionItem>
               </Accordion>

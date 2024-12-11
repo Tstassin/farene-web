@@ -1,6 +1,7 @@
 import { Heading, Text, Link, Box, Alert, AlertIcon, AlertTitle, AlertDescription } from "@chakra-ui/react";
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { FormType } from "../../backend/src/services/delivery-options/delivery-options.schema";
 import { NotAuthenticated } from "./components/auth/authenticated";
 import { DeliveryOptions } from "./components/delivery-options/delivery-options";
 // @ts-expect-error
@@ -51,7 +52,7 @@ export const Home: React.FC = () => {
         </NotAuthenticated>
 
         <Heading size={'md'} mb={3} mt={6}>Points dépôt disponibles :</Heading>
-        <DeliveryOptions />
+        <DeliveryOptions formType={FormType.standard} />
       </Box>
       <br />
       <img src={image} />
