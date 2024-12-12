@@ -30,12 +30,22 @@ export const WeekSelector = ({ onChange, value, weeksISO }: WeekSelectorProps) =
 export const useWeekSelector = () => {
   const nextWeek = getNextWeekStart()
   const weeksISO = [
+    isoDate(nextWeek.subtract(8, 'weeks')),
+    isoDate(nextWeek.subtract(7, 'weeks')),
+    isoDate(nextWeek.subtract(6, 'weeks')),
+    isoDate(nextWeek.subtract(5, 'weeks')),
+    isoDate(nextWeek.subtract(4, 'weeks')),
     isoDate(nextWeek.subtract(3, 'weeks')),
     isoDate(nextWeek.subtract(2, 'weeks')),
-    isoDate(nextWeek.subtract(1, 'weeks')),
+    isoDate(nextWeek.subtract(1, 'week')),
     isoDate(nextWeek),
+    isoDate(nextWeek.add(1, 'week')),
+    isoDate(nextWeek.add(2, 'weeks')),
+    isoDate(nextWeek.add(3, 'weeks')),
+    isoDate(nextWeek.add(4, 'weeks')),
+    isoDate(nextWeek.add(5, 'weeks')),
   ]
-  const [week, setWeek] = useState(weeksISO[weeksISO.length - 1])
+  const [week, setWeek] = useState(isoDate(nextWeek))
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setWeek(e.target.value)
   }
