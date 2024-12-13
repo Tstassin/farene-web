@@ -6,7 +6,7 @@ import { client } from "../../api/api"
 
 export const useAllCategories = (formType?: FormType) => {
   return useQuery({
-    queryKey: ['categories'],
+    queryKey: ['categories', formType],
     queryFn: () => client.service('categories').find({ paginate: false, query: { type: formType } })
   })
 }
