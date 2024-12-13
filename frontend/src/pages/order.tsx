@@ -103,7 +103,7 @@ export const Order = () => {
             <>
               <FormControl mb={5} isInvalid={Boolean(errors.deliveryOptionId)} isRequired>
                 <FormLabel>
-                  <Heading size={'md'} mb={3} display='inline'>Point dépôt pour enlèvement :</Heading>
+                  <Heading size={'md'} mb={3} display='inline'>Point dépôt choisi :</Heading>
                 </FormLabel>
                 <RadioGroup mt={3}>
                   <Stack spacing={3}>

@@ -11,7 +11,7 @@ export const Home: React.FC = () => {
 
   return (
     <>
-      {/* <Alert
+      <Alert
         colorScheme='pink'
         variant='subtle'
         flexDirection='column'
@@ -26,12 +26,13 @@ export const Home: React.FC = () => {
         <AlertDescription maxWidth='sm'>
           <Text fontWeight={900}><Link as={NavLink} to='/order?special=christmas'><u>-&gt; Cliquez ici &lt;-</u></Link></Text> 
           --- <br/>
-          pour commander vos bûches, frefez, fezfze, zfefze
+          Pour commander vos bûches, biscuits apéritifs, brioches et crackers 
           <br />
           --- <br/>
-          Commandes jusqu'au <Text fontWeight={900}>19 Décembre 2024</Text>
+          Commandes jusqu'au <Text fontWeight={900}>19 Décembre 2024</Text><br />
+          A venir retirer sur place à l'atelier de La Ferme du Champs des Noces
         </AlertDescription>
-      </Alert> */}
+      </Alert>
       <Heading mb={5}>Boulangerie 250°</Heading>
       <Box mb={10}>
         {/* <Alert status="info" mb={5}>

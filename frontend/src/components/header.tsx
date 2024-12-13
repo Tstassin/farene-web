@@ -1,4 +1,4 @@
-import { Box, Flex, Link, Stack } from "@chakra-ui/react";
+import { Box, Flex, Link, Stack, Text } from "@chakra-ui/react";
 import { Admin, Authenticated, NotAuthenticated } from "./auth/authenticated";
 import { NavItem } from "./navbar/nav-item";
 import { useLogoutMutation } from "./queries/authentication";
@@ -21,7 +21,7 @@ export const Header = () => {
         </NavItem>
       </Box>
       <Stack
-        spacing={8}
+        spacing={4}
         align="center"
         justify={"flex-end"}
         direction={"row"}
@@ -31,9 +31,9 @@ export const Header = () => {
           <>
             <Admin>
               <NavItem to={'/admin'}>Admin</NavItem>
-            </Admin> 
+            </Admin>
             <NavItem to={'/order'}>Commander</NavItem>
-            {/* <NavItem to={'/order?special=christmas'}><Text backgroundColor={'pink'} fontWeight={700} px={1}>🎄 Noël 🎄</Text></NavItem> */}
+            <NavItem to={'/order?special=christmas'}><Text backgroundColor={'pink'} fontWeight={700} px={1}>Noël</Text></NavItem>
             <Link as='button' onClick={() => { logoutQuery.mutate() }} textDecoration='underline'>
               Déconnexion
             </Link>
