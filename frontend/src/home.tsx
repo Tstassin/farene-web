@@ -12,7 +12,7 @@ export const Home: React.FC = () => {
   return (
     <>
       <Alert
-        colorScheme='pink'
+        backgroundColor={'#fee347'}
         variant='subtle'
         flexDirection='column'
         alignItems='center'
@@ -24,11 +24,11 @@ export const Home: React.FC = () => {
           🎄 Spécial Noël 🎄
         </AlertTitle>
         <AlertDescription maxWidth='sm'>
-          <Text fontWeight={900}><Link as={NavLink} to='/order?special=christmas'><u>-&gt; Cliquez ici &lt;-</u></Link></Text> 
-          --- <br/>
-          Pour commander vos bûches, biscuits apéritifs, brioches et crackers 
+          <Text fontWeight={900}><Link as={NavLink} to='/order?special=christmas'><u>-&gt; Cliquez ici &lt;-</u></Link></Text>
+          --- <br />
+          Pour commander vos bûches, biscuits apéritifs, brioches et crackers
           <br />
-          --- <br/>
+          --- <br />
           Commandes jusqu'au <Text fontWeight={900}>19 Décembre 2024</Text><br />
           A venir retirer sur place à l'atelier de La Ferme du Champs des Noces
         </AlertDescription>

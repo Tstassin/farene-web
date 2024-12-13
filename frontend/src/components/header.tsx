@@ -33,7 +33,9 @@ export const Header = () => {
               <NavItem to={'/admin'}>Admin</NavItem>
             </Admin>
             <NavItem to={'/order'}>Commander</NavItem>
-            <NavItem to={'/order?special=christmas'}><Text backgroundColor={'pink'} fontWeight={700} px={1}>Noël</Text></NavItem>
+            <NavItem to={'/order?special=christmas'}>
+              <Text backgroundColor={'#fee347'} fontWeight={700} px={1}>Noël</Text>
+            </NavItem>
             <Link as='button' onClick={() => { logoutQuery.mutate() }} textDecoration='underline'>
               Déconnexion
             </Link>

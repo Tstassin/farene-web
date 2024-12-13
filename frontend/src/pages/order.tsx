@@ -82,7 +82,7 @@ export const Order = () => {
           ) : (
             <>
               <Alert
-                colorScheme='pink'
+                backgroundColor={'#fee347'}
                 variant='subtle'
                 flexDirection='column'
                 alignItems='center'
