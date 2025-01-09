@@ -5,14 +5,14 @@ import { FormType } from "../../backend/src/services/delivery-options/delivery-o
 import { NotAuthenticated } from "./components/auth/authenticated";
 import { DeliveryOptions } from "./components/delivery-options/delivery-options";
 // @ts-expect-error
-import * as image from './images/IMG_6124.jpeg'
+import * as image from './images/IMG_6124.jpg'
 
 export const Home: React.FC = () => {
 
   return (
     <>
       <Alert
-        backgroundColor={'#fee347'}
+        backgroundColor={'#fff4b4'}
         variant='subtle'
         flexDirection='column'
         alignItems='center'
@@ -21,20 +21,26 @@ export const Home: React.FC = () => {
         mb={'4rem'}
       >
         <AlertTitle mt={4} mb={3} fontSize='xl'>
-          🎄 Spécial Noël 🎄
+          Très belle année 2025 🥖✨ !
         </AlertTitle>
-        <AlertDescription maxWidth='sm'>
-          <Text fontWeight={900}><Link as={NavLink} to='/order?special=christmas'><u>-&gt; Cliquez ici &lt;-</u></Link></Text>
-          --- <br />
-          Pour commander vos bûches, biscuits apéritifs, brioches et crackers
-          <br />
-          --- <br />
-          Commandes jusqu'au <Text fontWeight={900}>19 Décembre 2024</Text><br />
-          A venir retirer sur place à l'atelier de La Ferme du Champs des Noces
+        <AlertDescription fontWeight={'semibold'}>
+          <p>
+            Pour bien commencer, quelques petits changements :<br />
+            <br />
+            🥖 Une seule taille de pain :<br />
+            Un pain unique de 750 g cru. Plus simple pour tout le monde… et toujours aussi délicieux !<br />
+            <br />
+            💶 Un prix ajusté au poids :<br />
+            Le prix s’adapte au nouveau format, rien de révolutionnaire, juste du bon sens.<br />
+            <br />
+            En résumé : un pain, une taille, un prix… mais toujours autant d’amour dans chaque fournée ♥️<br />
+            <br />
+          </p>
         </AlertDescription>
       </Alert>
       <Heading mb={5}>Boulangerie 250°</Heading>
       <Box mb={10}>
+
         {/* <Alert status="info" mb={5}>
           <AlertIcon></AlertIcon>
           250° est partiellement en congés.<br />
