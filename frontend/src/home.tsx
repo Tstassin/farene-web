@@ -25,15 +25,34 @@ export const Home: React.FC = () => {
         </AlertTitle>
         <AlertDescription fontWeight={'semibold'}>
           <p>
-            Pour bien commencer, quelques petits changements :<br />
             <br />
-            🥖 Une seule taille de pain :<br />
-            Un pain unique de 750 g cru. Plus simple pour tout le monde… et toujours aussi délicieux !<br />
+            Chaque semaine recevez par email :<br />
+            <ul style={{ listStyleType: 'none'}}>
+              <li>
+                ✔️ Un rappel pour commander votre pain artisanal.
+              </li>
+              <li>
+                ✔️ Les nouveautés et produits de la semaine.
+              </li>
+              <li>
+                ✔️ Des astuces, coulisses, découvertes, recettes…
+              </li>
+            </ul>
             <br />
-            💶 Un prix ajusté au poids :<br />
-            Le prix s’adapte au nouveau format, rien de révolutionnaire, juste du bon sens.<br />
+            🔗 <a href="http://eepurl.com/i9yzVY"><u>Cliquez-ici pour vous inscrire au rappel 🔔</u></a><br />
             <br />
-            En résumé : un pain, une taille, un prix… mais toujours autant d’amour dans chaque fournée ♥️<br />
+            Prochaines dates de fermeture de la boulangerie :<br />
+            <ul style={{ listStyleType: 'none' }}>
+              <li>
+                -&gt; Du 17 mars au 26 mars inclus
+              </li>
+              <li>
+                -&gt; Du 21 avril au 23 avril inclus
+              </li>
+              <li>
+                -&gt; Du 14 juillet au 15 août inclus
+              </li>
+            </ul>
             <br />
           </p>
         </AlertDescription>
