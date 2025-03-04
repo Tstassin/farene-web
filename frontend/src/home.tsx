@@ -12,7 +12,7 @@ export const Home: React.FC = () => {
   return (
     <>
       <Alert
-        backgroundColor={'#fff4b4'}
+        backgroundColor={'#FFE0C9'}
         variant='subtle'
         flexDirection='column'
         alignItems='center'
@@ -21,13 +21,13 @@ export const Home: React.FC = () => {
         mb={'4rem'}
       >
         <AlertTitle mt={4} mb={3} fontSize='xl'>
-          Très belle année 2025 🥖✨ !
+          🔔 Un rappel chaque semaine ?
         </AlertTitle>
         <AlertDescription fontWeight={'semibold'}>
           <p>
             <br />
             Chaque semaine recevez par email :<br />
-            <ul style={{ listStyleType: 'none'}}>
+            <ul style={{ listStyleType: 'none' }}>
               <li>
                 ✔️ Un rappel pour commander votre pain artisanal.
               </li>
