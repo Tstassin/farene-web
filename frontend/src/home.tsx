@@ -44,10 +44,7 @@ export const Home: React.FC = () => {
             Prochaines dates de fermeture de la boulangerie :<br />
             <ul style={{ listStyleType: 'none' }}>
               <li>
-                -&gt; Du 17 mars au 26 mars inclus
-              </li>
-              <li>
-                -&gt; Du 21 avril au 23 avril inclus
+                -&gt; Du 29 avril au 6 mai inclus
               </li>
               <li>
                 -&gt; Du 14 juillet au 15 août inclus
