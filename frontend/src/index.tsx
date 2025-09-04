@@ -42,7 +42,7 @@ export const router = createBrowserRouter([
         path: "/",
         element: <Home />,
       },
-      {
+      /* {
         path: "/register",
         element: <Register />,
       },
@@ -99,7 +99,7 @@ export const router = createBrowserRouter([
             element: <AdminProtected><Orders /></AdminProtected>,
           },
         ]
-      },
+      }, */
     ]
   }
 ]);

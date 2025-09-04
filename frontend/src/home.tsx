@@ -11,96 +11,67 @@ export const Home: React.FC = () => {
 
   return (
     <>
-      <Alert
-        backgroundColor={'#FFE0C9'}
-        variant='subtle'
-        flexDirection='column'
-        alignItems='center'
-        justifyContent='center'
-        textAlign='center'
-        mb={'4rem'}
-      >
-        <AlertTitle mt={4} mb={3} fontSize='xl'>
-          🔔 Un rappel chaque semaine ?
-        </AlertTitle>
-        <AlertDescription fontWeight={'semibold'}>
-          <p>
+    <p>
+            Après plusieurs années d’activité en tant que boulangère indépendante, dont les deux dernières à la Ferme du Champ des Noces, j’ai pris la décision de mettre un terme à la production hebdomadaire de pain.
             <br />
-            Chaque semaine recevez par email :<br />
-            <ul style={{ listStyleType: 'none' }}>
-              <li>
-                ✔️ Un rappel pour commander votre pain artisanal.
-              </li>
-              <li>
-                ✔️ Les nouveautés et produits de la semaine.
-              </li>
-              <li>
-                ✔️ Des astuces, coulisses, découvertes, recettes…
-              </li>
-            </ul>
             <br />
-            🔗 <a href="http://eepurl.com/i9yzVY"><u>Cliquez-ici pour vous inscrire au rappel 🔔</u></a><br />
+            Ce choix, mûrement réfléchi, correspond à une évolution de mon parcours ainsi qu’à mes priorités personnelles et professionnelles.
             <br />
-            Prochaines dates de fermeture de la boulangerie :<br />
-            <ul style={{ listStyleType: 'none' }}>
-              <li>
-                -&gt; Du 29 avril au 6 mai inclus
-              </li>
-              <li>
-                -&gt; Du 14 juillet au 15 août inclus
-              </li>
-            </ul>
+<br />
+            Je tiens à remercier profondément toutes celles et ceux, client·e·s fidèles, partenaires, ami·e·s, collègues, qui m’ont accompagnée tout au long de cette aventure.
+            Avoir façonné à la main ce pain vivant, nourri au levain naturel, à partir de farines bio, locales, parfois issues de céréales anciennes cultivées avec soin, a été une immense joie.
             <br />
+<br />
+
+            Un pain réalisé avec le cœur qui portait un engagement : celui de produire autrement, à taille humaine, en lien avec le vivant.
+            <br />
+<br />
+
+            Pour continuer à faire vivre la filière boulangère artisanale, je vous invite à découvrir et à soutenir mes collègues qui partagent ces valeurs : travail au levain naturel, farines bio (souvent locales et paysannes), et une approche profondément artisanale du pain.
+            <br />
+<br />
+
+            Voici une liste – non exhaustive, bien sûr – de boulanger·e·s locaux·ales qui perpétuent ce savoir-faire engagé :
+            <br />
+<br />
+<ul>
+<li>
+
+            La Ferme du Champ des Noces
+</li>
+<li>
+            Le Pain qui chante
+</li>
+<li>
+
+            Les Miches de Lola
+</li>
+<li>
+
+            Mich’Papot
+</li>
+<li>
+
+            Le Clan Pains
+</li>
+<li>
+
+            Greg le Boulanger
+</li>
+</ul>
+<br />
+<br />
+<br />
+            Longue vie au bon pain au levain !
+
+            Laurence
           </p>
-        </AlertDescription>
-      </Alert>
-      <Heading mb={5}>Boulangerie 250°</Heading>
-      <Box mb={10}>
-
-        {/* <Alert status="info" mb={5}>
-          <AlertIcon></AlertIcon>
-          250° est partiellement en congés.<br />
-          Vous pouvez commander cette semaine pour le Mardi 16 Mai.
-        </Alert> */}
-        <Text fontSize={'xl'}>Commandez votre pain jusque dimanche minuit</Text>
-        <Text fontSize={'xl'}>Récupérez le à partir de mardi</Text>
-        <NotAuthenticated>
-          <>
-            <Text fontSize={'l'} mt={5}>
-              <Link as={NavLink} to='/register'><u>Créez un compte</u></Link> pour commander et payer en ligne.<br />
-              <Link as={NavLink} to='/login'><u>Connectez-vous</u></Link> si vous avez déjà un compte.
-              <br />
-            </Text>
-          </>
-        </NotAuthenticated>
-
-        <Heading size={'md'} mb={3} mt={6}>Points dépôt disponibles :</Heading>
-        <DeliveryOptions formType={FormType.standard} />
-      </Box>
-      <br />
-      <img src={image} />
-      <br />
-      <br />
-      <p>
-        <b>250 degrés</b> propose un pain au levain, cuit à point
-      </p>
-
-      <p>
-        Préparé, cuit et livré avec soin par Laurence<br />
-        BOULANGÈRE – ARTISANE - INDEPENDANTE
-      </p>
-      <br />
-      <ul>
-        <li>CHASTRE</li>
-        <li>TVA BE0734974740</li>
-        <li>250degres@gmail.com</li>
-        <li><Link as={NavLink} to='https://www.facebook.com/profile.php?id=61555972030001'><u>facebook</u></Link></li>
-      </ul>
-
-      <br />
-      <br />
-      <br />
-
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+      
     </>
   )
 }

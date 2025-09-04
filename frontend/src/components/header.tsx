@@ -27,26 +27,7 @@ export const Header = () => {
         direction={"row"}
         pt={0}
       >
-        <Authenticated>
-          <>
-            <Admin>
-              <NavItem to={'/admin'}>Admin</NavItem>
-            </Admin>
-            <NavItem to={'/order'}>Commander</NavItem>
-            {/* <NavItem to={'/order?special=christmas'}>
-              <Text backgroundColor={'#fee347'} fontWeight={700} px={1}>Noël</Text>
-            </NavItem> */}
-            <Link as='button' onClick={() => { logoutQuery.mutate() }} textDecoration='underline'>
-              Déconnexion
-            </Link>
-          </>
-        </Authenticated>
-        <NotAuthenticated>
-          <>
-            <NavItem to={'/login'}>Se connecter</NavItem>
-            <NavItem to={'/register'}>Créer un compte</NavItem>
-          </>
-        </NotAuthenticated>
+        
       </Stack>
     </Flex>
   )
